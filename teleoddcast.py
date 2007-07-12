@@ -225,7 +225,7 @@ def main():
 	title = 'Pre-barreau - Augustins'
 	root_dir = '/var/www/cgi-bin/'
 	media_dir = root_dir + 'media/'
-	server = 'augustins.pre-barreau.com'
+	server = 'localhost'
 	port = '8000'
 	url = 'http://'+server+':'+port
 	uid = os.getuid()
