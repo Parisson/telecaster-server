@@ -1,0 +1,28 @@
+
+div#header { background-color: #030250;
+             color: #FFFFFF;
+	     padding: 0.5em;
+	     line-height: 10px;
+
+}
+
+div#bg { background-color: #030250;
+         color: #FFFFFF;
+}
+div#main { background-color: #FFFFFF;
+           color: #000033;
+	   padding:1em;
+	   margin: 0;
+}
+div#tools { background-color: #030250;
+            color: #FFFFFF;
+	    border: 1px solid #FFFFFF;
+	    padding:0.5em;
+	    margin: 0;
+}
+div#colophon { background-color: #FFFFFF;
+         color: #000033;
+	 font-size: 80%;
+}
+
+
