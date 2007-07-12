@@ -1,0 +1,5 @@
+teleoddcast
+by yomguy
+
+# DEPENDS
+icecast2, jackd, oddcastv3-jack, streamrippper, pgrep
