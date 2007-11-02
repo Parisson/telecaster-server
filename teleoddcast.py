@@ -164,7 +164,7 @@ def footer():
 def start_form(title, departments, courses):
 	header(title)
 	print "<div id=\"main\">"
-	print "<h5><a href=\"http://augustins.pre-barreau.com:8000/augustins.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
+	print "<h5><a href=\"http://augustins.pre-barreau.com:8000/crfpa.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
 	print "\t<TABLE BORDER = 0>"
 	print "\t\t<FORM METHOD = post ACTION = \"teleoddcast.py\">"
 	print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+title+"</TD></TR>"
