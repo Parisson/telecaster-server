@@ -20,268 +20,304 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 """
 
-version = '0.2'
+version = '0.3'
+
 
 import os
 import cgi
 import shutil
 import datetime
 import time
+from tools import *
 from mutagen.oggvorbis import OggVorbis
 
-def get_pid(proc,uid):
-	"""Get a process pid filtered by arguments and uid"""
-	(list1, list2) = os.popen4('pgrep -f -U '+str(uid)+' '+'"'+proc+'"')
-	pids = list2.readlines()
-	if pids != '':
-		for pid in pids:
-			index = pids.index(pid)
-			pids[index] = pid[:-1]
-	return pids
-		
 
-def get_lines(file):
-	"""Get lines from a file"""
-	fic = open(file,'r')
-	lines = fic.readlines()
-	fic.close()
-	return lines
+class Course:
+    """A course in a class room"""
+    
+    def __init__(self, dict):
+        self.department = course_dict['department']
+        self.course = course_dict['course']
+        self.session = course_dict['session']
+        self.professor = course_dict['professor']
+        self.comment = course_dict['comment']
 
-def clean_string(string):
-	"""removes blank spaces and accents"""
-	string = string.replace(' ','_')
-	string = string.replace('é','e')
-	string = string.replace('è','e')
-	return string
+    def get_info(self):
+        return self.title, self.department, self.course, self.session, self.professor, self.comment
 
-def start_stream(odd_conf_file, lock_file, media_dir, title, department, course, session, professor, comment):
-	oddconf = open(odd_conf_file,'r')
-	params = oddconf.readlines()
-	oddconf.close()
-	newlines = []
-	for line in params:
-		if 'ServerDescription' in line.split('='):
-			ServerDescription = title+'_-_'+department+'_-_'+course+'_-_'+session+'_-_'+professor+'_-_'+comment
-			ServerDescription = ServerDescription.replace(' ','_')
-			newlines.append('ServerDescription='+ServerDescription+'\n')
-		elif 'ServerName' in line.split('='):	
-			ServerName=title+'_-_'+department+'_-_'+course+'_-_'+session
-			ServerName=clean_string(ServerName)
-			newlines.append('ServerName='+ServerName+'\n')
-		elif 'ServerMountpoint' in line.split('='):
-			mount_point = '/'+clean_string(title)+'_-_'+clean_string(department)+'_-_'+clean_string(course)+'.ogg'
-			newlines.append('ServerMountpoint='+mount_point+'\n')
-		else:
-			newlines.append(line)
-	oddconf = open(odd_conf_file,'w')
-	oddconf.writelines(newlines)
-	oddconf.close()
-	os.system('oddcastv3 -n "'+clean_string(course)+'" -c '+odd_conf_file+ \
-		  ' alsa_pcm:capture_1 alsa_pcm:capture_2 > /dev/null &')
-	lock = open(lock_file,'w')
-	lock_text = clean_string(title+'_*_'+department+'_*_'+course+'_*_'+session+'_*_'+professor+'_*_'+comment)
-	lock_text = lock_text.replace('\n','')
-	lock.write(lock_text)
-	lock.close()
-	time.sleep(1)
-	return mount_point
 
-def start_rip(url, mount_point, media_dir, department):
-	output_dir = media_dir+os.sep+department+os.sep
-	#print mount_point
-	if not os.path.exists(output_dir):
-		os.mkdir(output_dir)
-	os.system('streamripper '+url+mount_point+' -d '+output_dir+' -D "%S" -s -t --quiet > /dev/null &')
-
-def stop_oddcast(pid):
-	os.system('kill -9 '+pid)
-	
-def rm_lockfile(lock_file):
-	os.system('rm '+lock_file)
-
-def stop_rip(pid,media_dir,title,department,course,session,professor,comment):
-	os.system('kill -9 '+pid)
-	time.sleep(1)
-	date = datetime.datetime.now().strftime("%Y")
-	filename = clean_string(title+'_-_'+department+'_-_'+course+'_-_'+session+'_-_'+date+'_-_'+professor+'_-_'+comment+'.ogg')
-	dirname = media_dir + os.sep + department + os.sep + clean_string(title+'_-_'+department+'_-_'+course+'_-_'+session)
-	if os.path.exists(dirname) and os.path.exists(dirname+os.sep+'incomplete'):
-		shutil.move(dirname+os.sep+'incomplete'+os.sep+' - .ogg',dirname+os.sep)
-		shutil.rmtree(dirname+os.sep+'incomplete'+os.sep)
-		os.rename(dirname+os.sep+' - .ogg',dirname+os.sep+filename)
-
-def get_params_from_lock(lock_file):
-	lockfile = open(lock_file,'r')
-	params = lockfile.readline()
-	params_ok = params.split('_*_')
-	lockfile.close()
-	return params_ok
-
-def write_tags(media_dir,title,department,course,session,professor,comment):
-	date = datetime.datetime.now().strftime("%Y")
-	filename = clean_string(title+'_-_'+department+'_-_'+course+'_-_'+session+'_-_'+date+'_-_'+professor+'_-_'+comment+'.ogg')
-	new_title = clean_string(title+'_-_'+department+'_-_'+course+'_-_'+session)
-	dirname = media_dir + os.sep + department + os.sep + new_title
-	if os.path.exists(dirname+os.sep+filename):
-		audio = OggVorbis(dirname+os.sep+filename)
-		audio['TITLE'] = new_title
-		audio['ARTIST'] = professor
-		audio['ALBUM'] = title
-		audio['DATE'] = date
-		audio['GENRE'] = 'Vocal'
-		audio['SOURCE'] = title
-		audio['ENCODER'] = 'TeleOddCast by Parisson'
-		audio['COMMENT'] = comment
-		audio.save()
-		
-# Required header that tells the browser how to render the HTML.
-print "Content-Type: text/html\n\n"
-
-def header(title):
-	print "<HTML>"
-	print "<HEAD>"
-	print "\t<TITLE>"+title+"</TITLE>"
-	print "<link href=\"teleoddcast.css\" rel=\"stylesheet\" type=\"text/css\">"
-	print "</HEAD>"
-	print "<BODY BGCOLOR =\"#FFFFFF\">"
-	print "<div id=\"bg\">" 
-	print "<div id=\"header\">"
-	print "\t<H3>&nbsp;TeleOddCast - L'enregistrement et la diffusion audio en direct par internet</H3>"
-	print "</div>"
-
-def colophon():
-	print "<div id=\"colophon\">"
-	print "TeleOddCast "+version+" &copy; <span>2007</span>&nbsp;<a href=\"http://parisson.com\">Parisson</a>. Tous droits réservés."
-	print "</div>"
+class TeleOddCast(Course):
+    """Control the Oddcastv3-jack thread which send audio data to the icecast server
+    and the Streamripper thread which write audio on the hard disk"""
+    
+    def __init__(self, conf_file, course_dict):
+        Course.__init__(self, course_dict)
+        self.conf = xml2dict(conf_file)
+        self.title = self.conf['title']
+        self.root_dir = self.conf['root_dir']
+        self.media_dir = self.conf['media_dir']
+        self.server = self.conf['server']
+        self.port = self.conf['port']
+        self.url = 'http://'+self.server+':'+self.port
+	    self.uid = os.getuid()
+        self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
+        self.rip_pid = get_pid('streamripper ' + self.url + self.mount_point, self.uid)
+        self.odd_conf_file = self.conf['odd_conf_file']
+        self.ServerDescription = clean_string('_-_'.join(self.title,
+                                               self.department,
+                                               self.course,
+                                               self.session,
+                                               self.professor,
+                                               self.comment))
+        self.ServerName = clean_string('_-_'.join(self.title,
+                                        self.department,
+                                        self.course,
+                                        self.session))
+        self.mount_point = '/' + clean_string(self.title) + '_-_' + \
+                                 clean_string(self.department) + '_-_' + \
+                                 clean_string(self.course)+'.ogg'
+        self.lock_file = self.root_dir + self.ServerDescription + '.lock'
+        self.filename = self.ServerDescription + '.ogg'
         
-def footer():
-	print "</div>"
-	print "</BODY>"
-	print "</HTML>"
+    def set_oddcast_conf(self):
+        oddconf = open(self.odd_conf_file,'r')
+        lines = oddconf.readlines()
+        oddconf.close()
+        newlines = []
+        for line in lines:
+            if 'ServerDescription' in line.split('='):
+                newlines.append('ServerDescription=' + \
+                                self.ServerDescription.replace(' ','_') + '\n')
+                
+            elif 'ServerName' in line.split('='):
+                newlines.append('ServerName=' + self.ServerName + '\n')
+
+            elif 'ServerMountpoint' in line.split('='):
+                newlines.append('ServerMountpoint=' + self.mount_point + '\n')
+            
+            else:
+                newlines.append(line)
+                
+        oddconf = open(self.odd_conf_file,'w')
+        oddconf.writelines(newlines)
+        oddconf.close()
+
+    def start_oddcast(self):
+        command = 'oddcastv3 -n "'+clean_string(self.course)+'" -c '+self.odd_conf_file+ \
+                  ' alsa_pcm:capture_1 alsa_pcm:capture_2 > /dev/null &'
+        os.system(command)
+        self.set_lock()
+        time.sleep(1)
+        return mount_point
+
+    def set_lock(self):
+        lock = open(self.lock_file,'w')
+        lock_text = clean_string('_*_'.join(self.title,
+                                               self.department,
+                                               self.course,
+                                               self.session,
+                                               self.professor,
+                                               self.comment))
+        lock_text = lock_text.replace('\n','')
+        lock.write(lock_text)
+        lock.close()
 
 
+    def del_lock(self):
+        os.remove(self.lock_file)
 
-def start_form(title, departments, courses):
-	header(title)
-	print "<div id=\"main\">"
-	print "<h5><a href=\"http://augustins.pre-barreau.com:8000/crfpa.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
-	print "\t<TABLE BORDER = 0>"
-	print "\t\t<FORM METHOD = post ACTION = \"teleoddcast.py\">"
-	print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+title+"</TD></TR>"
-	print "\t\t<TR><TH align=\"left\">D&eacute;partement :</TH><TD><select name=\"department\">"
-	for department in departments:
-		print "<option value=\""+department+"\">"+department+"</option>"
-	print "</select></TD></TR>"
-	print "\t\t<TR><TH align=\"left\">Intitul&eacute; du cours :</TH><TD><select name=\"course\">"
-	for course in courses:
-		print "<option value=\""+course+"\">"+course+"</option>"
-	print "</select></TD></TR>"
-	print "\t\t<TR><TH align=\"left\">Session :</TH><TD><select name=\"session\">"
-	for i in range(1,21):
-		print "<option value=\""+str(i)+"\">"+str(i)+"</option>"
-	print "</select></TD></TR>"
-	print "\t\t<TR><TH align=\"left\">Professeur :</TH><TD><INPUT type = text name = \"professor\"></TD><TR>"
-	print "\t\t<TR><TH align=\"left\">Commentaire :</TH><TD><INPUT type = text name = \"comment\"></TD></TR>"
-	print "\t</TABLE>"
-	print "\t<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
-	print "</div>"
-	print "<div id=\"tools\">"
-	print "\t<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
-	print "\t<INPUT TYPE = submit VALUE = \"Start\">"
-	print "\t</FORM>"
-	print "</div>"
-	colophon()
-	footer()
+    def start_rip(self):
+        output_dir = self.media_dir + os.sep + self.department + os.sep
+        #print mount_point
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
+        command = 'streamripper ' + self.url + self.mount_point + \
+                  ' -d '+output_dir+' -D "%S" -s -t --quiet > /dev/null &'
+        os.system(command)
+
+    def stop_oddcast(self):
+        os.system('kill -9 ' + self.odd_pid[0])
+        
+    def stop_rip(self):
+        os.system('kill -9 ' + self.rip_pid[0])
+        time.sleep(1)
+        date = datetime.datetime.now().strftime("%Y")
+        dirname = self.media_dir + os.sep + self.department + os.sep + \
+                  clean_string('_-_'.join(self.title, self.department, self.course, self.session))
+                  
+        if os.path.exists(dirname) and os.path.exists(dirname+os.sep+'incomplete'):
+            shutil.move(dirname+os.sep+'incomplete'+os.sep+' - .ogg',dirname+os.sep)
+            shutil.rmtree(dirname+os.sep+'incomplete'+os.sep)
+            os.rename(dirname+os.sep+' - .ogg',dirname+os.sep+self.filename)
+
+    def write_tags(self):
+        date = datetime.datetime.now().strftime("%Y")
+        new_title = clean_string('_-_'.join(self.title, self.department, self.course, self.session)
+        dirname = self.media_dir + os.sep + self.department + os.sep + new_title
+        if os.path.exists(dirname+os.sep+self.filename):
+            audio = OggVorbis(dirname+os.sep+self.filename)
+            audio['TITLE'] = new_title
+            audio['ARTIST'] = self.professor
+            audio['ALBUM'] = self.title
+            audio['DATE'] = date
+            audio['GENRE'] = 'Vocal'
+            audio['SOURCE'] = self.title
+            audio['ENCODER'] = 'TeleOddCast by Parisson'
+            audio['COMMENT'] = self.comment
+            audio.save()
+
+    def start(self):
+        self.set_lock()
+        self.set_oddcast_conf()
+        self.start_oddcast()
+        self.start_rip()
+
+    def stop(self):
+        self.stop_rip
+        self.write_tags()
+        self.stop_oddcast()
+        self.del_lock()
+        
+
+class WebView:
+
+    def __init__(self, school_file):
+        self.conf = xml2dict(school_file)
+        self.departments = self.conf['department']
+        self.url = self.conf['url']
+
+    def header(self):
+        # Required header that tells the browser how to render the HTML.
+        print "Content-Type: text/html\n\n"
+        print "<HTML>"
+        print "<HEAD>"
+        print "\t<TITLE>"+self.title+"</TITLE>"
+        print "<link href=\"teleoddcast.css\" rel=\"stylesheet\" type=\"text/css\">"
+        print "</HEAD>"
+        print "<BODY BGCOLOR =\"#FFFFFF\">"
+        print "<div id=\"bg\">"
+        print "<div id=\"header\">"
+        print "\t<H3>&nbsp;TeleOddCast - L'enregistrement et la diffusion audio en direct par internet</H3>"
+        print "</div>"
+
+    def colophon(self):
+        print "<div id=\"colophon\">"
+        print "TeleOddCast "+self.version+" &copy; <span>2007</span>&nbsp;<a href=\"http://parisson.com\">Parisson</a>. Tous droits r&eacute;serv&eacute;s."
+        print "</div>"
+            
+    def footer(self):
+        print "</div>"
+        print "</BODY>"
+        print "</HTML>"
+
+    def start_form(self):
+        self.header()
+        print "<div id=\"main\">"
+        print "<h5><a href=\"http://augustins.pre-barreau.com:8000/crfpa.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
+        for department in self.departments:
+            courses = self.conf[department]['courses']
+            print "\t<TABLE BORDER = 0>"
+            print "\t\t<FORM METHOD = post ACTION = \"teleoddcast.py\">"
+            print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
+            print "\t\t<TR><TH align=\"left\">D&eacute;partement :</TH><TD>"+department+"</TD></TR>"
+            print "\t\t<TR><TH align=\"left\">Intitul&eacute; du cours :</TH><TD><select name=\"course\">"
+            for course in courses:
+                print "<option value=\""+course+"\">"+course+"</option>"
+            print "</select></TD></TR>"
+            print "\t\t<TR><TH align=\"left\">Session :</TH><TD><select name=\"session\">"
+            for i in range(1,21):
+                print "<option value=\""+str(i)+"\">"+str(i)+"</option>"
+            print "</select></TD></TR>"
+            print "\t\t<TR><TH align=\"left\">Professeur :</TH><TD><INPUT type = text name = \"professor\"></TD><TR>"
+            print "\t\t<TR><TH align=\"left\">Commentaire :</TH><TD><INPUT type = text name = \"comment\"></TD></TR>"
+            print "\t</TABLE>"
+        print "\t<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
+        print "</div>"
+        print "<div id=\"tools\">"
+        print "\t<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
+        print "\t<INPUT TYPE = submit VALUE = \"Start\">"
+        print "\t</FORM>"
+        print "</div>"
+        self.colophon()
+        self.footer()
 
 
-def stop_form(url,title, department, course, session, professor, comment):
-	"""Stop page"""
-	header(title)
-	print "<div id=\"main\">"
-	print "\t<h4><span style=\"color: red\">Cette formation est en cours de diffusion :</span></h4>"
-	print "<hr>"
-	print "\t<TABLE BORDER = 0>"
-	print "\t\t<FORM METHOD = post ACTION = \"teleoddcast.py\">"
-	print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+title+"</TD></TR>"
-	print "\t\t<TR><TH align=\"left\">D&eacute;partement :</TH><TD>"+department+"</TD><TR>"
-	print "\t\t<TR><TH align=\"left\">Intitul&eacute; du cours :</TH><TD>"+course+"</TD><TR>"
-	print "\t\t<TR><TH align=\"left\">Session :</TH><TD>"+session+"</TD><TR>"
-	print "\t\t<TR><TH align=\"left\">Professeur :</TH><TD>"+professor+"</TD><TR>"
-	print "\t\t<TR><TH align=\"left\">Commentaire :</TH><TD>"+comment+"</TD><TR>"
-	print "\t</TABLE>"
-	print "<hr>"
-	print "<h5><a href=\""+url+"/"+clean_string(title)+"_-_"+clean_string(department)+"_-_"+clean_string(course)+".ogg.m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
-	print "</div>"
-	print "<div id=\"tools\">"
-	print "\t<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
-	print "\t<INPUT TYPE = submit VALUE = \"Stop\">"
-	print "\t</FORM>"
-	print "</div>"
-	colophon()
-	footer()
+    def stop_form(self, course_dict):
+        """Stop page"""
+        title = course_dict['title']
+        department = course_dict['department']
+        course = course_dict['course']
+        session = course_dict['session']
+        professor = course_dict['professor']
+        comment = course_dict['comment']
+
+        self.header()
+        print "<div id=\"main\">"
+        print "\t<h4><span style=\"color: red\">Cette formation est en cours de diffusion :</span></h4>"
+        print "<hr>"
+        print "\t<TABLE BORDER = 0>"
+        print "\t\t<FORM METHOD = post ACTION = \"teleoddcast.py\">"
+        print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+title+"</TD></TR>"
+        print "\t\t<TR><TH align=\"left\">D&eacute;partement :</TH><TD>"+department+"</TD><TR>"
+        print "\t\t<TR><TH align=\"left\">Intitul&eacute; du cours :</TH><TD>"+course+"</TD><TR>"
+        print "\t\t<TR><TH align=\"left\">Session :</TH><TD>"+session+"</TD><TR>"
+        print "\t\t<TR><TH align=\"left\">Professeur :</TH><TD>"+professor+"</TD><TR>"
+        print "\t\t<TR><TH align=\"left\">Commentaire :</TH><TD>"+comment+"</TD><TR>"
+        print "\t</TABLE>"
+        print "<hr>"
+        print "<h5><a href=\""+self.url+"/"+clean_string(title)+"_-_"+clean_string(department)+"_-_"+clean_string(course)+".ogg.m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
+        print "</div>"
+        print "<div id=\"tools\">"
+        print "\t<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
+        print "\t<INPUT TYPE = submit VALUE = \"Stop\">"
+        print "\t</FORM>"
+        print "</div>"
+        colophon()
+        footer()
 
 def main():
 	"""Main function"""
-	title = 'Pre-barreau - Augustins'
-	root_dir = '/var/www/cgi-bin/'
-	media_dir = root_dir + 'media/'
-	server = 'localhost'
-	port = '8000'
-	url = 'http://'+server+':'+port
+
+    conf_file = 'teleoddcast.xml'
+	school_file = 'pre-barreau.xml'
+	odd_conf_file = 'teleoddcast.cfg'
+    lock_file = 'teleoddcast.lock'
 	uid = os.getuid()
-	
-	departments = get_lines(root_dir+'pre-barreau_departments.txt') 
-	courses = get_lines(root_dir+'pre-barreau_courses.txt')
-	odd_conf_file = root_dir+'teleoddcast.cfg'
-	
-	oddcast_pid = get_pid('^oddcastv3 -n [^LIVE]',uid)
-	lock_file = root_dir+'teleoddcast.lock'
-	
+    odd_pid = get_pid('^oddcastv3 -n [^LIVE]', uid)
+
+    w = WebView(school_file)
 	form = cgi.FieldStorage()
-		
-	if oddcast_pid == [] and form.has_key("action") and \
-	form.has_key("department") and form.has_key("course") and form.has_key("professor") \
-	and form.has_key("comment") and form["action"].value == "start":
-		
-		mount_point = start_stream(odd_conf_file, lock_file, media_dir, title, 
-			form["department"].value, form["course"].value, 
-			form["session"].value, form["professor"].value, 
-			form["comment"].value)
-		
-		department = form["department"].value		
-		start_rip(url,mount_point,media_dir,department)
+    
+	if odd_pid == [] and form.has_key("action") and \
+	       form.has_key("department") and form.has_key("course") and form.has_key("professor") \
+	       and form.has_key("comment") and form["action"].value == "start":
+        
+		course_dict = {'department': form["department"].value,
+                       'course': form["course"].value,
+                       'session': form["session"].value,
+                       'professor': form["professor"].value,
+                       'comment': form["comment"].value}
 
-		stop_form(url,title,
-			form["department"].value, form["course"].value,
-			form["session"].value, form["professor"].value, 
-			form["comment"].value)
-
-	elif oddcast_pid != [] and os.path.exists(lock_file) and not form.has_key("action"):
-		
-		title,department,course,session,professor,comment = get_params_from_lock(lock_file)
-		stop_form(url,title,department,course,session,professor,comment)
+        t = TeleOddCast(conf_file, course_dict)
+        t.start()
+        w.stop_form(course_dict)
+        
+	elif odd_pid != [] and os.path.exists(lock_file) and not form.has_key("action"):
+        t = TeleOddCast(conf_file, course_dict)
+        title,department,course,session,professor,comment = t.get_info()
+		w.stop_form(course_dict)
 
 	elif oddcast_pid != [] and form.has_key("action") and form["action"].value == "stop":
-		
+        t = TeleOddCast(conf_file, course_dict)
 		if os.path.exists(lock_file):
-			title,department,course,session,professor,comment = get_params_from_lock(lock_file)
-	
-		stop_oddcast(oddcast_pid[0])
-		mount_point = '/'+clean_string(title)+'_-_'+clean_string(department)+'_-_'+clean_string(course)+'.ogg'
-	 	#print mount_point
-		streamripper_pid = get_pid('streamripper '+url+mount_point,uid)
-
-		if streamripper_pid != []:
-			stop_rip(streamripper_pid[0],media_dir,title,department,course,session,professor,comment)
-			write_tags(media_dir,title,department,course,session,professor,comment)
-		
-		rm_lockfile(lock_file)
-		
-		start_form(title, departments, courses)
+            title,department,course,session,professor,comment = t.get_info()
+        t.stop()
+		w.start_form()
 
 	elif oddcast_pid == []:
-		start_form(title, departments, courses)
+		w.start_form()
 
 # Call main function.
-main()
+if __name__ == '__main__':
+    main()
 
