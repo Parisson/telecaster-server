@@ -76,3 +76,16 @@ def dict2tuple(dict):
             tup.append(value['name'])
         return tup
 
+def get_course_from_lock(lock_file):
+    lockfile = open(lock_file,'r')
+    course = lockfile.readline()
+    course_l = course.split('_*_')
+    course_dict = {'title': course_l[0],
+                   'department': course_l[1],
+                   'course': course_l[2],
+                   'session': course_l[3],
+                   'professor': course_l[4],
+                   'comment': course_l[5]}
+    lockfile.close()
+    return course_dict
+

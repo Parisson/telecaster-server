@@ -36,6 +36,7 @@ class Course:
     """A course in a class room"""
     
     def __init__(self, dict):
+        self.title = dict['title']
         self.department = dict['department']
         self.course = dict['course']
         self.session = dict['session']
@@ -50,11 +51,10 @@ class TeleOddCast(Course):
     """Control the Oddcastv3-jack thread which send audio data to the icecast server
     and the Streamripper thread which write audio on the hard disk"""
     
-    def __init__(self, conf_file, course_dict):
+    def __init__(self, conf_file, course_dict, lock_file):
         Course.__init__(self, course_dict)
         self.conf = xml2dict(conf_file)
         self.conf = self.conf['teleoddcast']
-        self.title = self.conf['infos']['name']
         self.root_dir = self.conf['server']['root_dir']
         self.media_dir = self.conf['media']['dir']
         self.host = self.conf['server']['host']
@@ -69,7 +69,7 @@ class TeleOddCast(Course):
         self.mount_point = '/' + clean_string(self.title) + '_-_' + \
                                  clean_string(self.department) + '_-_' + \
                                  clean_string(self.course)+'.ogg'
-        self.lock_file = self.root_dir + self.ServerDescription + '.lock'
+        self.lock_file = self.root_dir + os.sep + self.conf['server']['lock_file']
         self.filename = self.ServerDescription + '.ogg'
         self.uid = os.getuid()
         self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
@@ -133,6 +133,7 @@ class TeleOddCast(Course):
         os.system('kill -9 ' + self.odd_pid[0])
         
     def stop_rip(self):
+        print self.rip_pid[0]
         os.system('kill -9 ' + self.rip_pid[0])
         time.sleep(1)
         date = datetime.datetime.now().strftime("%Y")
@@ -314,8 +315,15 @@ def main():
     """Main function"""
     conf_file = 'teleoddcast.xml'
     school_file = 'pre-barreau.xml'
-    odd_conf_file = 'teleoddcast.cfg'
-    lock_file = 'teleoddcast.lock'
+ 
+    conf_t = xml2dict(conf_file)
+    conf = conf_t['teleoddcast']
+    title = conf['infos']['name']
+    root_dir = conf['server']['root_dir']
+    lock_file = root_dir + os.sep + conf['server']['lock_file']
+    odd_conf_file = conf['server']['lock_file']
+    title = conf['infos']['name']
+
     uid = os.getuid()
     odd_pid = get_pid('^oddcastv3 -n [^LIVE]', uid)
 
@@ -326,25 +334,25 @@ def main():
            form.has_key("department") and form.has_key("course") and form.has_key("professor") \
            and form.has_key("comment") and form["action"].value == "start":
         
-        course_dict = {'department': form["department"].value,
+        course_dict = {'title': title,
+                       'department': form["department"].value,
                        'course': form["course"].value,
                        'session': form["session"].value,
                        'professor': form["professor"].value,
                        'comment': form["comment"].value}
 
-        t = TeleOddCast(conf_file, course_dict)
+        t = TeleOddCast(conf_file, course_dict, lock_file)
         t.start()
         w.stop_form(course_dict)
         
     elif odd_pid != [] and os.path.exists(lock_file) and not form.has_key("action"):
-        t = TeleOddCast(conf_file, course_dict)
-        title,department,course,session,professor,comment = t.get_info()
+        course_dict = get_course_from_lock(lock_file)
     	w.stop_form(course_dict)
 
     elif odd_pid != [] and form.has_key("action") and form["action"].value == "stop":
-        t = TeleOddCast(conf_file, course_dict)
         if os.path.exists(lock_file):
-            title,department,course,session,professor,comment = t.get_info()
+            course_dict = get_course_from_lock(lock_file)
+        t = TeleOddCast(conf_file, course_dict, lock_file)
         t.stop()
     	w.start_form()
 
