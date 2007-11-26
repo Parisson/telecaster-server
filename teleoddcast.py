@@ -53,16 +53,18 @@ class TeleOddCast(Course):
     def __init__(self, conf_file, course_dict):
         Course.__init__(self, course_dict)
         self.conf = xml2dict(conf_file)
-        self.title = self.conf['title']
-        self.root_dir = self.conf['root_dir']
-        self.media_dir = self.conf['media_dir']
-        self.server = self.conf['server']
-        self.port = self.conf['port']
-        self.url = 'http://'+self.server+':'+self.port
+        self.conf = self.conf['teleoddcast']
+        self.title = self.conf['infos']['name']
+        self.root_dir = self.conf['server']['root_dir']
+        self.media_dir = self.conf['media']['dir']
+        self.host = self.conf['server']['host']
+        self.port = self.conf['server']['port']
+        self.password = self.conf['server']['sourcepassword']
+        self.url = 'http://'+self.host+':'+self.port
 	    self.uid = os.getuid()
         self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
         self.rip_pid = get_pid('streamripper ' + self.url + self.mount_point, self.uid)
-        self.odd_conf_file = self.conf['odd_conf_file']
+        self.odd_conf_file = self.conf['server']['odd_conf_file']
         self.ServerDescription = clean_string('_-_'.join(self.title,
                                                self.department,
                                                self.course,
@@ -78,7 +80,8 @@ class TeleOddCast(Course):
                                  clean_string(self.course)+'.ogg'
         self.lock_file = self.root_dir + self.ServerDescription + '.lock'
         self.filename = self.ServerDescription + '.ogg'
-        
+
+
     def set_oddcast_conf(self):
         oddconf = open(self.odd_conf_file,'r')
         lines = oddconf.readlines()
@@ -94,7 +97,10 @@ class TeleOddCast(Course):
 
             elif 'ServerMountpoint' in line.split('='):
                 newlines.append('ServerMountpoint=' + self.mount_point + '\n')
-            
+
+            elif 'ServerPassword' in line.split('='):
+                newlines.append('ServerPassword=' + self.password + '\n')
+                
             else:
                 newlines.append(line)
                 
@@ -183,8 +189,10 @@ class WebView:
 
     def __init__(self, school_file):
         self.conf = xml2dict(school_file)
-        self.departments = self.conf['department']
+        self.conf = self.conf['teleoddcast']
         self.url = self.conf['url']
+        self.departments = self.conf['department']['name']
+        self.len_departments = str(len(self.departments))
 
     def header(self):
         # Required header that tells the browser how to render the HTML.
@@ -193,6 +201,27 @@ class WebView:
         print "<HEAD>"
         print "\t<TITLE>"+self.title+"</TITLE>"
         print "<link href=\"teleoddcast.css\" rel=\"stylesheet\" type=\"text/css\">"
+        print '<script language="Javascript" type="text/javascript" >'
+        print 'function choix(formulaire)'
+        print '{var j; var i = formulaire.department.selectedIndex;'
+        print 'if (i == 0)'
+        print   'for(j = 1; j < '+ self.len_departments + '; j++)'
+        print      'formulaire.course.options[j].text="";'
+        print      'formulaire.course.options[j].value="";'
+        print 'else{'
+        print '   switch (i){'
+        for k in range(1,self.len_departments)
+            department = self.departments[k]
+            courses = dict2tuple(department['courses'])
+            print '       case '+k+' : var text = new Array('+courses+'); '
+            print '       break;'
+        print '       }'
+        print '      for(j = 0; j<'+self.len_departments+'; j++)'
+        print '       formulaire.course.options[j+1].text=text[j];}'
+        print '       formulaire.course.options[j+1].value=text[j];}'
+        print '      formulaire.course.selectedIndex=0;}'
+        print '</script>'
+            
         print "</HEAD>"
         print "<BODY BGCOLOR =\"#FFFFFF\">"
         print "<div id=\"bg\">"
@@ -214,23 +243,33 @@ class WebView:
         self.header()
         print "<div id=\"main\">"
         print "<h5><a href=\"http://augustins.pre-barreau.com:8000/crfpa.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
+        print "\t<TABLE BORDER = 0>"
+        print "\t\t<FORM METHOD = post ACTION = \"teleoddcast.py\">"
+        print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
+        
+        print "\t\t<TR><TH align=\"left\">D&eacute;partement :</TH>"
+        print "<TD><select name=\"department\" onChange=\"choix(this.form)\">"
+        print "<option selected>...........Choisissez un d&eacute;...........</option>"
         for department in self.departments:
-            courses = self.conf[department]['courses']
-            print "\t<TABLE BORDER = 0>"
-            print "\t\t<FORM METHOD = post ACTION = \"teleoddcast.py\">"
-            print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
-            print "\t\t<TR><TH align=\"left\">D&eacute;partement :</TH><TD>"+department+"</TD></TR>"
-            print "\t\t<TR><TH align=\"left\">Intitul&eacute; du cours :</TH><TD><select name=\"course\">"
-            for course in courses:
-                print "<option value=\""+course+"\">"+course+"</option>"
-            print "</select></TD></TR>"
-            print "\t\t<TR><TH align=\"left\">Session :</TH><TD><select name=\"session\">"
-            for i in range(1,21):
-                print "<option value=\""+str(i)+"\">"+str(i)+"</option>"
-            print "</select></TD></TR>"
-            print "\t\t<TR><TH align=\"left\">Professeur :</TH><TD><INPUT type = text name = \"professor\"></TD><TR>"
-            print "\t\t<TR><TH align=\"left\">Commentaire :</TH><TD><INPUT type = text name = \"comment\"></TD></TR>"
-            print "\t</TABLE>"
+            print "<option value=\""+department+"\">"+department+"</option>"
+        print "</select></TD></TR>"
+        
+        print "\t\t<TR><TH align=\"left\">Intitul&eacute; du cours :</TH>"
+        print "<TD><select name=\"course\">"
+        for course in courses:
+            print "<option></option>"
+        print "</select></TD></TR>"
+
+        print "\t\t<TR><TH align=\"left\">Session :</TH><TD><select name=\"session\">"
+        for i in range(1,21):
+            print "<option value=\""+str(i)+"\">"+str(i)+"</option>"
+        print "</select></TD></TR>"
+
+        print "\t\t<TR><TH align=\"left\">Professeur :</TH><TD><INPUT type = text name = \"professor\"></TD><TR>"
+
+        print "\t\t<TR><TH align=\"left\">Commentaire :</TH><TD><INPUT type = text name = \"comment\"></TD></TR>"
+
+        print "\t</TABLE>"
         print "\t<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
         print "</div>"
         print "<div id=\"tools\">"
