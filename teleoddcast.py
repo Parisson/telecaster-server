@@ -36,11 +36,11 @@ class Course:
     """A course in a class room"""
     
     def __init__(self, dict):
-        self.department = course_dict['department']
-        self.course = course_dict['course']
-        self.session = course_dict['session']
-        self.professor = course_dict['professor']
-        self.comment = course_dict['comment']
+        self.department = dict['department']
+        self.course = dict['course']
+        self.session = dict['session']
+        self.professor = dict['professor']
+        self.comment = dict['comment']
 
     def get_info(self):
         return self.title, self.department, self.course, self.session, self.professor, self.comment
@@ -61,25 +61,19 @@ class TeleOddCast(Course):
         self.port = self.conf['server']['port']
         self.password = self.conf['server']['sourcepassword']
         self.url = 'http://'+self.host+':'+self.port
-	    self.uid = os.getuid()
-        self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
-        self.rip_pid = get_pid('streamripper ' + self.url + self.mount_point, self.uid)
         self.odd_conf_file = self.conf['server']['odd_conf_file']
-        self.ServerDescription = clean_string('_-_'.join(self.title,
-                                               self.department,
-                                               self.course,
-                                               self.session,
-                                               self.professor,
-                                               self.comment))
-        self.ServerName = clean_string('_-_'.join(self.title,
-                                        self.department,
-                                        self.course,
-                                        self.session))
+        self.description = [self.title, self.department, self.course, self.session, self.professor, self.comment]
+        self.server_name = [self.title, self.department, self.course, self.session]
+        self.ServerDescription = clean_string('_-_'.join(self.description))
+        self.ServerName = clean_string('_-_'.join(self.server_name))
         self.mount_point = '/' + clean_string(self.title) + '_-_' + \
                                  clean_string(self.department) + '_-_' + \
                                  clean_string(self.course)+'.ogg'
         self.lock_file = self.root_dir + self.ServerDescription + '.lock'
         self.filename = self.ServerDescription + '.ogg'
+        self.uid = os.getuid()
+        self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
+        self.rip_pid = get_pid('streamripper ' + self.url + self.mount_point, self.uid)
 
 
     def set_oddcast_conf(self):
@@ -114,16 +108,10 @@ class TeleOddCast(Course):
         os.system(command)
         self.set_lock()
         time.sleep(1)
-        return mount_point
 
     def set_lock(self):
         lock = open(self.lock_file,'w')
-        lock_text = clean_string('_*_'.join(self.title,
-                                               self.department,
-                                               self.course,
-                                               self.session,
-                                               self.professor,
-                                               self.comment))
+        lock_text = clean_string('_*_'.join(self.description))
         lock_text = lock_text.replace('\n','')
         lock.write(lock_text)
         lock.close()
@@ -149,7 +137,7 @@ class TeleOddCast(Course):
         time.sleep(1)
         date = datetime.datetime.now().strftime("%Y")
         dirname = self.media_dir + os.sep + self.department + os.sep + \
-                  clean_string('_-_'.join(self.title, self.department, self.course, self.session))
+                  clean_string('_-_'.join(self.server_name))
                   
         if os.path.exists(dirname) and os.path.exists(dirname+os.sep+'incomplete'):
             shutil.move(dirname+os.sep+'incomplete'+os.sep+' - .ogg',dirname+os.sep)
@@ -158,7 +146,7 @@ class TeleOddCast(Course):
 
     def write_tags(self):
         date = datetime.datetime.now().strftime("%Y")
-        new_title = clean_string('_-_'.join(self.title, self.department, self.course, self.session)
+        new_title = clean_string('_-_'.join(self.server_name))
         dirname = self.media_dir + os.sep + self.department + os.sep + new_title
         if os.path.exists(dirname+os.sep+self.filename):
             audio = OggVorbis(dirname+os.sep+self.filename)
@@ -191,8 +179,11 @@ class WebView:
         self.conf = xml2dict(school_file)
         self.conf = self.conf['teleoddcast']
         self.url = self.conf['url']
-        self.departments = self.conf['department']['name']
-        self.len_departments = str(len(self.departments))
+        self.title = self.conf['title']
+        self.departments = self.conf['department']
+        #print self.departments
+        #self.courses = self.conf['department']['courses']
+        self.len_departments = len(self.departments)
 
     def header(self):
         # Required header that tells the browser how to render the HTML.
@@ -205,24 +196,29 @@ class WebView:
         print 'function choix(formulaire)'
         print '{var j; var i = formulaire.department.selectedIndex;'
         print 'if (i == 0)'
-        print   'for(j = 1; j < '+ self.len_departments + '; j++)'
+        print   'for(j = 1; j < '+ str(self.len_departments) + '; j++)'
         print      'formulaire.course.options[j].text="";'
-        print      'formulaire.course.options[j].value="";'
+        #print      'formulaire.course.options[j].value="";'
         print 'else{'
         print '   switch (i){'
-        for k in range(1,self.len_departments)
+        for k in range(0,self.len_departments):
             department = self.departments[k]
-            courses = dict2tuple(department['courses'])
-            print '       case '+k+' : var text = new Array('+courses+'); '
+            courses = department['courses']
+            #print courses
+            courses_t = dict2tuple(courses)
+            #print courses
+            courses = '"'+'","'.join(courses_t)+'"'
+            print '       case '+str(k+1)+' : var text = new Array('+courses+'); '
             print '       break;'
         print '       }'
-        print '      for(j = 0; j<'+self.len_departments+'; j++)'
-        print '       formulaire.course.options[j+1].text=text[j];}'
-        print '       formulaire.course.options[j+1].value=text[j];}'
+        print '      for(j = 0; j<50; j++)'
+        print '       formulaire.course.options[j+1].text=text[j];'
+        #print '       formulaire.course.options[j+1].value=text[j];'
+        print '}'
         print '      formulaire.course.selectedIndex=0;}'
         print '</script>'
-            
         print "</HEAD>"
+        
         print "<BODY BGCOLOR =\"#FFFFFF\">"
         print "<div id=\"bg\">"
         print "<div id=\"header\">"
@@ -231,7 +227,7 @@ class WebView:
 
     def colophon(self):
         print "<div id=\"colophon\">"
-        print "TeleOddCast "+self.version+" &copy; <span>2007</span>&nbsp;<a href=\"http://parisson.com\">Parisson</a>. Tous droits r&eacute;serv&eacute;s."
+        print "TeleOddCast "+version+" &copy; <span>2007</span>&nbsp;<a href=\"http://parisson.com\">Parisson</a>. Tous droits r&eacute;serv&eacute;s."
         print "</div>"
             
     def footer(self):
@@ -244,19 +240,20 @@ class WebView:
         print "<div id=\"main\">"
         print "<h5><a href=\"http://augustins.pre-barreau.com:8000/crfpa.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
         print "\t<TABLE BORDER = 0>"
-        print "\t\t<FORM METHOD = post ACTION = \"teleoddcast.py\">"
+        print "\t\t<form method=post action=\"teleoddcast.py\" name=\"formulaire\">"
         print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
         
         print "\t\t<TR><TH align=\"left\">D&eacute;partement :</TH>"
         print "<TD><select name=\"department\" onChange=\"choix(this.form)\">"
-        print "<option selected>...........Choisissez un d&eacute;...........</option>"
+        print "<option selected>...........Choisissez un d&eacute;partement...........</option>"
         for department in self.departments:
-            print "<option value=\""+department+"\">"+department+"</option>"
+            print "<option value=\""+department['name']+"\">"+department['name']+"</option>"
         print "</select></TD></TR>"
         
         print "\t\t<TR><TH align=\"left\">Intitul&eacute; du cours :</TH>"
         print "<TD><select name=\"course\">"
-        for course in courses:
+        print "<option selected>...........Choisissez un intitul&eacute;...........</option>"
+        for i in range(1,50):
             print "<option></option>"
         print "</select></TD></TR>"
 
@@ -283,7 +280,6 @@ class WebView:
 
     def stop_form(self, course_dict):
         """Stop page"""
-        title = course_dict['title']
         department = course_dict['department']
         course = course_dict['course']
         session = course_dict['session']
@@ -296,7 +292,7 @@ class WebView:
         print "<hr>"
         print "\t<TABLE BORDER = 0>"
         print "\t\t<FORM METHOD = post ACTION = \"teleoddcast.py\">"
-        print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+title+"</TD></TR>"
+        print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
         print "\t\t<TR><TH align=\"left\">D&eacute;partement :</TH><TD>"+department+"</TD><TR>"
         print "\t\t<TR><TH align=\"left\">Intitul&eacute; du cours :</TH><TD>"+course+"</TD><TR>"
         print "\t\t<TR><TH align=\"left\">Session :</TH><TD>"+session+"</TD><TR>"
@@ -304,34 +300,33 @@ class WebView:
         print "\t\t<TR><TH align=\"left\">Commentaire :</TH><TD>"+comment+"</TD><TR>"
         print "\t</TABLE>"
         print "<hr>"
-        print "<h5><a href=\""+self.url+"/"+clean_string(title)+"_-_"+clean_string(department)+"_-_"+clean_string(course)+".ogg.m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
+        print "<h5><a href=\""+self.url+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(course)+".ogg.m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
         print "<div id=\"tools\">"
         print "\t<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
         print "\t<INPUT TYPE = submit VALUE = \"Stop\">"
         print "\t</FORM>"
         print "</div>"
-        colophon()
-        footer()
+        self.colophon()
+        self.footer()
 
 def main():
-	"""Main function"""
-
+    """Main function"""
     conf_file = 'teleoddcast.xml'
-	school_file = 'pre-barreau.xml'
-	odd_conf_file = 'teleoddcast.cfg'
+    school_file = 'pre-barreau.xml'
+    odd_conf_file = 'teleoddcast.cfg'
     lock_file = 'teleoddcast.lock'
-	uid = os.getuid()
+    uid = os.getuid()
     odd_pid = get_pid('^oddcastv3 -n [^LIVE]', uid)
 
     w = WebView(school_file)
-	form = cgi.FieldStorage()
+    form = cgi.FieldStorage()
     
-	if odd_pid == [] and form.has_key("action") and \
-	       form.has_key("department") and form.has_key("course") and form.has_key("professor") \
-	       and form.has_key("comment") and form["action"].value == "start":
+    if odd_pid == [] and form.has_key("action") and \
+           form.has_key("department") and form.has_key("course") and form.has_key("professor") \
+           and form.has_key("comment") and form["action"].value == "start":
         
-		course_dict = {'department': form["department"].value,
+        course_dict = {'department': form["department"].value,
                        'course': form["course"].value,
                        'session': form["session"].value,
                        'professor': form["professor"].value,
@@ -341,20 +336,20 @@ def main():
         t.start()
         w.stop_form(course_dict)
         
-	elif odd_pid != [] and os.path.exists(lock_file) and not form.has_key("action"):
+    elif odd_pid != [] and os.path.exists(lock_file) and not form.has_key("action"):
         t = TeleOddCast(conf_file, course_dict)
         title,department,course,session,professor,comment = t.get_info()
-		w.stop_form(course_dict)
+    	w.stop_form(course_dict)
 
-	elif oddcast_pid != [] and form.has_key("action") and form["action"].value == "stop":
+    elif odd_pid != [] and form.has_key("action") and form["action"].value == "stop":
         t = TeleOddCast(conf_file, course_dict)
-		if os.path.exists(lock_file):
+        if os.path.exists(lock_file):
             title,department,course,session,professor,comment = t.get_info()
         t.stop()
-		w.start_form()
+    	w.start_form()
 
-	elif oddcast_pid == []:
-		w.start_form()
+    elif odd_pid == []:
+    	w.start_form()
 
 # Call main function.
 if __name__ == '__main__':

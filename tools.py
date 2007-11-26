@@ -66,4 +66,13 @@ def get_params_from_lock(lock_file):
     lockfile.close()
     return params_ok
 
+def dict2tuple(dict):
+    len_dict = len(dict['course'])
+    if len_dict == 1:
+        return dict['course']['name']
+    else:
+        tup = []
+        for value in dict['course']:
+            tup.append(value['name'])
+        return tup
 

@@ -1,6 +1,5 @@
 <teleoddcast>
-    <station>
-        <infos>
+       <infos>
             <short_name>My_Station_5</short_name>
             <name>My best funky station</name>
             <description>My personal best funky playlist ever !</description>
@@ -25,5 +24,4 @@
             <voices>2</voices>
             <shuffle>1</shuffle>
         </media>
-    </station>
 </teleoddcast>
