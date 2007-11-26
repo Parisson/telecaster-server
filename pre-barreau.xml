@@ -1,0 +1,256 @@
+<teleoddcast>
+    <url>http://augustins.pre-barreau.com</url>
+    <departement>
+        <name>CRFPA</name>
+        <courses>
+            <course>
+                <name>Liberté publiques - Cours
+                </name>
+            </course>
+            <course>
+                <name>Note de synthèse - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Droit civil - Cours
+                </name>
+            </course>
+            <course>
+                <name>Droit civil - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Procédure administrative et contentieuse - Cours
+                </name>
+            </course>
+            <course>
+                <name>Procédure administrative et contentieuse - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Procédure civile - Cours
+                </name>
+            </course>
+            <course>
+                <name>Procédure civile - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Procédure pénale - Cours
+                </name>
+            </course>
+            <course>
+                <name>Procédure pénale - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Droit commercial des affaires - Cours
+                </name>
+            </course>
+            <course>
+                <name>Droit commercial des affaires - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Droit communautaire et européen - Cours
+                </name>
+            </course>
+            <course>
+                <name>Droit communautaire et européen - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Droit fiscal - Cours
+                </name>
+            </course>
+            <course>
+                <name>Droit fiscal - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Droit pénal - Cours
+                </name>
+            </course>
+            <course>
+                <name>Droit pénal - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Droit de la famille et des personnes - Cours
+                </name>
+            </course>
+            <course>
+                <name>Droit de la famille et des personnes - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Droit patrimonial - Cours
+                </name>
+            </course>
+            <course>
+                <name>Droit patrimonial - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Droit du travail - Cours
+                </name>
+            </course>
+            <course>
+                <name>Droit du travail - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Droit administratif - Cours
+                </name>
+            </course>
+            <course>
+                <name>Droit administratif - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Droit public des activités économiques - Cours
+                </name>
+            </course>
+            <course>
+                <name>Droit public des activités économiques - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Droit international privé - Cours
+                </name>
+            </course>
+            <course>
+                <name>Droit international privé - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Procédures collectives et sûretés - Cours
+                </name>
+            </course>
+            <course>
+                <name>Procédures collectives et sûretés - Corrections
+                </name>
+            </course>
+            <course>
+                <name>Procédure communautaire - Cours
+                </name>
+            </course>
+            <course>
+                <name>Procédures civile d'exécution - Cours
+                </name>
+            </course>
+            <course>
+                <name>Comptabilité privée - Cours
+                </name>
+            </course>
+            <course>
+                <name>Finances publiques - Cours
+                </name>
+            </course>
+            <course>
+                <name>REUNION
+                </name>
+            </course>
+            <course>
+                <name>TEST
+                </name>
+            </course>
+        </courses>
+    </departement>
+
+    <departement>
+        <name>AE</name>
+        <courses>
+            <course>
+                <name>
+                </name>
+            </course>
+            <course>
+                <name>Administratif_Cours
+                </name>
+            </course>
+            <course>
+                <name>Adm_Correction
+                </name>
+            </course>
+            <course>
+                <name>Civil_Correction
+                </name>
+            </course>
+            <course>
+                <name>Commercial_Correctio
+                </name>
+            </course>
+            <course>
+                <name>Commercial_Cours
+                </name>
+            </course>
+            <course>
+                <name>Deontologie_Cours
+                </name>
+            </course>
+            <course>
+                <name>Droit civil - Cours
+                </name>
+            </course>
+            <course>
+                <name>Methodo_Oraux
+                </name>
+            </course>
+            <course>
+                <name>Penal_Correction
+                </name>
+            </course>
+            <course>
+                <name>Penal_Cours
+                </name>
+            </course>
+            <course>
+                <name>Procedures_Cours
+                </name>
+            </course>
+            <course>
+                <name>Reunion_info
+                </name>
+            </course>
+            <course>
+                <name>Social_Corrections
+                </name>
+            </course>
+            <course>
+                <name>Social_Cours
+                </name>
+            </course>
+            <course>
+                <name>REUNION
+                </name>
+            </course>
+            <course>
+                <name>TEST
+                </name>
+            </course>
+        </courses>
+    </departement>
+
+    <departement>
+        <name>ENM</name>
+        <courses>
+            <course>
+                <name>TEST
+                </name>
+            </course>
+        </courses>
+    </departement>
+                
+
+    <departement>
+        <name>FJP</name>
+        <courses>
+            <course>
+                <name>TEST
+                </name>
+            </course>
+        </courses>
+    </departement>
+
+</teleoddcast>

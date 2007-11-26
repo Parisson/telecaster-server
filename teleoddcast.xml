@@ -1,0 +1,29 @@
+<teleoddcast>
+    <station>
+        <infos>
+            <short_name>My_Station_5</short_name>
+            <name>My best funky station</name>
+            <description>My personal best funky playlist ever !</description>
+            <url>http://mydomain.com</url>
+            <genre>Other</genre>
+            <channels>1</channels>
+        </infos>
+        <server>
+            <host>localhost</host>
+            <port>8000</port>
+            <sourcepassword>source2parisson</sourcepassword>
+            <public>1</public>
+            <root_dir>/var/www/cgi-bin/</root_dir>
+            <odd_conf_file>teleoddcast.cfg</odd_conf_file>
+        </server>
+        <media>
+            <dir>/tmp/media</dir>
+            <format>ogg</format>
+            <bitrate>64</bitrate>
+            <ogg_quality>2</ogg_quality>
+            <samplerate>44100</samplerate>
+            <voices>2</voices>
+            <shuffle>1</shuffle>
+        </media>
+    </station>
+</teleoddcast>
