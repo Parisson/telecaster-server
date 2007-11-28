@@ -1,0 +1,49 @@
+<teleoddcast>
+    <url>http://localhost</url>
+    <title>School Example</title>
+    <port>8000</port>
+    <department>
+        <name>Audio</name>
+        <courses>
+            <course>
+                <name>Course 1</name>
+            </course>
+            <course>
+                <name>Course 2</name>
+            </course>
+        </courses>
+    </department>
+    <department>
+        <name>Computer</name>
+        <courses>
+            <course>
+                <name>Course 1</name>
+            </course>
+            <course>
+                <name>Course 2</name>
+            </course>
+        </courses>
+    </department>
+    <department>
+        <name>Physics</name>
+        <courses>
+            <course>
+                <name>Course 1</name>
+            </course>
+            <course>
+                <name>Course 2</name>
+            </course>
+        </courses>
+    </department>
+    <department>
+        <name>Sociology</name>
+        <courses>
+            <course>
+                <name>Course 1</name>
+            </course>
+            <course>
+                <name>Course 1</name>
+            </course>
+        </courses>
+    </department>
+</teleoddcast>

@@ -12,7 +12,7 @@
             <port>8000</port>
             <sourcepassword>source2parisson</sourcepassword>
             <public>1</public>
-            <root_dir>/var/www/cgi-bin/teleoddcast/</root_dir>
+            <root_dir>/var/www/teleoddcast/</root_dir>
             <odd_conf_file>etc/teleoddcast.cfg</odd_conf_file>
             <lock_file>lock/teleoddcast.lock</lock_file>
         </server>
