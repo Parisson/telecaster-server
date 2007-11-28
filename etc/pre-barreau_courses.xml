@@ -1,7 +1,8 @@
 <teleoddcast>
     <url>http://augustins.pre-barreau.com</url>
-    <title>Augustins - Pre-Barreau</title>
+    <title>Augustins - Pré-Barreau</title>
     <port>8000</port>
+    
     <department>
         <name>CRFPA</name>
         <courses>
@@ -202,3 +203,4 @@
     </department>
 
 </teleoddcast>
+:q!

@@ -131,11 +131,12 @@ class Station(Course):
         os.system(command)
 
     def stop_oddcast(self):
-        os.system('kill -9 ' + self.odd_pid[0])
+        if self.odd_pid[0]:
+            os.system('kill -9 ' + self.odd_pid[0])
         
     def stop_rip(self):
-        #print self.rip_pid[0]
-        os.system('kill -9 ' + self.rip_pid[0])
+        if self.rip_pid[0]:
+            os.system('kill -9 ' + self.rip_pid[0])
         time.sleep(1)
         date = datetime.datetime.now().strftime("%Y")
         if os.path.exists(self.file_dir) and os.path.exists(self.file_dir + os.sep + 'incomplete'):
@@ -301,7 +302,9 @@ class WebView:
         print "\t\t<TR><TH align=\"left\">Commentaire :</TH><TD>"+comment+"</TD><TR>"
         print "\t</TABLE>"
         print "<hr>"
-        print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(course)+".ogg.m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
+        print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title) + \
+              "_-_"+clean_string(department)+"_-_"+clean_string(course) + \
+              ".ogg.m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
         print "<div id=\"tools\">"
         print "\t<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
@@ -314,6 +317,8 @@ class WebView:
 
 
 class TeleOddCast:
+    """Manage the calls of Station and Webview to get the network and
+    disk streams"""
 
     def __init__(self, conf_file, school_file):
         """Main function"""
@@ -366,7 +371,7 @@ class TeleOddCast:
 
 # Call main function.
 conf_file = 'etc/teleoddcast.xml'
-school_file = 'etc/localhost.xml'
+school_file = 'etc/default_courses.xml'
 
 if __name__ == '__main__':
     t = TeleOddCast(conf_file, school_file)
