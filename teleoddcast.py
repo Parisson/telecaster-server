@@ -188,7 +188,7 @@ class WebView:
         print "<HTML>"
         print "<HEAD>"
         print "\t<TITLE>"+self.title+"</TITLE>"
-        print "<link href=\"teleoddcast.css\" rel=\"stylesheet\" type=\"text/css\">"
+        print "<link href=\"css/teleoddcast.css\" rel=\"stylesheet\" type=\"text/css\">"
         print '<script language="Javascript" type="text/javascript" >'
         print 'function choix(formulaire)'
         print '{var j; var i = formulaire.department.selectedIndex;'
@@ -361,8 +361,8 @@ class TeleOddCast:
 
 
 # Call main function.
-conf_file = 'teleoddcast.xml'
-school_file = 'pre-barreau.xml'
+conf_file = 'etc/teleoddcast.xml'
+school_file = 'etc/pre-barreau.xml'
 
 if __name__ == '__main__':
     t = TeleOddCast(conf_file, school_file)

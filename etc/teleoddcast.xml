@@ -1,8 +1,8 @@
 <teleoddcast>
        <infos>
-            <short_name>My_Station_5</short_name>
-            <name>My best funky station</name>
-            <description>My personal best funky playlist ever !</description>
+            <short_name>My_Station</short_name>
+            <name>My station</name>
+            <description>A station where you can listen to me</description>
             <url>http://mydomain.com</url>
             <genre>Other</genre>
             <channels>1</channels>
@@ -13,8 +13,8 @@
             <sourcepassword>source2parisson</sourcepassword>
             <public>1</public>
             <root_dir>/var/www/cgi-bin/teleoddcast/</root_dir>
-            <odd_conf_file>teleoddcast.cfg</odd_conf_file>
-            <lock_file>teleoddcast.lock</lock_file>
+            <odd_conf_file>etc/teleoddcast.cfg</odd_conf_file>
+            <lock_file>lock/teleoddcast.lock</lock_file>
         </server>
         <media>
             <dir>/tmp/media</dir>
