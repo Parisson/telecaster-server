@@ -71,6 +71,8 @@ class Station(Course):
                                  clean_string(self.course)+'.ogg'
         self.lock_file = self.root_dir + os.sep + self.conf['server']['lock_file']
         self.filename = self.ServerDescription + '.ogg'
+        self.output_dir = self.media_dir + os.sep + self.department + os.sep
+        self.file_dir = self.output_dir + self.ServerName
         self.uid = os.getuid()
         self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
         self.rip_pid = get_pid('streamripper ' + self.url + self.mount_point, self.uid)
@@ -116,32 +118,28 @@ class Station(Course):
         lock.write(lock_text)
         lock.close()
 
-
     def del_lock(self):
         os.remove(self.lock_file)
 
     def start_rip(self):
-        output_dir = self.media_dir + os.sep + self.department + os.sep
-        #print mount_point
-        if not os.path.exists(output_dir):
-            os.mkdir(output_dir)
+        if not os.path.exists(self.output_dir):
+            os.makedirs(self.output_dir)
         command = 'streamripper ' + self.url + self.mount_point + \
-                  ' -d '+output_dir+' -D "%S" -s -t --quiet > /dev/null &'
+                  ' -d '+self.output_dir+' -D "%S" -s -t --quiet > /dev/null &'
         os.system(command)
 
     def stop_oddcast(self):
         os.system('kill -9 ' + self.odd_pid[0])
         
     def stop_rip(self):
-        print self.rip_pid[0]
+        #print self.rip_pid[0]
         os.system('kill -9 ' + self.rip_pid[0])
         time.sleep(1)
         date = datetime.datetime.now().strftime("%Y")
-        dirname = self.media_dir + os.sep + self.department + os.sep + self.ServerName
-        if os.path.exists(dirname) and os.path.exists(dirname+os.sep+'incomplete'):
-            shutil.move(dirname+os.sep+'incomplete'+os.sep+' - .ogg',dirname+os.sep)
-            shutil.rmtree(dirname+os.sep+'incomplete'+os.sep)
-            os.rename(dirname+os.sep+' - .ogg',dirname+os.sep+self.filename)
+        if os.path.exists(self.file_dir) and os.path.exists(self.file_dir + os.sep + 'incomplete'):
+            shutil.move(self.file_dir+os.sep+'incomplete'+os.sep+' - .ogg', self.file_dir+os.sep)
+            shutil.rmtree(self.file_dir+os.sep+'incomplete'+os.sep)
+            os.rename(self.file_dir+os.sep+' - .ogg', self.file_dir+os.sep+self.filename)
 
     def write_tags(self):
         date = datetime.datetime.now().strftime("%Y")
@@ -166,7 +164,7 @@ class Station(Course):
         self.start_rip()
 
     def stop(self):
-        self.stop_rip
+        self.stop_rip()
         self.write_tags()
         self.stop_oddcast()
         self.del_lock()
