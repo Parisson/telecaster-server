@@ -184,6 +184,7 @@ class WebView:
         #print self.departments
         #self.courses = self.conf['department']['courses']
         self.len_departments = len(self.departments)
+        self.course_nb_max = 40 
 
     def header(self):
         # Required header that tells the browser how to render the HTML.
@@ -211,7 +212,7 @@ class WebView:
             print '       case '+str(k+1)+' : var text = new Array('+courses+'); '
             print '       break;'
         print '       }'
-        print '      for(j = 0; j<50; j++)'
+        print '      for(j = 0; j<'+str(self.course_nb_max)+'; j++)'
         print '       formulaire.course.options[j+1].text=text[j];'
         #print '       formulaire.course.options[j+1].value=text[j];'
         print '}'
@@ -253,7 +254,7 @@ class WebView:
         print "\t\t<TR><TH align=\"left\">Intitul&eacute; du cours :</TH>"
         print "<TD><select name=\"course\">"
         print "<option selected>...........Choisissez un intitul&eacute;...........</option>"
-        for i in range(1,50):
+        for i in range(1,self.course_nb_max):
             print "<option></option>"
         print "</select></TD></TR>"
 
