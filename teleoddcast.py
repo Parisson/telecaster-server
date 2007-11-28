@@ -47,7 +47,7 @@ class Course:
         return self.title, self.department, self.course, self.session, self.professor, self.comment
 
 
-class TeleOddCast(Course):
+class Station(Course):
     """Control the Oddcastv3-jack thread which send audio data to the icecast server
     and the Streamripper thread which write audio on the hard disk"""
     
@@ -309,55 +309,64 @@ class WebView:
         self.colophon()
         self.footer()
 
-def main():
-    """Main function"""
-    conf_file = 'teleoddcast.xml'
-    school_file = 'pre-barreau.xml'
- 
-    conf_t = xml2dict(conf_file)
-    conf = conf_t['teleoddcast']
-    title = conf['infos']['name']
-    root_dir = conf['server']['root_dir']
-    lock_file = root_dir + os.sep + conf['server']['lock_file']
-    odd_conf_file = conf['server']['lock_file']
-    title = conf['infos']['name']
 
-    uid = os.getuid()
-    odd_pid = get_pid('^oddcastv3 -n [^LIVE]', uid)
 
-    w = WebView(school_file)
-    form = cgi.FieldStorage()
-    
-    if odd_pid == [] and form.has_key("action") and \
-           form.has_key("department") and form.has_key("course") and form.has_key("professor") \
-           and form.has_key("comment") and form["action"].value == "start":
+class TeleOddCast:
+
+    def __init__(self, conf_file, school_file):
+        """Main function"""
+        self.conf_file = conf_file
+        self.school_file = school_file
+        conf_t = xml2dict(self.conf_file)
+        self.conf = conf_t['teleoddcast']
+        self.title = self.conf['infos']['name']
+        self.root_dir = self.conf['server']['root_dir']
+        self.lock_file = self.root_dir + os.sep + self.conf['server']['lock_file']
+        self.odd_conf_file = self.conf['server']['lock_file']
+        self.title = self.conf['infos']['name']
+        self.uid = os.getuid()
+        self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
+
+    def main(self):
+        w = WebView(self.school_file)
+        form = cgi.FieldStorage()
         
-        course_dict = {'title': title,
-                       'department': form["department"].value,
-                       'course': form["course"].value,
-                       'session': form["session"].value,
-                       'professor': form["professor"].value,
-                       'comment': form["comment"].value}
+        if self.odd_pid == [] and form.has_key("action") and \
+            form.has_key("department") and form.has_key("course") and \
+            form.has_key("professor") and form.has_key("comment") and \
+            form["action"].value == "start":
+            
+            self.course_dict = {'title': self.title,
+                        'department': form["department"].value,
+                        'course': form["course"].value,
+                        'session': form["session"].value,
+                        'professor': form["professor"].value,
+                        'comment': form["comment"].value}
 
-        t = TeleOddCast(conf_file, course_dict, lock_file)
-        t.start()
-        w.stop_form(course_dict)
-        
-    elif odd_pid != [] and os.path.exists(lock_file) and not form.has_key("action"):
-        course_dict = get_course_from_lock(lock_file)
-    	w.stop_form(course_dict)
+            s = Station(self.conf_file, self.course_dict, self.lock_file)
+            s.start()
+            w.stop_form(self.course_dict)
+            
+        elif self.odd_pid != [] and os.path.exists(self.lock_file) and not form.has_key("action"):
+            self.course_dict = get_course_from_lock(self.lock_file)
+            w.stop_form(self.course_dict)
 
-    elif odd_pid != [] and form.has_key("action") and form["action"].value == "stop":
-        if os.path.exists(lock_file):
-            course_dict = get_course_from_lock(lock_file)
-        t = TeleOddCast(conf_file, course_dict, lock_file)
-        t.stop()
-    	w.start_form()
+        elif self.odd_pid != [] and form.has_key("action") and form["action"].value == "stop":
+            if os.path.exists(self.lock_file):
+                self.course_dict = get_course_from_lock(self.lock_file)
+            s = Station(self.conf_file, self.course_dict, self.lock_file)
+            s.stop()
+            w.start_form()
 
-    elif odd_pid == []:
-    	w.start_form()
+        elif self.odd_pid == []:
+            w.start_form()
+
 
 # Call main function.
+conf_file = 'teleoddcast.xml'
+school_file = 'pre-barreau.xml'
+
 if __name__ == '__main__':
-    main()
+    t = TeleOddCast(conf_file, school_file)
+    t.main()
 
