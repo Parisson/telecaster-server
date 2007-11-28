@@ -137,9 +137,7 @@ class TeleOddCast(Course):
         os.system('kill -9 ' + self.rip_pid[0])
         time.sleep(1)
         date = datetime.datetime.now().strftime("%Y")
-        dirname = self.media_dir + os.sep + self.department + os.sep + \
-                  clean_string('_-_'.join(self.server_name))
-                  
+        dirname = self.media_dir + os.sep + self.department + os.sep + self.ServerName
         if os.path.exists(dirname) and os.path.exists(dirname+os.sep+'incomplete'):
             shutil.move(dirname+os.sep+'incomplete'+os.sep+' - .ogg',dirname+os.sep)
             shutil.rmtree(dirname+os.sep+'incomplete'+os.sep)
