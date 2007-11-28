@@ -28,6 +28,8 @@ import cgi
 import shutil
 import datetime
 import time
+import codecs
+import string
 from tools import *
 from mutagen.oggvorbis import OggVorbis
 
@@ -176,6 +178,7 @@ class WebView:
         self.conf = xml2dict(school_file)
         self.conf = self.conf['teleoddcast']
         self.url = self.conf['url']
+        self.port = self.conf['port']
         self.title = self.conf['title']
         self.departments = self.conf['department']
         #print self.departments
@@ -198,7 +201,7 @@ class WebView:
         #print      'formulaire.course.options[j].value="";'
         print 'else{'
         print '   switch (i){'
-        for k in range(0,self.len_departments):
+        for k in range(0, self.len_departments):
             department = self.departments[k]
             courses = department['courses']
             #print courses
@@ -235,7 +238,7 @@ class WebView:
     def start_form(self):
         self.header()
         print "<div id=\"main\">"
-        print "<h5><a href=\"http://augustins.pre-barreau.com:8000/crfpa.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
+        print "<h5><a href=\""+self.url+":"+self.port+"/crfpa.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
         print "\t<TABLE BORDER = 0>"
         print "\t\t<form method=post action=\"teleoddcast.py\" name=\"formulaire\">"
         print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
@@ -297,7 +300,7 @@ class WebView:
         print "\t\t<TR><TH align=\"left\">Commentaire :</TH><TD>"+comment+"</TD><TR>"
         print "\t</TABLE>"
         print "<hr>"
-        print "<h5><a href=\""+self.url+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(course)+".ogg.m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
+        print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(course)+".ogg.m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
         print "<div id=\"tools\">"
         print "\t<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
@@ -362,7 +365,7 @@ class TeleOddCast:
 
 # Call main function.
 conf_file = 'etc/teleoddcast.xml'
-school_file = 'etc/pre-barreau.xml'
+school_file = 'etc/localhost.xml'
 
 if __name__ == '__main__':
     t = TeleOddCast(conf_file, school_file)

@@ -24,6 +24,7 @@ import os
 import cgi
 import shutil
 import datetime
+import string
 import time
 from xmltodict import *
 from mutagen.oggvorbis import OggVorbis
@@ -74,6 +75,16 @@ def dict2tuple(dict):
         tup = []
         for value in dict['course']:
             tup.append(value['name'])
+        return tup
+
+def dict2tuple_iso(dict):
+    len_dict = len(dict['course'])
+    if len_dict == 1:
+        return unicode(dict['course']['name'],'utf8').encode('iso-8859-1')
+    else:
+        tup = []
+        for value in dict['course']:
+            tup.append(unicode(value['name'],'utf8').encode('iso-8859-1'))
         return tup
 
 def get_course_from_lock(lock_file):
