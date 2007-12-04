@@ -20,7 +20,7 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 """
 
-version = '0.3'
+version = '0.3.1'
 
 
 import os
@@ -30,6 +30,7 @@ import datetime
 import time
 import codecs
 import string
+import jack
 from tools import *
 from mutagen.oggvorbis import OggVorbis
 
@@ -113,6 +114,55 @@ class Station(Course):
         self.set_lock()
         time.sleep(1)
 
+    def star_mp3cast(self):
+        
+        item_id = item_id
+        source = source
+        metadata = metadata
+        args = get_args(options)
+        ext = get_file_extension()
+        args = ' '.join(args)
+        command = 'sox "%s" -q -w -r 44100 -t wav -c2 - | lame %s -' \
+                       % (source, args)
+        
+        # Processing (streaming + cache writing)
+        e = ExporterCore()
+        stream = e.core_process(self.command,self.buffer_size,self.dest)
+
+        for chunk in stream:
+            yield chunk
+    
+
+    def core_process(self, command, buffer_size, dest):
+        """Encode and stream audio data through a generator"""
+        
+        __chunk = 0
+        file_out = open(dest,'w')
+
+        try:
+            proc = subprocess.Popen(command,
+                    shell = True,
+                    bufsize = buffer_size,
+                    stdin = subprocess.PIPE,
+                    stdout = subprocess.PIPE,
+                    close_fds = True)
+        except:
+            raise ExportProcessError('Command failure:', command, proc)
+            
+
+        # Core processing
+        while True:
+            __chunk = proc.stdout.read(buffer_size)
+            status = proc.poll()
+            if status != None and status != 0:
+                raise ExportProcessError('Command failure:', command, proc)
+            if len(__chunk) == 0:
+                break
+            yield __chunk
+            file_out.write(__chunk)
+
+        file_out.close()
+        
     def set_lock(self):
         lock = open(self.lock_file,'w')
         lock_text = clean_string('_*_'.join(self.description))
@@ -131,11 +181,11 @@ class Station(Course):
         os.system(command)
 
     def stop_oddcast(self):
-        if self.odd_pid[0]:
+        if len(self.odd_pid) != 0:
             os.system('kill -9 ' + self.odd_pid[0])
         
     def stop_rip(self):
-        if self.rip_pid[0]:
+        if len(self.rip_pid) != 0:
             os.system('kill -9 ' + self.rip_pid[0])
         time.sleep(1)
         date = datetime.datetime.now().strftime("%Y")
@@ -240,7 +290,7 @@ class WebView:
     def start_form(self):
         self.header()
         print "<div id=\"main\">"
-        print "<h5><a href=\""+self.url+":"+self.port+"/crfpa.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
+        print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
         print "\t<TABLE BORDER = 0>"
         print "\t\t<form method=post action=\"teleoddcast.py\" name=\"formulaire\">"
         print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
