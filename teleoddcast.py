@@ -30,7 +30,6 @@ import datetime
 import time
 import codecs
 import string
-import jack
 from tools import *
 from mutagen.oggvorbis import OggVorbis
 
@@ -56,6 +55,7 @@ class Station(Course):
     
     def __init__(self, conf_file, course_dict, lock_file):
         Course.__init__(self, course_dict)
+        self.date = datetime.datetime.now().strftime("%Y")
         self.conf = xml2dict(conf_file)
         self.conf = self.conf['teleoddcast']
         self.root_dir = self.conf['server']['root_dir']
@@ -66,7 +66,7 @@ class Station(Course):
         self.url = 'http://'+self.host+':'+self.port
         self.odd_conf_file = self.conf['server']['odd_conf_file']
         self.description = [self.title, self.department, self.course, self.session, self.professor, self.comment]
-        self.server_name = [self.title, self.department, self.course, self.session]
+        self.server_name = [self.title, self.department, self.course]
         self.ServerDescription = clean_string('_-_'.join(self.description))
         self.ServerName = clean_string('_-_'.join(self.server_name))
         self.mount_point = '/' + clean_string(self.title) + '_-_' + \
@@ -74,12 +74,15 @@ class Station(Course):
                                  clean_string(self.course)+'.ogg'
         self.lock_file = self.root_dir + os.sep + self.conf['server']['lock_file']
         self.filename = self.ServerDescription + '.ogg'
-        self.output_dir = self.media_dir + os.sep + self.department + os.sep
-        self.file_dir = self.output_dir + self.ServerName
+        self.output_dir = self.media_dir + os.sep + self.department + os.sep + self.date
+        self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
         self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
         self.rip_pid = get_pid('streamripper ' + self.url + self.mount_point, self.uid)
-
+        self.bitrate = '64'
+        self.new_title = clean_string('_-_'.join(self.server_name)+'_-_'+self.professor+'_-_'+self.comment)
+        self.genre = 'Vocal'
+        self.encoder = 'TeleOddCast by Parisson'
 
     def set_oddcast_conf(self):
         oddconf = open(self.odd_conf_file,'r')
@@ -108,61 +111,12 @@ class Station(Course):
         oddconf.close()
 
     def start_oddcast(self):
-        command = 'oddcastv3 -n "'+clean_string(self.course)+'" -c '+self.odd_conf_file+ \
+        command = 'oddcastv3 -n "'+clean_string(self.course)[0:16]+'" -c '+self.odd_conf_file+ \
                   ' alsa_pcm:capture_1 alsa_pcm:capture_2 > /dev/null &'
         os.system(command)
         self.set_lock()
         time.sleep(1)
 
-    def star_mp3cast(self):
-        
-        item_id = item_id
-        source = source
-        metadata = metadata
-        args = get_args(options)
-        ext = get_file_extension()
-        args = ' '.join(args)
-        command = 'sox "%s" -q -w -r 44100 -t wav -c2 - | lame %s -' \
-                       % (source, args)
-        
-        # Processing (streaming + cache writing)
-        e = ExporterCore()
-        stream = e.core_process(self.command,self.buffer_size,self.dest)
-
-        for chunk in stream:
-            yield chunk
-    
-
-    def core_process(self, command, buffer_size, dest):
-        """Encode and stream audio data through a generator"""
-        
-        __chunk = 0
-        file_out = open(dest,'w')
-
-        try:
-            proc = subprocess.Popen(command,
-                    shell = True,
-                    bufsize = buffer_size,
-                    stdin = subprocess.PIPE,
-                    stdout = subprocess.PIPE,
-                    close_fds = True)
-        except:
-            raise ExportProcessError('Command failure:', command, proc)
-            
-
-        # Core processing
-        while True:
-            __chunk = proc.stdout.read(buffer_size)
-            status = proc.poll()
-            if status != None and status != 0:
-                raise ExportProcessError('Command failure:', command, proc)
-            if len(__chunk) == 0:
-                break
-            yield __chunk
-            file_out.write(__chunk)
-
-        file_out.close()
-        
     def set_lock(self):
         lock = open(self.lock_file,'w')
         lock_text = clean_string('_*_'.join(self.description))
@@ -194,19 +148,22 @@ class Station(Course):
             shutil.rmtree(self.file_dir+os.sep+'incomplete'+os.sep)
             os.rename(self.file_dir+os.sep+' - .ogg', self.file_dir+os.sep+self.filename)
 
+    def mp3_convert(self):
+        os.system('oggdec -o - '+ self.file_dir+os.sep+self.filename+' | lame -S -m m -h -b '+ self.bitrate + \
+	        ' --add-id3v2 --tt "'+ self.new_title + '" --ta "'+self.professor+'" --tl "'+self.title+'" --ty "'+self.date+ \
+		'" --tg "'+self.genre+'" - ' + self.file_dir+os.sep+self.ServerDescription + '.mp3 &')
+    
     def write_tags(self):
-        date = datetime.datetime.now().strftime("%Y")
-        new_title = clean_string('_-_'.join(self.server_name))
-        dirname = self.media_dir + os.sep + self.department + os.sep + new_title
-        if os.path.exists(dirname+os.sep+self.filename):
-            audio = OggVorbis(dirname+os.sep+self.filename)
-            audio['TITLE'] = new_title
+       file = self.file_dir + os.sep + self.filename
+       if os.path.exists(file):
+            audio = OggVorbis(file)
+            audio['TITLE'] = self.new_title
             audio['ARTIST'] = self.professor
             audio['ALBUM'] = self.title
-            audio['DATE'] = date
-            audio['GENRE'] = 'Vocal'
+            audio['DATE'] = self.date
+            audio['GENRE'] = self.genre
             audio['SOURCE'] = self.title
-            audio['ENCODER'] = 'TeleOddCast by Parisson'
+            audio['ENCODER'] = self.encoder
             audio['COMMENT'] = self.comment
             audio.save()
 
@@ -221,8 +178,53 @@ class Station(Course):
         self.write_tags()
         self.stop_oddcast()
         self.del_lock()
-        
+        self.mp3_convert()
 
+    def start_mp3cast(self):
+        
+        item_id = item_id
+        source = source
+        metadata = metadata
+        args = get_args(options)
+        ext = get_file_extension()
+        args = ' '.join(args)
+        command = 'sox "%s" -q -w -r 44100 -t wav -c2 - | lame %s -' \
+                       % (source, args)
+        
+        # Processing (streaming + cache writing)
+        e = ExporterCore()
+        stream = e.core_process(self.command,self.buffer_size,self.dest)
+
+        for chunk in stream:
+            yield chunk
+    
+    def core_process(self, command, buffer_size, dest):
+        """Encode and stream audio data through a generator"""
+        
+        __chunk = 0
+        file_out = open(dest,'w')
+        try:
+            proc = subprocess.Popen(command,
+                    shell = True,
+                    bufsize = buffer_size,
+                    stdin = subprocess.PIPE,
+                    stdout = subprocess.PIPE,
+                    close_fds = True)
+        except:
+            raise ExportProcessError('Command failure:', command, proc)
+            
+        # Core processing
+        while True:
+            __chunk = proc.stdout.read(buffer_size)
+            status = proc.poll()
+            if status != None and status != 0:
+                raise ExportProcessError('Command failure:', command, proc)
+            if len(__chunk) == 0:
+                break
+            yield __chunk
+            file_out.write(__chunk)
+        file_out.close()
+        
 class WebView:
 
     def __init__(self, school_file):
@@ -290,7 +292,7 @@ class WebView:
     def start_form(self):
         self.header()
         print "<div id=\"main\">"
-        print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
+        print "\t<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
         print "\t<TABLE BORDER = 0>"
         print "\t\t<form method=post action=\"teleoddcast.py\" name=\"formulaire\">"
         print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
@@ -319,7 +321,7 @@ class WebView:
         print "\t\t<TR><TH align=\"left\">Commentaire :</TH><TD><INPUT type = text name = \"comment\"></TD></TR>"
 
         print "\t</TABLE>"
-        print "\t<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
+        print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
         print "</div>"
         print "<div id=\"tools\">"
         print "\t<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
