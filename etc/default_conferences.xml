@@ -1,15 +1,15 @@
 <teleoddcast>
     <url>http://localhost</url>
-    <title>School Example</title>
+    <title>Example University</title>
     <port>8000</port>
     <department>
         <name>Audio</name>
         <conferences>
             <conference>
-                <name>Conference 1</name>
+                <name>Recording</name>
             </conference>
             <conference>
-                <name>Conference 2</name>
+                <name>Broadcasting</name>
             </conference>
         </conferences>
     </department>
@@ -17,10 +17,10 @@
         <name>Computer</name>
         <conferences>
             <conference>
-                <name>Conference 1</name>
+                <name>Languages</name>
             </conference>
             <conference>
-                <name>Conference 2</name>
+                <name>Open source systems</name>
             </conference>
         </conferences>
     </department>
@@ -28,21 +28,21 @@
         <name>Physics</name>
         <conferences>
             <conference>
-                <name>Conference 1</name>
+                <name>Mechanics</name>
             </conference>
             <conference>
-                <name>Conference 2</name>
+                <name>Acoustics</name>
             </conference>
         </conferences>
     </department>
     <department>
-        <name>Sociology</name>
+        <name>Ethnology</name>
         <conferences>
             <conference>
-                <name>Conference 1</name>
+                <name>Ethomusicology</name>
             </conference>
             <conference>
-                <name>Conference 1</name>
+                <name>Documentation</name>
             </conference>
         </conferences>
     </department>

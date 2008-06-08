@@ -188,11 +188,8 @@ class Station(Conference):
         args = ' '.join(args)
         command = 'sox "%s" -q -w -r 44100 -t wav -c2 - | lame %s -' \
                        % (source, args)
-        
         # Processing (streaming + cache writing)
-        e = ExporterCore()
-        stream = e.core_process(self.command,self.buffer_size,self.dest)
-
+        stream = self.core_process(self.command,self.buffer_size,self.dest)
         for chunk in stream:
             yield chunk
     
@@ -209,7 +206,6 @@ class Station(Conference):
                     close_fds = True)
         except:
             raise ExportProcessError('Command failure:', command, proc)
-            
         # Core processing
         while True:
             __chunk = proc.stdout.read(buffer_size)
@@ -221,7 +217,8 @@ class Station(Conference):
             yield __chunk
             file_out.write(__chunk)
         file_out.close()
-        
+
+
 class WebView:
     """Gives the web CGI frontend"""
     
@@ -239,10 +236,10 @@ class WebView:
 
     def header(self):
         # Required header that tells the browser how to render the HTML.
-        print "Content-Type: text/html\n\n"
+        print "Content-Type: text/html\n"
         print "<HTML>"
         print "<HEAD>"
-        print "\t<TITLE>"+self.title+"</TITLE>"
+        print "<TITLE>TeleOddCast - "+self.title+"</TITLE>"
         print "<link href=\"css/teleoddcast.css\" rel=\"stylesheet\" type=\"text/css\">"
         print '<script language="Javascript" type="text/javascript" >'
         print 'function choix(formulaire)'
@@ -250,7 +247,6 @@ class WebView:
         print 'if (i == 0)'
         print   'for(j = 1; j < '+ str(self.len_departments) + '; j++)'
         print      'formulaire.conference.options[j].text="";'
-        #print      'formulaire.conference.options[j].value="";'
         print 'else{'
         print '   switch (i){'
         for k in range(0, self.len_departments):
@@ -274,7 +270,7 @@ class WebView:
         print "<BODY BGCOLOR =\"#FFFFFF\">"
         print "<div id=\"bg\">"
         print "<div id=\"header\">"
-        print "\t<H3>&nbsp;TeleOddCast - L'enregistrement et la diffusion audio en direct par internet</H3>"
+        print "<H3>&nbsp;TeleOddCast - L'enregistrement et la diffusion audio en direct par internet</H3>"
         print "</div>"
 
     def colophon(self):
@@ -291,41 +287,35 @@ class WebView:
     def start_form(self):
         self.header()
         print "<div id=\"main\">"
-        print "\t<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
-        print "\t<TABLE BORDER = 0>"
-        print "\t\t<form method=post action=\"teleoddcast.py\" name=\"formulaire\">"
-        print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
-        
-        print "\t\t<TR><TH align=\"left\">D&eacute;partement :</TH>"
+        print "<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
+        print "<TABLE BORDER = 0>"
+        print "<form method=post action=\"teleoddcast.py\" name=\"formulaire\">"
+        print "<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
+        print "<TR><TH align=\"left\">D&eacute;partement :</TH>"
         print "<TD><select name=\"department\" onChange=\"choix(this.form)\">"
         print "<option selected>...........Choisissez un d&eacute;partement...........</option>"
         for department in self.departments:
             print "<option value=\""+department['name']+"\">"+department['name']+"</option>"
         print "</select></TD></TR>"
-        
-        print "\t\t<TR><TH align=\"left\">Intitul&eacute; du cours :</TH>"
+        print "<TR><TH align=\"left\">Conf&eacute;rence :</TH>"
         print "<TD><select name=\"conference\">"
-        print "<option selected>...........Choisissez un intitul&eacute;...........</option>"
+        print "<option selected>...........Choisissez une conf&eacute;rence...........</option>"
         for i in range(1,self.conference_nb_max):
             print "<option></option>"
         print "</select></TD></TR>"
-
-        print "\t\t<TR><TH align=\"left\">Session :</TH><TD><select name=\"session\">"
+        print "<TR><TH align=\"left\">Session :</TH><TD><select name=\"session\">"
         for i in range(1,21):
             print "<option value=\""+str(i)+"\">"+str(i)+"</option>"
         print "</select></TD></TR>"
-
-        print "\t\t<TR><TH align=\"left\">Professeur :</TH><TD><INPUT type = text name = \"professor\"></TD><TR>"
-
-        print "\t\t<TR><TH align=\"left\">Commentaire :</TH><TD><INPUT type = text name = \"comment\"></TD></TR>"
-
-        print "\t</TABLE>"
+        print "<TR><TH align=\"left\">Professeur :</TH><TD><INPUT type = text name = \"professor\"></TD><TR>"
+        print "<TR><TH align=\"left\">Commentaire :</TH><TD><INPUT type = text name = \"comment\"></TD></TR>"
+        print "</TABLE>"
         print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
         print "</div>"
         print "<div id=\"tools\">"
-        print "\t<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
-        print "\t<INPUT TYPE = submit VALUE = \"Start\">"
-        print "\t</FORM>"
+        print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
+        print "<INPUT TYPE = submit VALUE = \"Start\">"
+        print "</FORM>"
         print "</div>"
         self.colophon()
         self.footer()
@@ -341,26 +331,26 @@ class WebView:
 
         self.header()
         print "<div id=\"main\">"
-        print "\t<h4><span style=\"color: red\">Cette formation est en cours de diffusion :</span></h4>"
+        print "<h4><span style=\"color: red\">Cette formation est en cours de diffusion :</span></h4>"
         print "<hr>"
-        print "\t<TABLE BORDER = 0>"
-        print "\t\t<FORM METHOD = post ACTION = \"teleoddcast.py\">"
-        print "\t\t<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
-        print "\t\t<TR><TH align=\"left\">D&eacute;partement :</TH><TD>"+department+"</TD><TR>"
-        print "\t\t<TR><TH align=\"left\">Intitul&eacute; du cours :</TH><TD>"+conference+"</TD><TR>"
-        print "\t\t<TR><TH align=\"left\">Session :</TH><TD>"+session+"</TD><TR>"
-        print "\t\t<TR><TH align=\"left\">Professeur :</TH><TD>"+professor+"</TD><TR>"
-        print "\t\t<TR><TH align=\"left\">Commentaire :</TH><TD>"+comment+"</TD><TR>"
-        print "\t</TABLE>"
+        print "<TABLE BORDER = 0>"
+        print "<FORM METHOD = post ACTION = \"teleoddcast.py\">"
+        print "<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
+        print "<TR><TH align=\"left\">D&eacute;partement :</TH><TD>"+department+"</TD><TR>"
+        print "<TR><TH align=\"left\">Conference :</TH><TD>"+conference+"</TD><TR>"
+        print "<TR><TH align=\"left\">Session :</TH><TD>"+session+"</TD><TR>"
+        print "<TR><TH align=\"left\">Professeur :</TH><TD>"+professor+"</TD><TR>"
+        print "<TR><TH align=\"left\">Commentaire :</TH><TD>"+comment+"</TD><TR>"
+        print "</TABLE>"
         print "<hr>"
         print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title) + \
               "_-_"+clean_string(department)+"_-_"+clean_string(conference) + \
               ".ogg.m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
         print "<div id=\"tools\">"
-        print "\t<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
-        print "\t<INPUT TYPE = submit VALUE = \"Stop\">"
-        print "\t</FORM>"
+        print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
+        print "<INPUT TYPE = submit VALUE = \"Stop\">"
+        print "</FORM>"
         print "</div>"
         self.colophon()
         self.footer()
