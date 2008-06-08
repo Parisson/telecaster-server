@@ -2,4 +2,5 @@ teleoddcast
 by yomguy
 
 # DEPENDS
-icecast2, jackd, oddcastv3-jack, streamrippper, pgrep
+icecast2, jackd, oddcastv3-jack, streamrippper, pgrep, vorbis-tools, lame
+

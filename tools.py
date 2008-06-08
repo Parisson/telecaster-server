@@ -68,35 +68,35 @@ def get_params_from_lock(lock_file):
     return params_ok
 
 def dict2tuple(dict):
-    len_dict = len(dict['course'])
+    len_dict = len(dict['conference'])
     if len_dict == 1:
-        return dict['course']['name']
+        return dict['conference']['name']
     else:
         tup = []
-        for value in dict['course']:
+        for value in dict['conference']:
             tup.append(value['name'])
         return tup
 
 def dict2tuple_iso(dict):
-    len_dict = len(dict['course'])
+    len_dict = len(dict['conference'])
     if len_dict == 1:
-        return unicode(dict['course']['name'],'utf8').encode('iso-8859-1')
+        return unicode(dict['conference']['name'],'utf8').encode('iso-8859-1')
     else:
         tup = []
-        for value in dict['course']:
+        for value in dict['conference']:
             tup.append(unicode(value['name'],'utf8').encode('iso-8859-1'))
         return tup
 
-def get_course_from_lock(lock_file):
+def get_conference_from_lock(lock_file):
     lockfile = open(lock_file,'r')
-    course = lockfile.readline()
-    course_l = course.split('_*_')
-    course_dict = {'title': course_l[0],
-                   'department': course_l[1],
-                   'course': course_l[2],
-                   'session': course_l[3],
-                   'professor': course_l[4],
-                   'comment': course_l[5]}
+    conference = lockfile.readline()
+    conference_l = conference.split('_*_')
+    conference_dict = {'title': conference_l[0],
+                   'department': conference_l[1],
+                   'conference': conference_l[2],
+                   'session': conference_l[3],
+                   'professor': conference_l[4],
+                   'comment': conference_l[5]}
     lockfile.close()
-    return course_dict
+    return conference_dict
 
