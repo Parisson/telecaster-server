@@ -77,7 +77,7 @@ class Station(Conference):
         self.output_dir = self.media_dir + os.sep + self.department + os.sep + self.date
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
-        self.odd_pid = get_pid('oddcastv3 -n', self.uid)
+        self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
         self.rip_pid = get_pid('streamripper ' + self.url + self.mount_point, self.uid)
         self.bitrate = '64'
         self.new_title = clean_string('_-_'.join(self.server_name)+'_-_'+self.professor+'_-_'+self.comment)
@@ -178,6 +178,9 @@ class Station(Conference):
         self.write_tags()
         self.stop_oddcast()
         self.del_lock()
+        self.encode_mp3()
+
+    def encode_mp3(self):
         self.mp3_convert()
 
     def start_mp3cast(self):        
@@ -316,12 +319,20 @@ class WebView:
         print "</div>"
         print "<div id=\"tools\">"
         print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
-        print "<INPUT TYPE = submit VALUE = \"Start\">"
+        print "<INPUT TYPE = submit VALUE = \"Enregistrer\">"
         print "</FORM>"
         print "</div>"
         self.colophon()
         self.footer()
 
+    def encode_form(self, message=''):
+        self.header()
+        print "<div id=\"main\">"
+        print "<h5><span style=\"color: red\">"+message+"</span></h5>"
+        print "<h5><span style=\"color: red\">ENCODAGE EN COURS !</span></h5>"
+        print "</div>"
+        self.colophon()
+        self.footer()
 
     def stop_form(self, conference_dict):
         """Stop page"""
@@ -351,7 +362,7 @@ class WebView:
         print "</div>"
         print "<div id=\"tools\">"
         print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
-        print "<INPUT TYPE = submit VALUE = \"Stop\">"
+        print "<INPUT TYPE = submit VALUE = \"STOP\">"
         print "</FORM>"
         print "</div>"
         self.colophon()
@@ -405,6 +416,8 @@ class TeleCaster:
                 self.conference_dict = get_conference_from_lock(self.lock_file)
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.stop()
+            #w.encode_form()
+            #s.encode_mp3()
             #w.start_form('Please wait : encoding file to MP3...')
             w.start_form()
 

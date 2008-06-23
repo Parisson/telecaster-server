@@ -1,125 +1,111 @@
-<teleoddcast>
-    <url>http://augustins.pre-barreau.com</url>
-    <title>Augustins - Pré-Barreau</title>
+<telecaster>
+    <url>http://localhost</url>
+    <title>PRE-BARREAU - CRPDA ETE 2008 - ICP</title>
     <port>8000</port>
-    
+
     <department>
         <name>CRFPA</name>
         <conferences>
-            <conference>
-                <name>Liberté publiques - Cours</name>
-            </conference>
-            <conference>
-                <name>Note de synthèse - Corrections</name>
-            </conference>
-            <conference>
-                <name>Droit civil - Cours</name>
-            </conference>
-            <conference>
-                <name>Droit civil - Corrections</name>
-            </conference>
-            <conference>
-                <name>Procédure administrative et contentieuse - Cours</name>
-            </conference>
-            <conference>
-                <name>Procédure administrative et contentieuse - Corrections</name>
-            </conference>
-            <conference>
-                <name>Procédure civile - Cours</name>
-            </conference>
-            <conference>
-                <name>Procédure civile - Corrections</name>
-            </conference>
-            <conference>
-                <name>Procédure pénale - Cours</name>
-            </conference>
-            <conference>
-                <name>Procédure pénale - Corrections</name>
-            </conference>
-            <conference>
-                <name>Droit commercial des affaires - Cours</name>
-            </conference>
-            <conference>
-                <name>Droit commercial des affaires - Corrections</name>
-            </conference>
-            <conference>
-                <name>Droit communautaire et européen - Cours</name>
-            </conference>
-            <conference>
-                <name>Droit communautaire et européen - Corrections</name>
-            </conference>
-            <conference>
-                <name>Droit fiscal - Cours</name>
-            </conference>
-            <conference>
-                <name>Droit fiscal - Corrections</name>
-            </conference>
-            <conference>
-                <name>Droit pénal - Cours</name>
-            </conference>
-            <conference>
-                <name>Droit pénal - Corrections</name>
-            </conference>
-            <conference>
-                <name>Droit de la famille et des personnes - Cours</name>
-            </conference>
-            <conference>
-                <name>Droit de la famille et des personnes - Corrections</name>
-            </conference>
-            <conference>
-                <name>Droit patrimonial - Cours</name>
-            </conference>
-            <conference>
-                <name>Droit patrimonial - Corrections</name>
-            </conference>
-            <conference>
-                <name>Droit du travail - Cours</name>
-            </conference>
-            <conference>
-                <name>Droit du travail - Corrections</name>
-            </conference>
-            <conference>
-                <name>Droit administratif - Cours</name>
-            </conference>
-            <conference>
-                <name>Droit administratif - Corrections</name>
-            </conference>
-            <conference>
-                <name>Droit public des activités économiques - Cours</name>
-            </conference>
-            <conference>
-                <name>Droit public des activités économiques - Corrections</name>
-            </conference>
-            <conference>
-                <name>Droit international privé - Cours</name>
-            </conference>
-            <conference>
-                <name>Droit international privé - Corrections</name>
-            </conference>
-            <conference>
-                <name>Procédures collectives et sûretés - Cours</name>
-            </conference>
-            <conference>
-                <name>Procédures collectives et sûretés - Corrections</name>
-            </conference>
-            <conference>
-                <name>Procédure communautaire - Cours</name>
-            </conference>
-            <conference>
-                <name>Procédures civile d'exécution - Cours</name>
-            </conference>
-            <conference>
-                <name>Comptabilité privée - Cours</name>
-            </conference>
-            <conference>
-                <name>Finances publiques - Cours</name>
-            </conference>
-            <conference>
-                <name>REUNION</name>
-            </conference>
-            <conference>
-                <name>TEST</name>
-            </conference>
+          <conference>
+            <name>Droit_administratif_Corrections</name>
+          </conference>
+          <conference>
+            <name>Droit_administratif_Cours</name>
+          </conference>
+          <conference>
+            <name>Droit_civil_Corrections</name>
+          </conference>
+          <conference>
+            <name>Droit_civil_Cours</name>
+          </conference>
+          <conference>
+            <name>Droit_commercial_des_affaires_Corrections</name>
+          </conference>
+          <conference>
+            <name>Droit_commercial_des_affaires_Cours</name>
+          </conference>
+          <conference>
+            <name>Droit_communautaire_et_europeen_Corrections</name>
+          </conference>
+          <conference>
+            <name>Droit_communautaire_et_europeen_Cours</name>
+          </conference>
+          <conference>
+            <name>Droit_de_la_famille_et_des_personnes_Corrections</name>
+          </conference>
+          <conference>
+            <name>Droit_de_la_famille_et_des_personnes_Cours</name>
+          </conference>
+          <conference>
+            <name>Droit_du_travail_Corrections</name>
+          </conference>
+          <conference>
+            <name>Droit_du_travail_Cours</name>
+          </conference>
+          <conference>
+            <name>Droit_fiscal_Corrections</name>
+          </conference>
+          <conference>
+            <name>Droit_fiscal_Cours</name>
+          </conference>
+          <conference>
+            <name>Droit_international_prive_Corrections</name>
+          </conference>
+          <conference>
+            <name>Droit_international_prive_Cours</name>
+          </conference>
+          <conference>
+            <name>Droit_patrimonial_Corrections</name>
+          </conference>
+          <conference>
+            <name>Droit_patrimonial_Cours</name>
+          </conference>
+          <conference>
+            <name>Droit_public_des_activites_economiques_Corrections</name>
+          </conference>
+          <conference>
+            <name>Droit_public_des_activites_economiques_Cours</name>
+          </conference>
+          <conference>
+            <name>Droit_penal_Corrections</name>
+          </conference>
+          <conference>
+            <name>Droit_penal_Cours</name>
+          </conference>
+          <conference>
+            <name>Libertes_publiques_Cours</name>
+          </conference>
+          <conference>
+            <name>Note_de_synthese_Corrections</name>
+          </conference>
+          <conference>
+            <name>Procedure_administrative_et_contentieuse_Corrections</name>
+          </conference>
+          <conference>
+            <name>Procedure_administrative_et_contentieuse_Cours</name>
+          </conference>
+          <conference>
+            <name>Procedure_civile_Corrections</name>
+          </conference>
+          <conference>
+            <name>Procedure_civile_Cours</name>
+          </conference>
+          <conference>
+            <name>Procedures_collectives_et_suretes_Corrections</name>
+          </conference>
+          <conference>
+            <name>Procedures_collectives_et_suretes_Cours</name>
+          </conference>
+          <conference>
+            <name>Procedure_penale_Corrections</name>
+          </conference>
+          <conference>
+            <name>Procedure_penale_Cours</name>
+          </conference>
+          <conference>
+            <name>TEST</name>
+          </conference>
+
         </conferences>
     </department>
 
@@ -202,4 +188,5 @@
         </conferences>
     </department>
 
-</teleoddcast>
+</telecaster>
+

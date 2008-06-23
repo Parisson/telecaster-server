@@ -52,7 +52,7 @@ def xml2dict(conf_file):
 
 def get_pid(proc,uid):
     """Get a process pid filtered by arguments and uid"""
-    (list1, list2) = os.popen4('pgrep -f -U '+str(uid)+' '+'"'+proc+'"')
+    (list1, list2) = os.popen4('pgrep -n -f -U '+str(uid)+' '+'"'+proc+'"')
     pids = list2.readlines()
     if pids != '':
         for pid in pids:
