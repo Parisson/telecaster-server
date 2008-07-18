@@ -174,7 +174,7 @@ class Station(Conference):
     def write_tags_mp3(self):
        file = self.file_dir + os.sep + self.filename
        if os.path.exists(file):
-            os.system('mp3info -t "a"'+file)
+            os.system('mp3info -t "a" '+file)
             audio = ID3(file)
             #tag = tags.__dict__['TITLE']
             audio.add(TIT2(encoding=3, text=self.new_title))
