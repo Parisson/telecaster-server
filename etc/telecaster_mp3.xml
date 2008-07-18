@@ -19,7 +19,7 @@
     </server>
     <media>
         <record>true</record>
-        <dir>/tmp/media</dir>
+        <dir>/home/prebarreau/media</dir>
         <format>mp3</format>
         <bitrate>64</bitrate>
         <ogg_quality>2</ogg_quality>
