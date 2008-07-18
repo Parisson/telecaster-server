@@ -1,6 +1,6 @@
 <telecaster>
     <url>http://localhost</url>
-    <title>Default School</title>
+    <title>Pre-Barreau - ICP</title>
     <port>8000</port>
     <format>mp3</format>
     
@@ -106,8 +106,8 @@
           <conference>
             <name>TEST</name>
           </conference>
-
         </conferences>
+        
     </department>
 
     <department>
@@ -189,5 +189,72 @@
         </conferences>
     </department>
 
+        <professor>
+            <name>MARINHO A.</name>
+        </professor>
+        <professor>
+            <name>GIUSTINIANI G.</name>
+        </professor>
+        <professor>
+            <name>BOFFA R.</name>
+        </professor>
+        <professor>
+            <name>MEUNIER J.</name>
+        </professor>
+        <professor>
+            <name>THERY C.</name>
+        </professor>
+        <professor>
+            <name>JLB</name>
+        </professor>
+        <professor>
+            <name>AZZI T.</name>
+        </professor>
+        <professor>
+            <name>ETIENNEY A.</name>
+        </professor>
+        <professor>
+            <name>MARKUS J.</name>
+        </professor>
+        <professor>
+            <name>ANDREU L.</name>
+        </professor>
+        <professor>
+            <name>ROUMIER W.</name>
+        </professor>
+        <professor>
+            <name>HAIK R.</name>
+        </professor>
+        <professor>
+            <name>POISSON S.</name>
+        </professor>
+        <professor>
+            <name>CARTIER-BRESSON A.</name>
+        </professor>
+        <professor>
+            <name>MBONGO P.</name>
+        </professor>
+        <professor>
+            <name>MATHONNET P.</name>
+        </professor>
+        <professor>
+            <name>FOULQUIER N.</name>
+        </professor>
+        <professor>
+            <name>RILOV. F</name>
+        </professor>
+        <professor>
+            <name>JEANSEN E.</name>
+        </professor>
+        <professor>
+            <name>LA J.</name>
+        </professor>
+        <professor>
+            <name>MECARELLI G.</name>
+        </professor>
+        <professor>
+            <name>COLLET M.</name>
+        </professor>
+      
 </telecaster>
 

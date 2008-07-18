@@ -262,10 +262,13 @@ class WebView:
         self.format = self.conf['format']
         self.title = self.conf['title']
         self.departments = self.conf['department']
+        self.professors = self.conf['professor']
         #print self.departments
         #self.conferences = self.conf['department']['conferences']
         self.len_departments = len(self.departments)
+        self.len_professors = len(self.professors)
         self.conference_nb_max = 40
+        self.professor_nb_max = 40
 
     def header(self):
         # Required header that tells the browser how to render the HTML.
@@ -341,7 +344,12 @@ class WebView:
         for i in range(1,21):
             print "<option value=\""+str(i)+"\">"+str(i)+"</option>"
         print "</select></TD></TR>"
-        print "<TR><TH align=\"left\">Professeur :</TH><TD><INPUT type = text name = \"professor\"></TD><TR>"
+        print "<TR><TH align=\"left\">Professeur :</TH>"
+        print "<TD><select name=\"professor\">"
+        print "<option selected>...........Choisissez un professeur...........</option>"
+        for professor in self.professors:
+            print "<option value=\""+professor['name']+"\">"+professor['name']+"</option>"
+        print "</select></TD></TR>"
         print "<TR><TH align=\"left\">Commentaire :</TH><TD><INPUT type = text name = \"comment\"></TD></TR>"
         print "</TABLE>"
         print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live."+self.format+".m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
