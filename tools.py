@@ -100,3 +100,5 @@ def get_conference_from_lock(lock_file):
     lockfile.close()
     return conference_dict
 
+def str_to_bool(string):
+    return string == 'true'

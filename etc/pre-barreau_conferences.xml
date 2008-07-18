@@ -1,8 +1,9 @@
 <telecaster>
     <url>http://localhost</url>
-    <title>PRE-BARREAU - CRPDA ETE 2008 - ICP</title>
+    <title>Default School</title>
     <port>8000</port>
-
+    <format>mp3</format>
+    
     <department>
         <name>CRFPA</name>
         <conferences>

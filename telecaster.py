@@ -20,7 +20,7 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 """
 
-version = '0.3.2'
+version = '0.3.3'
 
 import os
 import cgi
@@ -32,7 +32,7 @@ import string
 import signal
 from tools import *
 from mutagen.oggvorbis import OggVorbis
-
+from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TCO, COM
 
 class Conference:
     """A conference object including metadata"""
@@ -65,24 +65,28 @@ class Station(Conference):
         self.password = self.conf['server']['sourcepassword']
         self.url = 'http://'+self.host+':'+self.port
         self.odd_conf_file = self.conf['server']['odd_conf_file']
+        self.bitrate = '64'
+        self.format = self.conf['media']['format']
         self.description = [self.title, self.department, self.conference, self.session, self.professor, self.comment]
         self.server_name = [self.title, self.department, self.conference]
         self.ServerDescription = clean_string('_-_'.join(self.description))
         self.ServerName = clean_string('_-_'.join(self.server_name))
         self.mount_point = '/' + clean_string(self.title) + '_-_' + \
                                  clean_string(self.department) + '_-_' + \
-                                 clean_string(self.conference)+'.ogg'
+                                 clean_string(self.conference)+'.'+self.format
         self.lock_file = self.root_dir + os.sep + self.conf['server']['lock_file']
-        self.filename = self.ServerDescription + '.ogg'
+        self.filename = self.ServerDescription + '.' + self.format
         self.output_dir = self.media_dir + os.sep + self.department + os.sep + self.date
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
         self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
         self.rip_pid = get_pid('streamripper ' + self.url + self.mount_point, self.uid)
-        self.bitrate = '64'
         self.new_title = clean_string('_-_'.join(self.server_name)+'_-_'+self.professor+'_-_'+self.comment)
         self.genre = 'Vocal'
         self.encoder = 'TeleCaster by Parisson'
+        self.rsync_host = self.conf['server']['rsync_host']
+        self.record = str_to_bool(self.conf['media']['record'])
+        
 
     def set_oddcast_conf(self):
         oddconf = open(self.odd_conf_file,'r')
@@ -144,16 +148,16 @@ class Station(Conference):
         time.sleep(1)
         date = datetime.datetime.now().strftime("%Y")
         if os.path.exists(self.file_dir) and os.path.exists(self.file_dir + os.sep + 'incomplete'):
-            shutil.move(self.file_dir+os.sep+'incomplete'+os.sep+' - .ogg', self.file_dir+os.sep)
+            shutil.move(self.file_dir+os.sep+'incomplete'+os.sep+' - .'+self.format, self.file_dir+os.sep)
             shutil.rmtree(self.file_dir+os.sep+'incomplete'+os.sep)
-            os.rename(self.file_dir+os.sep+' - .ogg', self.file_dir+os.sep+self.filename)
+            os.rename(self.file_dir+os.sep+' - .'+self.format, self.file_dir+os.sep+self.filename)
 
     def mp3_convert(self):
         os.system('oggdec -o - '+ self.file_dir+os.sep+self.filename+' | lame -S -m m -h -b '+ self.bitrate + \
 	        ' --add-id3v2 --tt "'+ self.new_title + '" --ta "'+self.professor+'" --tl "'+self.title+'" --ty "'+self.date+ \
 		'" --tg "'+self.genre+'" - ' + self.file_dir+os.sep+self.ServerDescription + '.mp3 &')
     
-    def write_tags(self):
+    def write_tags_ogg(self):
        file = self.file_dir + os.sep + self.filename
        if os.path.exists(file):
             audio = OggVorbis(file)
@@ -166,6 +170,24 @@ class Station(Conference):
             audio['ENCODER'] = self.encoder
             audio['COMMENT'] = self.comment
             audio.save()
+    
+    def write_tags_mp3(self):
+       file = self.file_dir + os.sep + self.filename
+       if os.path.exists(file):
+            audio = ID3(file)
+            #tag = tags.__dict__['TITLE']
+            audio.add(TIT2(encoding=3, text=self.new_title))
+            #tag = tags.__dict__['ARTIST']
+            audio.add(TP1(encoding=3, text=self.professor))
+            #tag = tags.__dict__['ALBUM']
+            audio.add(TAL(encoding=3, text=self.title))
+            #tag = tags.__dict__['DATE']
+            audio.add(TDA(encoding=3, text=self.date))
+            #tag = tags.__dict__['GENRE']
+            audio.add(TCO(encoding=3, text=self.genre))
+            #tag = tags.__dict__['COMMENT']
+            audio.add(COM(encoding=3, text=self.comment))
+            audio.save()
 
     def start(self):
         self.set_lock()
@@ -175,13 +197,14 @@ class Station(Conference):
 
     def stop(self):
         self.stop_rip()
-        self.write_tags()
         self.stop_oddcast()
+        if self.format == 'ogg':
+            self.write_tags_ogg()
+        elif self.format == 'mp3':
+            self.write_tags_mp3()
         self.del_lock()
-        self.encode_mp3()
-
-    def encode_mp3(self):
-        self.mp3_convert()
+        #self.mp3_convert()
+        self.rsync_out()
 
     def start_mp3cast(self):        
         item_id = item_id
@@ -222,6 +245,11 @@ class Station(Conference):
             file_out.write(__chunk)
         file_out.close()
 
+    def rsync_out(self):
+        local_uname = os.uname()
+        hostname = local_uname[1]
+        os.system('rsync -a '+self.media_dir+os.sep+' '+self.rsync_host+':'+os.sep+hostname+os.sep)
+
 
 class WebView:
     """Gives the web CGI frontend"""
@@ -231,6 +259,7 @@ class WebView:
         self.conf = self.conf['telecaster']
         self.url = self.conf['url']
         self.port = self.conf['port']
+        self.format = self.conf['format']
         self.title = self.conf['title']
         self.departments = self.conf['department']
         #print self.departments
@@ -315,7 +344,7 @@ class WebView:
         print "<TR><TH align=\"left\">Professeur :</TH><TD><INPUT type = text name = \"professor\"></TD><TR>"
         print "<TR><TH align=\"left\">Commentaire :</TH><TD><INPUT type = text name = \"comment\"></TD></TR>"
         print "</TABLE>"
-        print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live.ogg.m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
+        print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live."+self.format+".m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
         print "</div>"
         print "<div id=\"tools\">"
         print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
@@ -358,7 +387,7 @@ class WebView:
         print "<hr>"
         print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title) + \
               "_-_"+clean_string(department)+"_-_"+clean_string(conference) + \
-              ".ogg.m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
+              "."+self.format+".m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
         print "<div id=\"tools\">"
         print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
@@ -416,9 +445,6 @@ class TeleCaster:
                 self.conference_dict = get_conference_from_lock(self.lock_file)
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.stop()
-            #w.encode_form()
-            #s.encode_mp3()
-            #w.start_form('Please wait : encoding file to MP3...')
             w.start_form()
 
         elif self.odd_pid == []:
@@ -426,7 +452,7 @@ class TeleCaster:
 
 
 # Call main function.
-conf_file = 'etc/telecaster.xml'
+conf_file = 'etc/telecaster_mp3.xml'
 school_file = 'etc/pre-barreau_conferences.xml'
 
 if __name__ == '__main__':
