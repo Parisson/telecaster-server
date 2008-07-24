@@ -20,6 +20,7 @@
     <media>
         <record>true</record>
         <dir>/home/prebarreau/media</dir>
+        <raw_dir>/home/prebarreau/backup</raw_dir>
         <format>mp3</format>
         <bitrate>64</bitrate>
         <ogg_quality>2</ogg_quality>

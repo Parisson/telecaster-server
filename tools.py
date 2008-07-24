@@ -102,3 +102,6 @@ def get_conference_from_lock(lock_file):
 
 def str_to_bool(string):
     return string == 'true'
+
+def norm_string(string):
+    pass

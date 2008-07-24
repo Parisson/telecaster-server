@@ -20,19 +20,22 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 """
 
-version = '0.3.3'
+version = '0.3.4'
 
 import os
 import cgi
+import cgitb
 import shutil
 import datetime
 import time
 import codecs
 import string
 import signal
+import unicodedata
 from tools import *
 from mutagen.oggvorbis import OggVorbis
 from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TCO, COM
+cgitb.enable()
 
 class Conference:
     """A conference object including metadata"""
@@ -56,6 +59,7 @@ class Station(Conference):
     def __init__(self, conf_file, conference_dict, lock_file):
         Conference.__init__(self, conference_dict)
         self.date = datetime.datetime.now().strftime("%Y")
+        self.time = str(datetime.datetime.now().strftime("%x-%X")).replace('/','_')
         self.conf = xml2dict(conf_file)
         self.conf = self.conf['telecaster']
         self.root_dir = self.conf['server']['root_dir']
@@ -75,7 +79,7 @@ class Station(Conference):
                                  clean_string(self.department) + '_-_' + \
                                  clean_string(self.conference)+'.'+self.format
         self.lock_file = self.root_dir + os.sep + self.conf['server']['lock_file']
-        self.filename = self.ServerDescription + '.' + self.format
+        self.filename = self.ServerDescription + '_-_' + self.time + '.' + self.format
         self.output_dir = self.media_dir + os.sep + self.department + os.sep + self.date
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
@@ -86,7 +90,7 @@ class Station(Conference):
         self.encoder = 'TeleCaster by Parisson'
         self.rsync_host = self.conf['server']['rsync_host']
         self.record = str_to_bool(self.conf['media']['record'])
-        
+        self.raw_dir = self.conf['media']['raw_dir']
 
     def set_oddcast_conf(self):
         oddconf = open(self.odd_conf_file,'r')
@@ -107,6 +111,9 @@ class Station(Conference):
             elif 'ServerPassword' in line.split('='):
                 newlines.append('ServerPassword=' + self.password + '\n')
                 
+            elif 'SaveDirectory' in line.split('='):
+                newlines.append('SaveDirectory=' + self.raw_dir + '\n')
+
             else:
                 newlines.append(line)
                 
@@ -116,7 +123,7 @@ class Station(Conference):
 
     def start_oddcast(self):
         command = 'oddcastv3 -n "'+clean_string(self.conference)[0:16]+'" -c '+self.odd_conf_file+ \
-                  ' alsa_pcm:capture_1 alsa_pcm:capture_2 > /dev/null &'
+                  ' alsa_pcm:capture_1 > /dev/null &'
         os.system(command)
         self.set_lock()
         time.sleep(1)
@@ -137,6 +144,7 @@ class Station(Conference):
         command = 'streamripper ' + self.url + self.mount_point + \
                   ' -d '+self.output_dir+' -D "%S" -s -t --quiet > /dev/null &'
         os.system(command)
+        time.sleep(3)
 
     def stop_oddcast(self):
         if len(self.odd_pid) != 0:
@@ -205,7 +213,7 @@ class Station(Conference):
             self.write_tags_mp3()
         self.del_lock()
         #self.mp3_convert()
-        self.rsync_out()
+        #self.rsync_out()
 
     def start_mp3cast(self):        
         item_id = item_id
@@ -264,16 +272,18 @@ class WebView:
         self.title = self.conf['title']
         self.departments = self.conf['department']
         self.professors = self.conf['professor']
+        self.comments = self.conf['comment']
         #print self.departments
         #self.conferences = self.conf['department']['conferences']
         self.len_departments = len(self.departments)
         self.len_professors = len(self.professors)
         self.conference_nb_max = 40
         self.professor_nb_max = 40
+        self.refresh = False
 
     def header(self):
         # Required header that tells the browser how to render the HTML.
-        print "Content-Type: text/html\n"
+        print "Content-Type: text/html\n\n"
         print "<HTML>"
         print "<HEAD>"
         print "<TITLE>TeleCaster - "+self.title+"</TITLE>"
@@ -302,7 +312,9 @@ class WebView:
         print '}'
         print '      formulaire.conference.selectedIndex=0;}'
         print '</script>'
-        print "</HEAD>"
+        if self.refresh:
+            print "<meta http-equiv=\"refresh\" content=\"10; URL=telecaster.py\">"
+        print "</HEAD>\n"
         
         print "<BODY BGCOLOR =\"#FFFFFF\">"
         print "<div id=\"bg\">"
@@ -322,12 +334,14 @@ class WebView:
         print "</HTML>"
 
     def start_form(self, message=''):
+        self.refresh = False
         self.header()
         print "<div id=\"main\">"
         print "<h5><span style=\"color: red\">"+message+"</span></h5>"
         print "<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
         print "<TABLE BORDER = 0>"
         print "<form method=post action=\"telecaster.py\" name=\"formulaire\">"
+        
         print "<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
         print "<TR><TH align=\"left\">D&eacute;partement :</TH>"
         print "<TD><select name=\"department\" onChange=\"choix(this.form)\">"
@@ -335,23 +349,33 @@ class WebView:
         for department in self.departments:
             print "<option value=\""+department['name']+"\">"+department['name']+"</option>"
         print "</select></TD></TR>"
+
         print "<TR><TH align=\"left\">Conf&eacute;rence :</TH>"
         print "<TD><select name=\"conference\">"
         print "<option selected>...........Choisissez une conf&eacute;rence...........</option>"
         for i in range(1,self.conference_nb_max):
             print "<option></option>"
         print "</select></TD></TR>"
+
         print "<TR><TH align=\"left\">Session :</TH><TD><select name=\"session\">"
         for i in range(1,21):
             print "<option value=\""+str(i)+"\">"+str(i)+"</option>"
         print "</select></TD></TR>"
+
         print "<TR><TH align=\"left\">Professeur :</TH>"
         print "<TD><select name=\"professor\">"
         print "<option selected>...........Choisissez un professeur...........</option>"
         for professor in self.professors:
             print "<option value=\""+professor['name']+"\">"+professor['name']+"</option>"
         print "</select></TD></TR>"
-        print "<TR><TH align=\"left\">Commentaire :</TH><TD><INPUT type = text name = \"comment\"></TD></TR>"
+
+        print "<TR><TH align=\"left\">Commentaire :</TH>"
+        print "<TD><select name=\"comment\">"
+        print "<option selected>...........Choisissez un commentaire...........</option>"
+        for comment in self.comments:
+            print "<option value=\""+comment['text']+"\">"+comment['text']+"</option>"
+        print "</select></TD></TR>"
+        
         print "</TABLE>"
         print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live."+self.format+".m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
         print "</div>"
@@ -372,17 +396,27 @@ class WebView:
         self.colophon()
         self.footer()
 
-    def stop_form(self, conference_dict):
+    def stop_form(self, conference_dict, writing, casting):
         """Stop page"""
         department = conference_dict['department']
         conference = conference_dict['conference']
         session = conference_dict['session']
         professor = conference_dict['professor']
         comment = conference_dict['comment']
-
+        self.refresh = True
         self.header()
         print "<div id=\"main\">"
-        print "<h4><span style=\"color: red\">Cette formation est en cours de diffusion :</span></h4>"
+        
+        print "<hr>"
+        if writing:
+            print "<h4><span style=\"color: green\">Enregistrement en cours</span></h4>"
+        else:
+            print "<h4><span style=\"color: red\">PAS d'enregistrement en cours</span></h4>"
+        print '<hr>'
+        if casting:
+            print "<h4><span style=\"color: green\">Diffusion en cours</span></h4>"
+        else:
+            print "<h4><span style=\"color: red\">PAS de diffusion en cours</span></h4>"
         print "<hr>"
         print "<TABLE BORDER = 0>"
         print "<FORM METHOD = post ACTION = \"telecaster.py\">"
@@ -423,13 +457,21 @@ class TeleCaster:
         self.odd_conf_file = self.conf['server']['lock_file']
         self.title = self.conf['infos']['name']
         self.uid = os.getuid()
-        self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
 
     def main(self):
+        odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
+        rip_pid = get_pid('streamripper ', self.uid)
+        writing = False
+        casting = True
+        if rip_pid != []:
+            writing = True
+        if odd_pid == []:
+            casting = False
+        
         w = WebView(self.school_file)
         form = cgi.FieldStorage()
         
-        if self.odd_pid == [] and form.has_key("action") and \
+        if odd_pid == [] and form.has_key("action") and \
             form.has_key("department") and form.has_key("conference") and \
             form.has_key("professor") and form.has_key("comment") and \
             form["action"].value == "start":
@@ -443,21 +485,35 @@ class TeleCaster:
 
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
-            w.stop_form(self.conference_dict)
+            time.sleep(4)
+            if get_pid('^oddcastv3 -n [^LIVE]', self.uid) != []:
+                casting = True
+            if get_pid('streamripper ', self.uid) == []:
+                writing = False
+            ws = WebView(self.school_file)
+            ws.stop_form(self.conference_dict, writing, casting)
+            exit()
             
-        elif self.odd_pid != [] and os.path.exists(self.lock_file) and not form.has_key("action"):
+        elif odd_pid != [] and os.path.exists(self.lock_file) and not form.has_key("action"):
             self.conference_dict = get_conference_from_lock(self.lock_file)
-            w.stop_form(self.conference_dict)
+            if get_pid('^oddcastv3 -n [^LIVE]', self.uid) != []:
+               casting = True
+            if get_pid('streamripper ', self.uid) == []:
+                writing = False
+            w.stop_form(self.conference_dict, writing, casting)
+            exit()
 
-        elif self.odd_pid != [] and form.has_key("action") and form["action"].value == "stop":
+        elif odd_pid != [] and form.has_key("action") and form["action"].value == "stop":
             if os.path.exists(self.lock_file):
                 self.conference_dict = get_conference_from_lock(self.lock_file)
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.stop()
             w.start_form()
+            exit()
 
-        elif self.odd_pid == []:
+        elif odd_pid == []:
             w.start_form()
+            exit()
 
 
 # Call main function.

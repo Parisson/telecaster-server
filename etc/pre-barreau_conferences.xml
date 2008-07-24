@@ -1,5 +1,5 @@
 <telecaster>
-    <url>http://localhost</url>
+    <url>http://192.168.7.202</url>
     <title>Pre-Barreau - ICP</title>
     <port>8000</port>
     <format>mp3</format>
@@ -14,10 +14,10 @@
             <name>Droit_administratif_Cours</name>
           </conference>
           <conference>
-            <name>Droit_civil_Corrections</name>
+            <name>Droit_des_obligations_Corrections</name>
           </conference>
           <conference>
-            <name>Droit_civil_Cours</name>
+            <name>Droit_des_obligations_Cours</name>
           </conference>
           <conference>
             <name>Droit_commercial_des_affaires_Corrections</name>
@@ -255,6 +255,23 @@
         <professor>
             <name>COLLET M.</name>
         </professor>
-      
+
+        <comment><text>1er_cours</text></comment>
+        <comment><text>2e_cours</text></comment>
+        <comment><text>3e_cours</text></comment>
+        <comment><text>4e_cours</text></comment>
+        <comment><text>5e_cours</text></comment>
+            <comment><text>6e_cours</text></comment>
+            <comment><text>7e_cours</text></comment>
+            <comment><text>8e_cours</text></comment>
+            <comment><text>9e_cours</text></comment>
+            <comment><text>10e_cours</text></comment>
+            <comment><text>11e_cours</text></comment>
+            <comment><text>12e_cours</text></comment>
+            <comment><text>13e_cours</text></comment>
+            <comment><text>14e_cours</text></comment>
+            <comment><text>15e_cours</text></comment>
+            <comment><text>16e_cours</text></comment>
+        
 </telecaster>
 
