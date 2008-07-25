@@ -122,7 +122,8 @@ class Station(Conference):
         oddconf.close()
 
     def start_oddcast(self):
-        os.makedirs(self.raw_dir)
+        if not os.path.exists(self.raw_dir):
+            os.makedirs(self.raw_dir)
         command = 'oddcastv3 -n "'+clean_string(self.conference)[0:16]+'" -c '+self.odd_conf_file+ \
                   ' alsa_pcm:capture_1 > /dev/null &'
         os.system(command)
