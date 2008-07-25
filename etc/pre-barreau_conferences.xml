@@ -1,5 +1,5 @@
 <telecaster>
-    <url>http://192.168.7.202</url>
+    <url>http://localhost</url>
     <title>Pre-Barreau - ICP</title>
     <port>8000</port>
     <format>mp3</format>

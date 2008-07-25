@@ -122,6 +122,7 @@ class Station(Conference):
         oddconf.close()
 
     def start_oddcast(self):
+        os.makedirs(self.raw_dir)
         command = 'oddcastv3 -n "'+clean_string(self.conference)[0:16]+'" -c '+self.odd_conf_file+ \
                   ' alsa_pcm:capture_1 > /dev/null &'
         os.system(command)
@@ -144,7 +145,7 @@ class Station(Conference):
         command = 'streamripper ' + self.url + self.mount_point + \
                   ' -d '+self.output_dir+' -D "%S" -s -t --quiet > /dev/null &'
         os.system(command)
-        time.sleep(3)
+        time.sleep(1)
 
     def stop_oddcast(self):
         if len(self.odd_pid) != 0:
@@ -340,8 +341,7 @@ class WebView:
         print "<h5><span style=\"color: red\">"+message+"</span></h5>"
         print "<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
         print "<TABLE BORDER = 0>"
-        print "<form method=post action=\"telecaster.py\" name=\"formulaire\">"
-        
+        print "<FORM method=POST ACTION=\""+self.url+"/telecaster/telecaster.py\" name=\"formulaire\">"
         print "<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
         print "<TR><TH align=\"left\">D&eacute;partement :</TH>"
         print "<TD><select name=\"department\" onChange=\"choix(this.form)\">"
@@ -409,17 +409,16 @@ class WebView:
         
         print "<hr>"
         if writing:
-            print "<h4><span style=\"color: green\">Enregistrement en cours</span></h4>"
+            print "<h4><span style=\"color: green\">Enregistrement en cours...</span></h4>"
         else:
-            print "<h4><span style=\"color: red\">PAS d'enregistrement en cours</span></h4>"
+            print "<h4><span style=\"color: red\">PAS d'enregistrement en cours !</span></h4>"
         print '<hr>'
         if casting:
-            print "<h4><span style=\"color: green\">Diffusion en cours</span></h4>"
+            print "<h4><span style=\"color: green\">Diffusion en cours...</span></h4>"
         else:
-            print "<h4><span style=\"color: red\">PAS de diffusion en cours</span></h4>"
+            print "<h4><span style=\"color: red\">PAS de diffusion en cours !</span></h4>"
         print "<hr>"
         print "<TABLE BORDER = 0>"
-        print "<FORM METHOD = post ACTION = \"telecaster.py\">"
         print "<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
         print "<TR><TH align=\"left\">D&eacute;partement :</TH><TD>"+department+"</TD><TR>"
         print "<TR><TH align=\"left\">Conference :</TH><TD>"+conference+"</TD><TR>"
@@ -433,6 +432,7 @@ class WebView:
               "."+self.format+".m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
         print "<div id=\"tools\">"
+        print "<FORM METHOD = post ACTION = \""+self.url+"/telecaster/telecaster.py\">"
         print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
         print "<INPUT TYPE = submit VALUE = \"STOP\">"
         print "</FORM>"
@@ -485,13 +485,11 @@ class TeleCaster:
 
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
-            time.sleep(4)
             if get_pid('^oddcastv3 -n [^LIVE]', self.uid) != []:
                 casting = True
             if get_pid('streamripper ', self.uid) == []:
                 writing = False
-            ws = WebView(self.school_file)
-            ws.stop_form(self.conference_dict, writing, casting)
+            w.stop_form(self.conference_dict, writing, casting)
             exit()
             
         elif odd_pid != [] and os.path.exists(self.lock_file) and not form.has_key("action"):
