@@ -59,7 +59,8 @@ class Station(Conference):
     def __init__(self, conf_file, conference_dict, lock_file):
         Conference.__init__(self, conference_dict)
         self.date = datetime.datetime.now().strftime("%Y")
-        self.time = datetime.datetime.now().strftime("%x-%X").replace('/','_')
+        self.time = datetime.datetime.now().strftime("%x-%X")
+        self.time = self.time.replace('/','_')
         self.conf = xml2dict(conf_file)
         self.conf = self.conf['telecaster']
         self.root_dir = self.conf['server']['root_dir']
@@ -224,8 +225,7 @@ class Station(Conference):
         args = get_args(options)
         ext = get_file_extension()
         args = ' '.join(args)
-        command = 'sox "%s" -q -w -r 44100 -t wav -c2 - | lame %s -' \
-                       % (source, args)
+        command = 'sox "%s" -q -w -r 44100 -t wav -c2 - | lame %s -' % (source, args)
         # Processing (streaming + cache writing)
         stream = self.core_process(self.command,self.buffer_size,self.dest)
         for chunk in stream:
@@ -494,7 +494,6 @@ class TeleCaster:
             if get_pid('streamripper ', self.uid) == []:
                 writing = False
             w.stop_form(self.conference_dict, writing, casting)
-            exit()
             
         elif odd_pid != [] and os.path.exists(self.lock_file) and not form.has_key("action"):
             self.conference_dict = get_conference_from_lock(self.lock_file)
@@ -503,7 +502,6 @@ class TeleCaster:
             if get_pid('streamripper ', self.uid) == []:
                 writing = False
             w.stop_form(self.conference_dict, writing, casting)
-            exit()
 
         elif odd_pid != [] and form.has_key("action") and form["action"].value == "stop":
             if os.path.exists(self.lock_file):
@@ -511,11 +509,9 @@ class TeleCaster:
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.stop()
             w.start_form()
-            exit()
 
         elif odd_pid == []:
             w.start_form()
-            exit()
 
 
 # Call main function.
