@@ -61,6 +61,7 @@ class Station(Conference):
         self.date = datetime.datetime.now().strftime("%Y")
         self.time = datetime.datetime.now().strftime("%x-%X")
         self.time = self.time.replace('/','_')
+	self.time = self.time.replace(':','_')
         self.conf = xml2dict(conf_file)
         self.conf = self.conf['telecaster']
         self.root_dir = self.conf['server']['root_dir']
