@@ -59,7 +59,7 @@ class Station(Conference):
     def __init__(self, conf_file, conference_dict, lock_file):
         Conference.__init__(self, conference_dict)
         self.date = datetime.datetime.now().strftime("%Y")
-        self.time = str(datetime.datetime.now().strftime("%x-%X")).replace('/','_')
+        self.time = datetime.datetime.now().strftime("%x-%X").replace('/','_')
         self.conf = xml2dict(conf_file)
         self.conf = self.conf['telecaster']
         self.root_dir = self.conf['server']['root_dir']
