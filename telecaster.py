@@ -60,8 +60,9 @@ class Station(Conference):
         Conference.__init__(self, conference_dict)
         self.date = datetime.datetime.now().strftime("%Y")
         self.time = datetime.datetime.now().strftime("%x-%X")
-        self.time = self.time.replace('/','_')
-	self.time = self.time.replace(':','_')
+        self.time1 = self.time.replace('/','_')
+	self.time2 = self.time1.replace(':','_')
+       	self.time = self.time2.replace(' ','_')
         self.conf = xml2dict(conf_file)
         self.conf = self.conf['telecaster']
         self.root_dir = self.conf['server']['root_dir']
@@ -160,9 +161,9 @@ class Station(Conference):
         time.sleep(1)
         date = datetime.datetime.now().strftime("%Y")
         if os.path.exists(self.file_dir) and os.path.exists(self.file_dir + os.sep + 'incomplete'):
-            shutil.move(self.file_dir+os.sep+'incomplete'+os.sep+' - .'+self.format, self.file_dir+os.sep)
-            shutil.rmtree(self.file_dir+os.sep+'incomplete'+os.sep)
+            shutil.copy(self.file_dir+os.sep+'incomplete'+os.sep+' - .'+self.format, self.file_dir+os.sep)
             os.rename(self.file_dir+os.sep+' - .'+self.format, self.file_dir+os.sep+self.filename)
+            shutil.rmtree(self.file_dir+os.sep+'incomplete'+os.sep)
 
     def mp3_convert(self):
         os.system('oggdec -o - '+ self.file_dir+os.sep+self.filename+' | lame -S -m m -h -b '+ self.bitrate + \
@@ -195,7 +196,7 @@ class Station(Conference):
             #tag = tags.__dict__['ALBUM']
             audio.add(TAL(encoding=3, text=self.title))
             #tag = tags.__dict__['DATE']
-            #audio.add(TDA(encoding=3, text=self.date))
+            audio.add(TDA(encoding=3, text=self.date))
             #tag = tags.__dict__['GENRE']
             audio.add(TCO(encoding=3, text=self.genre))
             #tag = tags.__dict__['COMMENT']
