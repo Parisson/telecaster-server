@@ -185,7 +185,7 @@ class Station(Conference):
     def write_tags_mp3(self):
        file = self.file_dir + os.sep + self.filename
        if os.path.exists(file):
-            os.system('mp3info -t "a" '+file)
+            os.system('mp3info -t "a" -a "a" '+file)
             audio = ID3(file)
             #tag = tags.__dict__['TITLE']
             audio.add(TIT2(encoding=3, text=self.new_title))
@@ -194,12 +194,13 @@ class Station(Conference):
             #tag = tags.__dict__['ALBUM']
             audio.add(TAL(encoding=3, text=self.title))
             #tag = tags.__dict__['DATE']
-            audio.add(TDA(encoding=3, text=self.date))
+            #audio.add(TDA(encoding=3, text=self.date))
             #tag = tags.__dict__['GENRE']
             audio.add(TCO(encoding=3, text=self.genre))
             #tag = tags.__dict__['COMMENT']
-            audio.add(COM(encoding=3, text=self.comment))
+            #audio.add(COM(encoding=3, text=self.comment))
             audio.save()
+	    time.sleep(2)
 
     def start(self):
         self.set_lock()
