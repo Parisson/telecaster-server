@@ -23,6 +23,7 @@ div#tools { background-color: #030250;
 div#colophon { background-color: #FFFFFF;
          color: #000033;
 	 font-size: 80%;
+     float: right;
 }
 
 

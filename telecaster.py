@@ -378,7 +378,10 @@ class WebView:
         print "</select></TD></TR>"
         
         print "</TABLE>"
-        print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live."+self.format+".m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
+        #print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live."+self.format+".m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
+        print '<hr>'
+        print "<h5><a href=\""+self.url+"/media/\">Cliquez ici pour acc&eacute;der aux archives</a></h5>"
+        print "<h5><a href=\""+self.url+"/backup/\">Cliquez ici pour acc&eacute;der aux archives de secours</a></h5>"
         print "</div>"
         print "<div id=\"tools\">"
         print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
