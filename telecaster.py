@@ -94,6 +94,10 @@ class Station(Conference):
         self.rsync_host = self.conf['server']['rsync_host']
         self.record = str_to_bool(self.conf['media']['record'])
         self.raw_dir = self.conf['media']['raw_dir']
+        if not os.path.exists(self.media_dir):
+            os.makedirs(self.media_dir)
+        if not os.path.exists(self.raw_dir):
+            os.makedirs(self.raw_dir)
 
     def set_oddcast_conf(self):
         oddconf = open(self.odd_conf_file,'r')
@@ -125,10 +129,8 @@ class Station(Conference):
         oddconf.close()
 
     def start_oddcast(self):
-        if not os.path.exists(self.raw_dir):
-            os.makedirs(self.raw_dir)
         command = 'oddcastv3 -n "'+clean_string(self.conference)[0:16]+'" -c '+self.odd_conf_file+ \
-                  ' alsa_pcm:capture_1 > /dev/null &'
+                  ' alsa_pcm:capture_1 alsa_pcm:capture_2 > /dev/null &'
         os.system(command)
         self.set_lock()
         time.sleep(1)
@@ -410,7 +412,7 @@ class WebView:
         session = conference_dict['session']
         professor = conference_dict['professor']
         comment = conference_dict['comment']
-        self.refresh = True
+        self.refresh = False
         self.header()
         print "<div id=\"main\">"
         
