@@ -130,7 +130,7 @@ class Station(Conference):
 
     def start_oddcast(self):
         command = 'oddcastv3 -n "'+clean_string(self.conference)[0:16]+'" -c '+self.odd_conf_file+ \
-                  ' alsa_pcm:capture_1 alsa_pcm:capture_2 > /dev/null &'
+                  ' alsa_pcm:capture_1 > /dev/null &'
         os.system(command)
         self.set_lock()
         time.sleep(1)
@@ -436,9 +436,7 @@ class WebView:
         print "<TR><TH align=\"left\">Commentaire :</TH><TD>"+comment+"</TD><TR>"
         print "</TABLE>"
         print "<hr>"
-        print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title) + \
-              "_-_"+clean_string(department)+"_-_"+clean_string(conference) + \
-              "."+self.format+".m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
+        print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
         print "<div id=\"tools\">"
         print "<FORM METHOD = post ACTION = \""+self.url+"/telecaster/telecaster.py\">"
