@@ -273,7 +273,9 @@ class WebView:
     def __init__(self, school_file):
         self.conf = xml2dict(school_file)
         self.conf = self.conf['telecaster']
-        self.url = self.conf['url']
+	self.interface = 'eth0'
+	self.ip = get_ip_address(self.interface)
+        self.url = 'http://' + self.ip
         self.port = self.conf['port']
         self.format = self.conf['format']
         self.title = self.conf['title']
