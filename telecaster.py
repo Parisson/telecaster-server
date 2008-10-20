@@ -401,6 +401,11 @@ class WebView:
         #print "<td>%s</td></tr>" % self.acpi.estimated_lifetime()
         print "<tr><td>Temp core 1 :</td>"
         print "<td>%s</td></tr>" % self.acpi.temperature(0)
+	try:
+	    print "<tr><td>Temp core 2 :</td>"
+	    print "<td>%s</td></tr>" % self.acpi.temperature(1)
+        except:
+	    pass
         print "<tr><td>Address IP :</td>"
         print "<td>%s</td></tr>" % ip_info
         print "</table>"
