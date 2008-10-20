@@ -3,7 +3,7 @@
 """
    telecaster
 
-   Copyright (c) 2006-2007 Guillaume Pellerin <yomguy@altern.org>
+   Copyright (c) 2006-2008 Guillaume Pellerin <yomguy@parisson.org>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -20,7 +20,8 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 """
 
-version = '0.3.4'
+version = '0.3.5'
+# Only for Unix and Linux systems
 
 import os
 import cgi
@@ -33,6 +34,7 @@ import string
 import signal
 import unicodedata
 from tools import *
+from tempfile import NamedTemporaryFile
 from mutagen.oggvorbis import OggVorbis
 from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TCO, COM
 cgitb.enable()
@@ -61,7 +63,7 @@ class Station(Conference):
         self.date = datetime.datetime.now().strftime("%Y")
         self.time = datetime.datetime.now().strftime("%x-%X")
         self.time1 = self.time.replace('/','_')
-	self.time2 = self.time1.replace(':','_')
+        self.time2 = self.time1.replace(':','_')
        	self.time = self.time2.replace(' ','_')
         self.conf = xml2dict(conf_file)
         self.conf = self.conf['telecaster']
@@ -88,7 +90,8 @@ class Station(Conference):
         self.uid = os.getuid()
         self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
         self.rip_pid = get_pid('streamripper ' + self.url + self.mount_point, self.uid)
-        self.new_title = clean_string('_-_'.join(self.server_name)+'_-_'+self.professor+'_-_'+self.comment)
+        self.new_title = clean_string('_-_'.join(self.server_name)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
+        self.short_title = clean_string('_-_'.join(self.conference)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
         self.genre = 'Vocal'
         self.encoder = 'TeleCaster by Parisson'
         self.rsync_host = self.conf['server']['rsync_host']
@@ -100,6 +103,7 @@ class Station(Conference):
             os.makedirs(self.raw_dir)
 
     def set_oddcast_conf(self):
+        oddconf_temp = NamedTemporaryFile(suffix='.cfg')
         oddconf = open(self.odd_conf_file,'r')
         lines = oddconf.readlines()
         oddconf.close()
@@ -123,17 +127,17 @@ class Station(Conference):
 
             else:
                 newlines.append(line)
-                
-        oddconf = open(self.odd_conf_file,'w')
-        oddconf.writelines(newlines)
-        oddconf.close()
+
+        oddconf_temp_file = open(oddconf_temp.name,'w')
+        oddconf_temp_file.writelines(newlines)
+        self.odd_conf = oddconf_temp.name
 
     def start_oddcast(self):
-        command = 'oddcastv3 -n "'+clean_string(self.conference)[0:16]+'" -c '+self.odd_conf_file+ \
+        command = 'oddcastv3 -n "'+clean_string(self.conference)[0:16]+'" -c '+self.odd_conf+ \
                   ' alsa_pcm:capture_1 > /dev/null &'
         os.system(command)
         self.set_lock()
-        time.sleep(1)
+        time.sleep(0.1)
 
     def set_lock(self):
         lock = open(self.lock_file,'w')
@@ -273,10 +277,19 @@ class WebView:
     def __init__(self, school_file):
         self.conf = xml2dict(school_file)
         self.conf = self.conf['telecaster']
-	self.interface = 'eth1'
-	self.ip = get_ip_address(self.interface)
+        self.interfaces = ['eth0', 'eth1', 'eth2']
+        ip = ''
+        for interface in self.interfaces:
+            try:
+                ip = get_ip_address(interface)
+                if ip:
+                    self.ip = ip
+                break
+            except:
+                self.ip = 'localhost'
         self.url = 'http://' + self.ip
         self.port = self.conf['port']
+        self.acpi = acpi.Acpi()
         self.format = self.conf['format']
         self.title = self.conf['title']
         self.departments = self.conf['department']
@@ -326,15 +339,15 @@ class WebView:
         print "</HEAD>\n"
         
         print "<BODY BGCOLOR =\"#FFFFFF\">"
-        print "<div id=\"bg\">"
-        print "<div id=\"header\">"
+        print "<div class=\"bg\">"
+        print "<div class=\"header\">"
         print "<H3>&nbsp;TeleCaster - L'enregistrement et la diffusion audio en direct par internet</H3>"
         print "</div>"
 
     def colophon(self):
         date = datetime.datetime.now().strftime("%Y")
-        print "<div id=\"colophon\">"
-        print "TeleCaster "+version+" &copy; <span>"+date+"</span>&nbsp;<a href=\"http://parisson.com\">Parisson</a>. Tous droits r&eacute;serv&eacute;s."
+        print "<div class=\"colophon\">"
+        print "TeleCaster "+version+" &copy; <span>"+date+"</span>&nbsp;<a href=\"http://parisson.com\">Parisson SARL</a>. Tous droits r&eacute;serv&eacute;s."
         print "</div>"
             
     def footer(self):
@@ -342,12 +355,66 @@ class WebView:
         print "</BODY>"
         print "</HTML>"
 
+    def hardware_data(self):
+        self.acpi.update()
+        self.power_state = self.acpi.charging_state()
+        if self.power_state == 0:
+            power_info = "<span style=\"color: red\">batterie</span>"
+        elif self.power_state == 1 or self.power_state == 2:
+            power_info = "<span style=\"color: green\">secteur</span>"
+        else:
+            power_info = ""
+            
+        #if self.power_state == 0:
+            #batt_info = "en d&eacute;charge"
+        #elif self.power_state == 1:
+            #batt_info = "charg&eacute;e"
+        #elif self.power_state == 2:
+            #batt_info = "en charge"
+        #else:
+            #batt_info = ""
+
+        if self.acpi.percent() == 127:
+            batt_charge = '<span style=\"color: green\">100 &#37;</span>'
+        else:
+            percent = self.acpi.percent()
+            if percent < 10:
+                batt_charge = '<span style=\"color: red\">'+str(percent)+' &#37;</span>'
+            else:
+                batt_charge = '<span style=\"color: green\">'+str(percent)+' &#37;</span>'
+
+        if self.ip == 'localhost':
+            ip_info = '<span style=\"color: red\">'+self.ip+'</span>'
+        else:
+            ip_info = '<span style=\"color: green\">'+self.ip+'</span>'
+        
+        print "<div class=\"hardware\">"
+        print "<div class=\"title\">Informations mat&eacute;rielles</div>"
+        print "<table>"
+        print "<tr><td>Alimentation :</td>"
+        print "<td>%s</td></tr>" % power_info
+        #print "<tr><td>Etat batterie :</td>"
+        #print "<td>%s</td></tr>" % batt_info
+        print "<tr><td>Capacit&eacute; batterie :</td>"
+        print "<td>%s</td></tr>" % batt_charge
+        #print "<tr><td>Estimation dur&eacute;e batterie :</td>"
+        #print "<td>%s</td></tr>" % self.acpi.estimated_lifetime()
+        print "<tr><td>Temp core 1 :</td>"
+        print "<td>%s</td></tr>" % self.acpi.temperature(0)
+        print "<tr><td>Address IP :</td>"
+        print "<td>%s</td></tr>" % ip_info
+        print "</table>"
+        print "</div>"
+        
+
     def start_form(self, message=''):
         self.refresh = False
         self.header()
-        print "<div id=\"main\">"
-        print "<h5><span style=\"color: red\">"+message+"</span></h5>"
-        print "<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
+        self.hardware_data()
+        print "<div class=\"main\">"
+        #print "<h5><span style=\"color: red\">"+message+"</span></h5>"
+        #print "<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
+        print "<div \class=\"form\">"
         print "<TABLE BORDER = 0>"
         print "<FORM method=POST ACTION=\""+self.url+"/telecaster/telecaster.py\" name=\"formulaire\">"
         print "<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
@@ -383,14 +450,16 @@ class WebView:
         for comment in self.comments:
             print "<option value=\""+comment['text']+"\">"+comment['text']+"</option>"
         print "</select></TD></TR>"
-        
+       
         print "</TABLE>"
+        print "</div>"
+        
         #print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live."+self.format+".m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
         print '<hr>'
         print "<h5><a href=\""+self.url+"/media/\">Cliquez ici pour acc&eacute;der aux archives</a></h5>"
         print "<h5><a href=\""+self.url+"/backup/\">Cliquez ici pour acc&eacute;der aux archives de secours</a></h5>"
         print "</div>"
-        print "<div id=\"tools\">"
+        print "<div class=\"tools\">"
         print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
         print "<INPUT TYPE = submit VALUE = \"Enregistrer\">"
         print "</FORM>"
@@ -400,7 +469,7 @@ class WebView:
 
     def encode_form(self, message=''):
         self.header()
-        print "<div id=\"main\">"
+        print "<div class=\"main\">"
         print "<h5><span style=\"color: red\">"+message+"</span></h5>"
         print "<h5><span style=\"color: red\">ENCODAGE EN COURS !</span></h5>"
         print "</div>"
@@ -414,9 +483,10 @@ class WebView:
         session = conference_dict['session']
         professor = conference_dict['professor']
         comment = conference_dict['comment']
-        self.refresh = False
+        self.refresh = True
         self.header()
-        print "<div id=\"main\">"
+        self.hardware_data()
+        print "<div class=\"main\">"
         
         print "<hr>"
         if writing:
@@ -440,7 +510,7 @@ class WebView:
         print "<hr>"
         print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
-        print "<div id=\"tools\">"
+        print "<div class=\"tools\">"
         print "<FORM METHOD = post ACTION = \""+self.url+"/telecaster/telecaster.py\">"
         print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
         print "<INPUT TYPE = submit VALUE = \"STOP\">"
@@ -463,7 +533,6 @@ class TeleCaster:
         self.title = self.conf['infos']['name']
         self.root_dir = self.conf['server']['root_dir']
         self.lock_file = self.root_dir + os.sep + self.conf['server']['lock_file']
-        self.odd_conf_file = self.conf['server']['lock_file']
         self.title = self.conf['infos']['name']
         self.uid = os.getuid()
 
@@ -491,7 +560,7 @@ class TeleCaster:
                         'session': form["session"].value,
                         'professor': form["professor"].value,
                         'comment': form["comment"].value}
-
+            
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
             if get_pid('^oddcastv3 -n [^LIVE]', self.uid) != []:
