@@ -34,6 +34,7 @@ import string
 import signal
 import unicodedata
 from tools import *
+from cgi import FieldStorage
 from tempfile import NamedTemporaryFile
 from mutagen.oggvorbis import OggVorbis
 from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TCO, COM
@@ -103,7 +104,7 @@ class Station(Conference):
             os.makedirs(self.raw_dir)
 
     def set_oddcast_conf(self):
-        oddconf_temp = NamedTemporaryFile(suffix='.cfg')
+        #oddconf_temp = NamedTemporaryFile(suffix='.cfg')
         oddconf = open(self.odd_conf_file,'r')
         lines = oddconf.readlines()
         oddconf.close()
@@ -128,9 +129,10 @@ class Station(Conference):
             else:
                 newlines.append(line)
 
-        oddconf_temp_file = open(oddconf_temp.name,'w')
-        oddconf_temp_file.writelines(newlines)
-        self.odd_conf = oddconf_temp.name
+        oddconf = open(self.odd_conf_file,'w')
+        oddconf.writelines(newlines)
+        oddconf.close()
+        self.odd_conf = self.odd_conf_file
 
     def start_oddcast(self):
         command = 'oddcastv3 -n "'+clean_string(self.conference)[0:16]+'" -c '+self.odd_conf+ \
@@ -271,10 +273,11 @@ class Station(Conference):
         os.system('rsync -a '+self.media_dir+os.sep+' '+self.rsync_host+':'+os.sep+hostname+os.sep)
 
 
-class WebView:
+class WebView(FieldStorage):
     """Gives the web CGI frontend"""
     
     def __init__(self, school_file):
+        FieldStorage.__init__(self)
         self.conf = xml2dict(school_file)
         self.conf = self.conf['telecaster']
         self.interfaces = ['eth0', 'eth1', 'eth2']
@@ -417,12 +420,12 @@ class WebView:
         self.refresh = False
         self.header()
         self.hardware_data()
+        print "<form method=\"post\" action=\""+self.url+"/telecaster/telecaster.py\" name=\"formulaire\">"
         print "<div class=\"main\">"
         #print "<h5><span style=\"color: red\">"+message+"</span></h5>"
         #print "<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
         print "<div \class=\"form\">"
-        print "<TABLE BORDER = 0>"
-        print "<FORM method=POST ACTION=\""+self.url+"/telecaster/telecaster.py\" name=\"formulaire\">"
+        print "<table border = 0>"
         print "<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
         print "<TR><TH align=\"left\">D&eacute;partement :</TH>"
         print "<TD><select name=\"department\" onChange=\"choix(this.form)\">"
@@ -456,20 +459,22 @@ class WebView:
         for comment in self.comments:
             print "<option value=\""+comment['text']+"\">"+comment['text']+"</option>"
         print "</select></TD></TR>"
-       
-        print "</TABLE>"
+        print "</table>"
         print "</div>"
         
         #print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live."+self.format+".m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
-        print '<hr>'
-        print "<h5><a href=\""+self.url+"/media/\">Cliquez ici pour acc&eacute;der aux archives</a></h5>"
-        print "<h5><a href=\""+self.url+"/backup/\">Cliquez ici pour acc&eacute;der aux archives de secours</a></h5>"
+        
         print "</div>"
         print "<div class=\"tools\">"
-        print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
-        print "<INPUT TYPE = submit VALUE = \"Enregistrer\">"
-        print "</FORM>"
+        print "<div class=\"buttons\">"
+        #print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
+        print "<button type=\"submit\" name=\"action\" value=\"start\" class=\"negative\"><img src=\"img/stop.png\" alt=\"\"/>Enregistrer</button>"
+        print "<a href=\""+self.url+"/media/\"><img src=\"img/folder_go.png\" alt=\"\"/>Archives</a>"
+        print "<a href=\""+self.url+"/backup/\"><img src=\"img/bin.png\" alt=\"\"/>Corbeille</a>"
+        #print "<INPUT TYPE = submit VALUE = \"Enregistrer\">"
         print "</div>"
+        print "</div>"
+        print "</form>"
         self.colophon()
         self.footer()
 
@@ -493,35 +498,35 @@ class WebView:
         self.header()
         self.hardware_data()
         print "<div class=\"main\">"
-        
-        print "<hr>"
-        if writing:
-            print "<h4><span style=\"color: green\">Enregistrement en cours...</span></h4>"
-        else:
-            print "<h4><span style=\"color: red\">PAS d'enregistrement en cours !</span></h4>"
-        print '<hr>'
-        if casting:
-            print "<h4><span style=\"color: green\">Diffusion en cours...</span></h4>"
-        else:
-            print "<h4><span style=\"color: red\">PAS de diffusion en cours !</span></h4>"
-        print "<hr>"
-        print "<TABLE BORDER = 0>"
+        print "<table border = 0>"
         print "<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
         print "<TR><TH align=\"left\">D&eacute;partement :</TH><TD>"+department+"</TD><TR>"
         print "<TR><TH align=\"left\">Conference :</TH><TD>"+conference+"</TD><TR>"
         print "<TR><TH align=\"left\">Session :</TH><TD>"+session+"</TD><TR>"
         print "<TR><TH align=\"left\">Professeur :</TH><TD>"+professor+"</TD><TR>"
         print "<TR><TH align=\"left\">Commentaire :</TH><TD>"+comment+"</TD><TR>"
-        print "</TABLE>"
-        print "<hr>"
-        print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
+        print "</table>"
+        #print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
+        print "<form method=\"post\" action=\""+self.url+"/telecaster/telecaster.py\">"
         print "<div class=\"tools\">"
-        print "<FORM METHOD = post ACTION = \""+self.url+"/telecaster/telecaster.py\">"
-        print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
-        print "<INPUT TYPE = submit VALUE = \"STOP\">"
-        print "</FORM>"
+        print "<div class=\"buttons\">"
+        if writing:
+            print "<button type=\"submit\" class=\"positive\"><img src=\"img/drive_add.png\" alt=\"\"/>Recording...</button"
+        else:
+            print "<button type=\"submit\" class=\"negative\"><img src=\"img/drive_error.png\" alt=\"\"/>NOT Recording !</button"
+        if casting:
+            print "<button type=\"submit\" class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\"/>Diffusing...</button"
+        else:
+            print "<button type=\"submit\" class=\"negative\"><img src=\"img/transmit_error.png\" alt=\"\"/>NOT Diffusing !</button"
+        print "<a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\"><img src=\"img/control_play_blue.png\" alt=\"\"/>Play</a>"
+        print "<button type=\"submit\" name=\"action\" value=\"stop\" class=\"negative\"><img src=\"img/cancel.png\" alt=\"\"/>Stop</button>"
+        
+        #print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
+        #print "<INPUT TYPE = submit VALUE = \"STOP\">"
         print "</div>"
+        print "</div>"
+        print "</form>"
         self.colophon()
         self.footer()
 
@@ -546,14 +551,10 @@ class TeleCaster:
         odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
         rip_pid = get_pid('streamripper ', self.uid)
         writing = False
-        casting = True
-        if rip_pid != []:
-            writing = True
-        if odd_pid == []:
-            casting = False
-        
-        w = WebView(self.school_file)
-        form = cgi.FieldStorage()
+        casting = False
+        writing = rip_pid != []
+        casting = odd_pid != []        
+        form = WebView(self.school_file)
         
         if odd_pid == [] and form.has_key("action") and \
             form.has_key("department") and form.has_key("conference") and \
@@ -561,37 +562,32 @@ class TeleCaster:
             form["action"].value == "start":
             
             self.conference_dict = {'title': self.title,
-                        'department': form["department"].value,
-                        'conference': form["conference"].value,
-                        'session': form["session"].value,
-                        'professor': form["professor"].value,
-                        'comment': form["comment"].value}
+                        'department': form.getfirst("department"),
+                        'conference': form.getfirst("conference"),
+                        'session': form.getfirst("session"),
+                        'professor': form.getfirst("professor"),
+                        'comment': form.getfirst("comment")}
             
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
-            if get_pid('^oddcastv3 -n [^LIVE]', self.uid) != []:
-                casting = True
-            if get_pid('streamripper ', self.uid) == []:
-                writing = False
-            w.stop_form(self.conference_dict, writing, casting)
+            time.sleep(1)
+            #w.stop_form(self.conference_dict, writing, casting)
+            self.main()
             
         elif odd_pid != [] and os.path.exists(self.lock_file) and not form.has_key("action"):
             self.conference_dict = get_conference_from_lock(self.lock_file)
-            if get_pid('^oddcastv3 -n [^LIVE]', self.uid) != []:
-               casting = True
-            if get_pid('streamripper ', self.uid) == []:
-                writing = False
-            w.stop_form(self.conference_dict, writing, casting)
+            form.stop_form(self.conference_dict, writing, casting)
 
         elif odd_pid != [] and form.has_key("action") and form["action"].value == "stop":
             if os.path.exists(self.lock_file):
                 self.conference_dict = get_conference_from_lock(self.lock_file)
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.stop()
-            w.start_form()
+            time.sleep(1)
+            self.main()
 
         elif odd_pid == []:
-            w.start_form()
+            form.start_form()
 
 
 # Call main function.
