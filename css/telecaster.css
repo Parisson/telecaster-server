@@ -18,14 +18,14 @@ div.main {
        display: block;
        background-color: transparent;
        color: #000033;
-	   padding:1em;
+	   padding: 1em;
        position: relative;
        font: 0.8125em/1em Verdana, sans-serif;
 }
 
 
 div.tools { background-color: #030250;
-            color: #FFFFFF;
+        color: #FFFFFF;
         font-size: 1em;
 	    border: 1px solid #FFFFFF;
 	    padding:0.5em;
@@ -34,9 +34,10 @@ div.tools { background-color: #030250;
 }
 
 div.colophon { background-color: #FFFFFF;
-         color: #000033;
+     color: #000033;
 	 font-size: 80%;
-     float: right;
+     float: left;
+     padding: 0px 0px 0px 1em;
      font: 0.8125em/1em Verdana, sans-serif;
 }
 
