@@ -33,12 +33,15 @@ div.tools { background-color: #030250;
         height: 32px;
 }
 
-div.colophon { background-color: #FFFFFF;
-     color: #000033;
+div.colophon { background-color: transparent;
+     color: #FFFFFF;
 	 font-size: 80%;
-     float: left;
-     padding: 0px 0px 0px 1em;
+     float: right;
+     padding: 0.5em 0px 0px 1em;
      font: 0.8125em/1em Verdana, sans-serif;
+}
+
+div.colophon a { color: #FFFFFF;
 }
 
 div.title { background-color: #030250;

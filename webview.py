@@ -190,34 +190,34 @@ class WebView(FieldStorage):
         #print "<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
         print "<div \class=\"form\">"
         print "<table border = 0>"
-        print "<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
-        print "<TR><TH align=\"left\">D&eacute;partement :</TH>"
+        print "<TR><TH align=\"left\">Titre:</TH><TD>"+self.title+"</TD></TR>"
+        print "<TR><TH align=\"left\">D&eacute;partement:</TH>"
         print "<TD><select name=\"department\" onChange=\"choix(this.form)\">"
         print "<option selected>...........Choisissez un d&eacute;partement...........</option>"
         for department in self.departments:
             print "<option value=\""+department['name']+"\">"+department['name']+"</option>"
         print "</select></TD></TR>"
 
-        print "<TR><TH align=\"left\">Conf&eacute;rence :</TH>"
+        print "<TR><TH align=\"left\">Conf&eacute;rence:</TH>"
         print "<TD><select name=\"conference\">"
         print "<option selected>...........Choisissez une conf&eacute;rence...........</option>"
         for i in range(1,self.conference_nb_max):
             print "<option></option>"
         print "</select></TD></TR>"
 
-        print "<TR><TH align=\"left\">Session :</TH><TD><select name=\"session\">"
+        print "<TR><TH align=\"left\">Session:</TH><TD><select name=\"session\">"
         for i in range(1,21):
             print "<option value=\""+str(i)+"\">"+str(i)+"</option>"
         print "</select></TD></TR>"
 
-        print "<TR><TH align=\"left\">Professeur :</TH>"
+        print "<TR><TH align=\"left\">Professeur:</TH>"
         print "<TD><select name=\"professor\">"
         print "<option selected>...........Choisissez un professeur...........</option>"
         for professor in self.professors:
             print "<option value=\""+professor['name']+"\">"+professor['name']+"</option>"
         print "</select></TD></TR>"
 
-        print "<TR><TH align=\"left\">Commentaire :</TH>"
+        print "<TR><TH align=\"left\">Commentaire:</TH>"
         print "<TD><select name=\"comment\">"
         print "<option selected>...........Choisissez un commentaire...........</option>"
         for comment in self.comments:
@@ -237,9 +237,10 @@ class WebView(FieldStorage):
         print "<a href=\""+self.url+"/backup/\"><img src=\"img/bin.png\" alt=\"\"/>Corbeille</a>"
         #print "<INPUT TYPE = submit VALUE = \"Enregistrer\">"
         print "</div>"
+        self.colophon()
         print "</div>"
         print "</form>"
-        self.colophon()
+        
         self.footer()
 
     def encode_form(self, message=''):
