@@ -288,8 +288,8 @@ class WebView(FieldStorage):
         #print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
         #print "<INPUT TYPE = submit VALUE = \"STOP\">"
         print "</div>"
+        self.colophon()
         print "</div>"
         print "</form>"
-        self.colophon()
         self.footer()
 
