@@ -20,9 +20,6 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 """
 
-version = '0.3.5'
-# Only for Unix and Linux systems
-
 import os
 import cgi
 import cgitb
@@ -40,8 +37,9 @@ cgitb.enable()
 class WebView(FieldStorage):
     """Gives the web CGI frontend"""
     
-    def __init__(self, school_file):
+    def __init__(self, school_file, version):
         FieldStorage.__init__(self)
+        self.version = version
         self.conf = xml2dict(school_file)
         self.conf = self.conf['telecaster']
         self.interfaces = ['eth0', 'eth1', 'eth2']
@@ -114,7 +112,7 @@ class WebView(FieldStorage):
     def colophon(self):
         date = datetime.datetime.now().strftime("%Y")
         print "<div class=\"colophon\">"
-        print "TeleCaster "+version+" &copy; <span>"+date+"</span>&nbsp;<a href=\"http://parisson.com\">Parisson SARL</a>. Tous droits r&eacute;serv&eacute;s."
+        print "TeleCaster "+self.version+" &copy; <span>"+date+"</span>&nbsp;<a href=\"http://parisson.com\">Parisson SARL</a>. Tous droits r&eacute;serv&eacute;s."
         print "</div>"
             
     def footer(self):

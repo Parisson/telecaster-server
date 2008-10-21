@@ -64,7 +64,7 @@ class TeleCaster:
         casting = False
         writing = rip_pid != []
         casting = odd_pid != []        
-        form = WebView(self.school_file)
+        form = WebView(self.school_file, version)
         
         if odd_pid == [] and form.has_key("action") and \
             form.has_key("department") and form.has_key("conference") and \
