@@ -67,6 +67,7 @@ class WebView(FieldStorage):
         self.conference_nb_max = 40
         self.professor_nb_max = 40
         self.refresh = False
+        self.uid = os.getuid()
 
     def header(self):
         # Required header that tells the browser how to render the HTML.
@@ -121,6 +122,7 @@ class WebView(FieldStorage):
         print "</HTML>"
 
     def hardware_data(self):
+        jackd_pid = get_pid('jackd ', self.uid)
         self.acpi.update()
         self.power_state = self.acpi.charging_state()
         if self.power_state == 0:
@@ -152,6 +154,11 @@ class WebView(FieldStorage):
             ip_info = '<span style=\"color: red\">'+self.ip+'</span>'
         else:
             ip_info = '<span style=\"color: green\">'+self.ip+'</span>'
+
+        if jackd_pid == []:
+            jackd_info = '<span style=\"color: red\">&eacute;teint</span>'
+        else:
+            jackd_info = '<span style=\"color: green\">d&eacute;marr&eacute;</span>'
         
         print "<div class=\"hardware\">"
         print "<div class=\"title\">Informations mat&eacute;rielles</div>"
@@ -174,6 +181,8 @@ class WebView(FieldStorage):
             pass
         print "<tr><td>Address IP :</td>"
         print "<td>%s</td></tr>" % ip_info
+        print "<tr><td>Serveur JACK :</td>"
+        print "<td>%s</td></tr>" % jackd_info
         print "</table>"
         print "</div>"
         
