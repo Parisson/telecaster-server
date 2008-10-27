@@ -20,7 +20,7 @@ div.main {
        color: #000033;
 	   padding: 1em;
        position: relative;
-       font: 0.8125em/1em Verdana, sans-serif;
+       font: 1em/1em Verdana, sans-serif;
 }
 
 
@@ -53,6 +53,7 @@ div.title { background-color: #030250;
 
 div.hardware {     clear: both;
     font: 0.8125em/1em Verdana, sans-serif;
+    color: #000000;
     font-size: 1em;
     position: absolute;
     right: 1em;
@@ -68,7 +69,22 @@ div.form { background-color: #FFFFFF;
        float: left;
        color: #000033;
        padding:1em;
-       margin: 0;
+       margin: 1em;
+       font: 0.8125em/1em Verdana, sans-serif;
+}
+
+/* TABLE */
+
+table.form {
+    border: 0px;
+    border-collapse: separate;
+    border-spacing: 8px
+}
+
+table.hardware {
+    border: 0px;
+    border-collapse: separate;
+    border-spacing: 5px
 }
 
 /* BUTTONS */

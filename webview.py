@@ -72,9 +72,11 @@ class WebView(FieldStorage):
     def header(self):
         # Required header that tells the browser how to render the HTML.
         print "Content-Type: text/html\n\n"
+        print "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"
         print "<HTML>"
         print "<HEAD>"
         print "<TITLE>TeleCaster - "+self.title+"</TITLE>"
+        print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">"
         print "<link href=\"css/telecaster.css\" rel=\"stylesheet\" type=\"text/css\">"
         print '<script language="Javascript" type="text/javascript" >'
         print 'function choix(formulaire)'
@@ -162,7 +164,7 @@ class WebView(FieldStorage):
         
         print "<div class=\"hardware\">"
         print "<div class=\"title\">Informations mat&eacute;rielles</div>"
-        print "<table>"
+        print "<table class=\"hardware\">"
         print "<tr><td>Alimentation :</td>"
         print "<td>%s</td></tr>" % power_info
         #print "<tr><td>Etat batterie :</td>"
@@ -172,11 +174,11 @@ class WebView(FieldStorage):
         #print "<tr><td>Estimation dur&eacute;e batterie :</td>"
         #print "<td>%s</td></tr>" % self.acpi.estimated_lifetime()
         try:
-            print "<tr><td>Temp core 1 :</td><td>%s</td></tr>" % self.acpi.temperature(0)
+            print "<tr><td>Temp Core 1 :</td><td>%s</td></tr>" % self.acpi.temperature(0)
         except:
             pass
         try:
-            print "<tr><td>Temp core 2 :</td><td>%s</td></tr>" % self.acpi.temperature(1)
+            print "<tr><td>Temp Core 2 :</td><td>%s</td></tr>" % self.acpi.temperature(1)
         except:
             pass
         print "<tr><td>Address IP :</td>"
@@ -193,10 +195,7 @@ class WebView(FieldStorage):
         self.hardware_data()
         print "<form method=\"post\" action=\""+self.url+"/telecaster/telecaster.py\" name=\"formulaire\">"
         print "<div class=\"main\">"
-        #print "<h5><span style=\"color: red\">"+message+"</span></h5>"
-        #print "<h5><span style=\"color: red\">Attention, il est important de remplir tous les champs, y compris le commentaire !</span></h5>"
-        print "<div \class=\"form\">"
-        print "<table border = 0>"
+        print "<table class=\"form\">"
         print "<TR><TH align=\"left\">Titre:</TH><TD>"+self.title+"</TD></TR>"
         print "<TR><TH align=\"left\">D&eacute;partement:</TH>"
         print "<TD><select name=\"department\" onChange=\"choix(this.form)\">"
@@ -204,26 +203,22 @@ class WebView(FieldStorage):
         for department in self.departments:
             print "<option value=\""+department['name']+"\">"+department['name']+"</option>"
         print "</select></TD></TR>"
-
         print "<TR><TH align=\"left\">Conf&eacute;rence:</TH>"
         print "<TD><select name=\"conference\">"
         print "<option selected>...........Choisissez une conf&eacute;rence...........</option>"
         for i in range(1,self.conference_nb_max):
             print "<option></option>"
         print "</select></TD></TR>"
-
         print "<TR><TH align=\"left\">Session:</TH><TD><select name=\"session\">"
         for i in range(1,21):
             print "<option value=\""+str(i)+"\">"+str(i)+"</option>"
         print "</select></TD></TR>"
-
         print "<TR><TH align=\"left\">Professeur:</TH>"
         print "<TD><select name=\"professor\">"
         print "<option selected>...........Choisissez un professeur...........</option>"
         for professor in self.professors:
             print "<option value=\""+professor['name']+"\">"+professor['name']+"</option>"
         print "</select></TD></TR>"
-
         print "<TR><TH align=\"left\">Commentaire:</TH>"
         print "<TD><select name=\"comment\">"
         print "<option selected>...........Choisissez un commentaire...........</option>"
@@ -232,22 +227,18 @@ class WebView(FieldStorage):
         print "</select></TD></TR>"
         print "</table>"
         print "</div>"
-        
         #print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live."+self.format+".m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
-        
-        print "</div>"
         print "<div class=\"tools\">"
         print "<div class=\"buttons\">"
         #print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
-        print "<button type=\"submit\" name=\"action\" value=\"start\" class=\"negative\"><img src=\"img/stop.png\" alt=\"\"/>Enregistrer</button>"
-        print "<a href=\""+self.url+"/media/\"><img src=\"img/folder_go.png\" alt=\"\"/>Archives</a>"
-        print "<a href=\""+self.url+"/backup/\"><img src=\"img/bin.png\" alt=\"\"/>Corbeille</a>"
+        print "<button type=\"submit\" name=\"action\" value=\"start\" class=\"negative\"><img src=\"img/stop.png\" alt=\"\">Enregistrer</button>"
+        print "<a href=\""+self.url+"/media/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
+        print "<a href=\""+self.url+"/backup/\"><img src=\"img/bin.png\" alt=\"\">Corbeille</a>"
         #print "<INPUT TYPE = submit VALUE = \"Enregistrer\">"
         print "</div>"
-        self.colophon()
         print "</div>"
         print "</form>"
-        
+        self.colophon()
         self.footer()
 
     def encode_form(self, message=''):
@@ -270,35 +261,32 @@ class WebView(FieldStorage):
         self.header()
         self.hardware_data()
         print "<div class=\"main\">"
-        print "<table border = 0>"
+        print "<table class=\"form\">"
         print "<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
-        print "<TR><TH align=\"left\">D&eacute;partement :</TH><TD>"+department+"</TD><TR>"
-        print "<TR><TH align=\"left\">Conference :</TH><TD>"+conference+"</TD><TR>"
-        print "<TR><TH align=\"left\">Session :</TH><TD>"+session+"</TD><TR>"
-        print "<TR><TH align=\"left\">Professeur :</TH><TD>"+professor+"</TD><TR>"
-        print "<TR><TH align=\"left\">Commentaire :</TH><TD>"+comment+"</TD><TR>"
+        print "<TR><TH align=\"left\">D&eacute;partement :</TH><TD>"+department+"</TD></TR>"
+        print "<TR><TH align=\"left\">Conference :</TH><TD>"+conference+"</TD></TR>"
+        print "<TR><TH align=\"left\">Session :</TH><TD>"+session+"</TD></TR>"
+        print "<TR><TH align=\"left\">Professeur :</TH><TD>"+professor+"</TD></TR>"
+        print "<TR><TH align=\"left\">Commentaire :</TH><TD>"+comment+"</TD></TR>"
         print "</table>"
         #print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
-        print "<form method=\"post\" action=\""+self.url+"/telecaster/telecaster.py\">"
         print "<div class=\"tools\">"
+        print "<form method=\"post\" action=\""+self.url+"/telecaster/telecaster.py\">"
         print "<div class=\"buttons\">"
         if writing:
-            print "<button type=\"submit\" class=\"positive\"><img src=\"img/drive_add.png\" alt=\"\"/>Recording...</button"
+            print "<button type=\"submit\" class=\"positive\"><img src=\"img/drive_add.png\" alt=\"\">Recording...</button>"
         else:
-            print "<button type=\"submit\" class=\"negative\"><img src=\"img/drive_error.png\" alt=\"\"/>NOT Recording !</button"
+            print "<button type=\"submit\" class=\"negative\"><img src=\"img/drive_error.png\" alt=\"\">NOT Recording !</button>"
         if casting:
-            print "<button type=\"submit\" class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\"/>Diffusing...</button"
+            print "<button type=\"submit\" class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\">Diffusing...</button>"
         else:
-            print "<button type=\"submit\" class=\"negative\"><img src=\"img/transmit_error.png\" alt=\"\"/>NOT Diffusing !</button"
-        print "<a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\"><img src=\"img/control_play_blue.png\" alt=\"\"/>Play</a>"
-        print "<button type=\"submit\" name=\"action\" value=\"stop\" class=\"negative\"><img src=\"img/cancel.png\" alt=\"\"/>Stop</button>"
-        
-        #print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"stop\">"
-        #print "<INPUT TYPE = submit VALUE = \"STOP\">"
-        print "</div>"
-        self.colophon()
+            print "<button type=\"submit\" class=\"negative\"><img src=\"img/transmit_error.png\" alt=\"\">NOT Diffusing !</button>"
+        print "<a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
+        print "<button type=\"submit\" name=\"action\" value=\"stop\" class=\"negative\"><img src=\"img/cancel.png\" alt=\"\">Stop</button>"
         print "</div>"
         print "</form>"
+        print "</div>"
+        self.colophon()
         self.footer()
 
