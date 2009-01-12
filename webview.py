@@ -77,7 +77,7 @@ class WebView(FieldStorage):
         print "<HEAD>"
         print "<TITLE>TeleCaster - "+self.title+"</TITLE>"
         print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">"
-        print "<link href=\"css/telecaster.css\" rel=\"stylesheet\" type=\"text/css\">"
+        print "<link href=\""+self.url+"/telecaster/css/telecaster.css\" rel=\"stylesheet\" type=\"text/css\">"
         print '<script language="Javascript" type="text/javascript" >'
         print 'function choix(formulaire)'
         print '{var j; var i = formulaire.department.selectedIndex;'
