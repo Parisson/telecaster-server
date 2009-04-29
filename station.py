@@ -125,14 +125,14 @@ class Station(Conference):
         oddconf = open(odd_conf_file,'w')
         oddconf.writelines(newlines)
         oddconf.close()
-        self.odd_conf = self.odd_conf_file
+        self.odd_conf = odd_conf_file
 
     def start_oddcast(self):
-        command = 'oddcastv3 -n "'+clean_string(self.conference)[0:16]+'" -c '+self.odd_conf+ \
-                  ' alsa_pcm:capture_1 > /dev/null &'
+        command = 'oddcastv3 -n "'+clean_string(self.conference)[0:16]+'" -c "'+self.odd_conf+ \
+                  '" alsa_pcm:capture_1 > /dev/null &'
         os.system(command)
         self.set_lock()
-        time.sleep(0.1)
+        time.sleep(1)
 
     def set_lock(self):
         lock = open(self.lock_file,'w')
@@ -148,7 +148,7 @@ class Station(Conference):
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
         command = 'streamripper ' + self.url + self.mount_point + \
-                  ' -d '+self.output_dir+' -D "%S" -s -t --quiet > /dev/null &'
+                  ' -d '+self.output_dir+' -D \"%S\" -s -t --quiet > /dev/null &'
         os.system(command)
         time.sleep(1)
 
