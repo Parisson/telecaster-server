@@ -1,0 +1,49 @@
+<teleoddcast>
+    <url>http://cellar.parisson.com</url>
+    <title>Cellar LIVE streams from Parisson Stutios - Sweet Funky House for your ears !</title>
+    <port>8000</port>
+    <department>
+        <name>Audio</name>
+        <conferences>
+            <conference>
+                <name>Recording</name>
+            </conference>
+            <conference>
+                <name>Broadcasting</name>
+            </conference>
+        </conferences>
+    </department>
+    <department>
+        <name>Computer</name>
+        <conferences>
+            <conference>
+                <name>Languages</name>
+            </conference>
+            <conference>
+                <name>Open source systems</name>
+            </conference>
+        </conferences>
+    </department>
+    <department>
+        <name>Physics</name>
+        <conferences>
+            <conference>
+                <name>Mechanics</name>
+            </conference>
+            <conference>
+                <name>Acoustics</name>
+            </conference>
+        </conferences>
+    </department>
+    <department>
+        <name>Ethnology</name>
+        <conferences>
+            <conference>
+                <name>Ethomusicology</name>
+            </conference>
+            <conference>
+                <name>Documentation</name>
+            </conference>
+        </conferences>
+    </department>
+</teleoddcast>

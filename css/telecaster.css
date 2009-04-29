@@ -34,14 +34,15 @@ div.tools { background-color: #030250;
 }
 
 div.colophon { background-color: transparent;
-     color: #FFFFFF;
+     color: #000000;
 	 font-size: 80%;
      float: right;
      padding: 0.5em 0px 0px 1em;
      font: 0.8125em/1em Verdana, sans-serif;
 }
 
-div.colophon a { color: #FFFFFF;
+div.colophon a { color: #000000;
+                 
 }
 
 div.title { background-color: #030250;
