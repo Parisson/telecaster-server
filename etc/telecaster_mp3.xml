@@ -22,10 +22,10 @@
         <dir>/home/prebarreau/media</dir>
         <raw_dir>/home/prebarreau/backup</raw_dir>
         <format>mp3</format>
-        <bitrate>64</bitrate>
-        <ogg_quality>2</ogg_quality>
+        <bitrate>96</bitrate>
+        <ogg_quality>3</ogg_quality>
         <samplerate>44100</samplerate>
-        <voices>2</voices>
+        <voices>1</voices>
         <shuffle>1</shuffle>
     </media>
 </telecaster>

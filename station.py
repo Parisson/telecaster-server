@@ -67,7 +67,7 @@ class Station(Conference):
         self.password = self.conf['server']['sourcepassword']
         self.url = 'http://'+self.host+':'+self.port
         self.odd_conf_file = self.conf['server']['odd_conf_file']
-        self.bitrate = '64'
+        self.bitrate = self.conf['media']['bitrate']
         self.format = self.conf['media']['format']
         self.description = [self.title, self.department, self.conference, self.session, self.professor, self.comment]
         self.server_name = [self.title, self.department, self.conference]
