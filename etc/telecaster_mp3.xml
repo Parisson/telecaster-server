@@ -19,8 +19,8 @@
     </server>
     <media>
         <record>true</record>
-        <dir>/home/prebarreau/media</dir>
-        <raw_dir>/home/prebarreau/backup</raw_dir>
+        <dir>/tmp/media</dir>
+        <raw_dir>/tmp/backup</raw_dir>
         <format>mp3</format>
         <bitrate>96</bitrate>
         <ogg_quality>3</ogg_quality>

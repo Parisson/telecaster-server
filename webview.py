@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 # *-* coding: utf-8 *-*
 """
    telecaster
@@ -231,9 +232,10 @@ class WebView(FieldStorage):
         print "<div class=\"tools\">"
         print "<div class=\"buttons\">"
         #print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
-        print "<button type=\"submit\" name=\"action\" value=\"start\" class=\"negative\"><img src=\"img/stop.png\" alt=\"\">Enregistrer</button>"
+        print "<button type=\"submit\" name=\"action\" value=\"start\" class=\"negative\"><img src=\"img/stop.png\" alt=\"\">Record</button>"
+        print "<button type=\"submit\" class=\"positive\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
         print "<a href=\""+self.url+"/media/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
-        print "<a href=\""+self.url+"/backup/\"><img src=\"img/bin.png\" alt=\"\">Corbeille</a>"
+        print "<a href=\""+self.url+"/backup/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"
         #print "<INPUT TYPE = submit VALUE = \"Enregistrer\">"
         print "</div>"
         print "</div>"
@@ -282,6 +284,7 @@ class WebView(FieldStorage):
             print "<button type=\"submit\" class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\">Diffusing...</button>"
         else:
             print "<button type=\"submit\" class=\"negative\"><img src=\"img/transmit_error.png\" alt=\"\">NOT Diffusing !</button>"
+        print "<button type=\"submit\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
         print "<a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
         print "<button type=\"submit\" name=\"action\" value=\"stop\" class=\"negative\"><img src=\"img/cancel.png\" alt=\"\">Stop</button>"
         print "</div>"

@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 # *-* coding: utf-8 *-*
 """
    teleoddcast
@@ -27,7 +28,6 @@ import datetime
 import string
 import time
 from xmltodict import *
-from mutagen.oggvorbis import OggVorbis
 import socket
 import fcntl
 import struct
