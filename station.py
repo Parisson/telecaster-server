@@ -77,7 +77,7 @@ class Station(Conference):
                                  clean_string(self.department) + '_-_' + \
                                  clean_string(self.conference)+'.'+self.format
         self.lock_file = self.root_dir + os.sep + self.conf['server']['lock_file']
-        self.filename = self.ServerDescription + '_-_' + self.time + '.' + self.format
+        self.filename = clean_string('_-_'.join(self.description[1:])) + '_-_' + self.time + '.' + self.format
         self.output_dir = self.media_dir + os.sep + self.department + os.sep + self.date
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
@@ -162,7 +162,7 @@ class Station(Conference):
         time.sleep(1)
         date = datetime.datetime.now().strftime("%Y")
         if os.path.exists(self.file_dir) and os.path.exists(self.file_dir + os.sep + 'incomplete'):
-            shutil.copy(self.file_dir+os.sep+'incomplete'+os.sep+' - .'+self.format, self.file_dir+os.sep)
+            shutil.move(self.file_dir+os.sep+'incomplete'+os.sep+' - .'+self.format, self.file_dir+os.sep)
             os.rename(self.file_dir+os.sep+' - .'+self.format, self.file_dir+os.sep+self.filename)
             shutil.rmtree(self.file_dir+os.sep+'incomplete'+os.sep)
 
