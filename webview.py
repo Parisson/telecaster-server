@@ -60,6 +60,7 @@ class WebView(FieldStorage):
         self.title = self.conf['title']
         self.departments = self.conf['department']
         self.professors = self.conf['professor']
+        self.professors.sort()
         self.comments = self.conf['comment']
         #print self.departments
         #self.conferences = self.conf['department']['conferences']
