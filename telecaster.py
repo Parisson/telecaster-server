@@ -58,7 +58,7 @@ class TeleCaster:
         self.uid = os.getuid()
 
     def main(self):
-        odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
+        odd_pid = get_pid('^oddcastv3\ -n', self.uid)
         rip_pid = get_pid('streamripper ', self.uid)
         writing = False
         casting = False

@@ -81,7 +81,7 @@ class Station(Conference):
         self.output_dir = self.media_dir + os.sep + self.department + os.sep + self.date
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
-        self.odd_pid = get_pid('^oddcastv3 -n [^LIVE]', self.uid)
+        self.odd_pid = get_pid('^oddcastv3\ -n', self.uid)
         self.rip_pid = get_pid('streamripper ' + self.url + self.mount_point, self.uid)
         self.new_title = clean_string('_-_'.join(self.server_name)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
         self.short_title = clean_string('_-_'.join(self.conference)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)

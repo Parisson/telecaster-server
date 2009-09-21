@@ -63,12 +63,15 @@ def xml2dict(conf_file):
 
 def get_pid(proc,uid):
     """Get a process pid filtered by arguments and uid"""
-    (list1, list2) = os.popen4('pgrep -n -f -U '+str(uid)+' '+'"'+proc+'"')
-    pids = list2.readlines()
-    if pids != '':
-        for pid in pids:
-            index = pids.index(pid)
-            pids[index] = pid[:-1]
+    (list1, list2) = os.popen4('pgrep -fl -U '+str(uid)+' '+'"'+proc+'"')
+    procs = list2.readlines()
+    pids = []
+    if procs != '':
+        for proc in procs:
+            pid = proc.split(' ')[0]
+            command = ' '.join(proc.split(' ')[1:])[:-1]
+            if not 'LIVE' in command:
+                pids.append(pid)
     return pids
 
 def get_params_from_lock(lock_file):
