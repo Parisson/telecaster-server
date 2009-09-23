@@ -1,6 +1,6 @@
 <telecaster>
     <url>http://localhost</url>
-    <title>Pre-Barreau - ICP</title>
+    <title>Pre-Barreau - Telecaster 1</title>
     <port>8000</port>
     <format>mp3</format>
     
@@ -180,6 +180,9 @@
     <department>
         <name>FJP</name>
         <conferences>
+            <conference>
+                <name>Actualisation</name>
+            </conference> 
             <conference>
                 <name>TEST</name>
             </conference>

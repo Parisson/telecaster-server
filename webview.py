@@ -222,11 +222,14 @@ class WebView(FieldStorage):
             print "<option value=\""+professor['name']+"\">"+professor['name']+"</option>"
         print "</select></TD></TR>"
         print "<TR><TH align=\"left\">Commentaire:</TH>"
-        print "<TD><select name=\"comment\">"
-        print "<option selected>...........Choisissez un commentaire...........</option>"
-        for comment in self.comments:
-            print "<option value=\""+comment['text']+"\">"+comment['text']+"</option>"
-        print "</select></TD></TR>"
+        print "<TD><INPUT type = text name = \"comment\"></TD></TR>"
+
+        #print "<TD><select name=\"comment\">"
+        #print "<option selected>...........Choisissez un commentaire...........</option>"
+        #for comment in self.comments:
+        #    print "<option value=\""+comment['text']+"\">"+comment['text']+"</option>"
+        #print "</select></TD></TR>"
+
         print "</table>"
         print "</div>"
         #print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live."+self.format+".m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
