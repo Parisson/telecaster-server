@@ -38,7 +38,7 @@ cgitb.enable()
 class WebView(FieldStorage):
     """Gives the web CGI frontend"""
     
-    def __init__(self, school_file, version):
+    def __init__(self, school_file, url, version):
         FieldStorage.__init__(self)
         self.version = version
         self.conf = xml2dict(school_file)
@@ -53,7 +53,7 @@ class WebView(FieldStorage):
                 break
             except:
                 self.ip = 'localhost'
-        self.url = 'http://' + self.ip
+        self.url = url
         self.port = self.conf['port']
         self.acpi = acpi.Acpi()
         self.format = self.conf['format']

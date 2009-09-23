@@ -56,6 +56,7 @@ class TeleCaster:
         self.lock_file = self.root_dir + os.sep + self.conf['server']['lock_file']
         self.title = self.conf['infos']['name']
         self.uid = os.getuid()
+        self.url = self.conf['infos']['url']
 
     def main(self):
         odd_pid = get_pid('^oddcastv3\ -n', self.uid)
@@ -64,7 +65,7 @@ class TeleCaster:
         casting = False
         writing = rip_pid != []
         casting = odd_pid != []        
-        form = WebView(self.school_file, version)
+        form = WebView(self.school_file, self.url, version)
         
         if odd_pid == [] and form.has_key("action") and \
             form.has_key("department") and form.has_key("conference") and \
