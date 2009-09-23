@@ -3,7 +3,7 @@
         <short_name>Pre-Barreau</short_name>
         <name>Pre-Barreau</name>
         <description>La preparation au Barreau de Paris</description>
-        <url>http://augustins.pre-barreau.com</url>
+        <url>http://localhost</url>
         <genre>Other</genre>
         <channels>1</channels>
     </infos>

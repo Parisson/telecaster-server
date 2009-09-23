@@ -53,7 +53,7 @@ class WebView(FieldStorage):
                 break
             except:
                 self.ip = 'localhost'
-        self.url = url
+        self.url = 'http://' + self.ip
         self.port = self.conf['port']
         self.acpi = acpi.Acpi()
         self.format = self.conf['format']
