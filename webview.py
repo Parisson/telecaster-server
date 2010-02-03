@@ -37,7 +37,7 @@ cgitb.enable()
 
 class WebView(FieldStorage):
     """Gives the web CGI frontend"""
-    
+
     def __init__(self, school_file, url, version):
         FieldStorage.__init__(self)
         self.version = version
@@ -53,7 +53,12 @@ class WebView(FieldStorage):
                 break
             except:
                 self.ip = 'localhost'
-        self.url = 'http://' + self.ip
+        if 'host' in self.conf:
+            self.host = self.conf['host']
+        else:
+            self.host = self.ip
+        self.url = 'http://' + self.host
+        self.rss_url = self.url+'/rss/telecaster.xml'
         self.port = self.conf['port']
         self.acpi = acpi.Acpi()
         self.format = self.conf['format']
@@ -79,7 +84,9 @@ class WebView(FieldStorage):
         print "<HEAD>"
         print "<TITLE>TeleCaster - "+self.title+"</TITLE>"
         print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">"
+
         print "<link href=\""+self.url+"/telecaster/css/telecaster.css\" rel=\"stylesheet\" type=\"text/css\">"
+
         print '<script language="Javascript" type="text/javascript" >'
         print 'function choix(formulaire)'
         print '{var j; var i = formulaire.department.selectedIndex;'
@@ -104,11 +111,19 @@ class WebView(FieldStorage):
         print '}'
         print '      formulaire.conference.selectedIndex=0;}'
         print '</script>'
+
+
+        print "<script type=\"text/javascript\" src=\"js/rssajax.js\"></script>"
+        print "<script type=\"text/javascript\">"
+        print " function rss_reload(url) {"
+        print "  getRSS(url)"
+        print "  setTimeout(\"rss_reload(\'\" + url + \"\')\", 10000);}"
+        print "</script>"
         if self.refresh:
             print "<meta http-equiv=\"refresh\" content=\"10; URL=telecaster.py\">"
         print "</HEAD>\n"
-        
-        print "<BODY BGCOLOR =\"#FFFFFF\">"
+        #print "<BODY bgcolor =\"#ffffff\" onload=\"rss_reload(\'" + self.rss_url + "\');\">"
+        print "<BODY bgcolor =\"#ffffff\">"
         print "<div class=\"bg\">"
         print "<div class=\"header\">"
         print "<H3>&nbsp;TeleCaster - L'enregistrement et la diffusion audio en direct par internet</H3>"
@@ -119,7 +134,7 @@ class WebView(FieldStorage):
         print "<div class=\"colophon\">"
         print "TeleCaster "+self.version+" &copy; <span>"+date+"</span>&nbsp;<a href=\"http://parisson.com\">Parisson SARL</a>. Tous droits r&eacute;serv&eacute;s."
         print "</div>"
-            
+
     def footer(self):
         print "</div>"
         print "</BODY>"
@@ -135,7 +150,7 @@ class WebView(FieldStorage):
             power_info = "<span style=\"color: green\">secteur</span>"
         else:
             power_info = ""
-            
+
         #if self.power_state == 0:
             #batt_info = "en d&eacute;charge"
         #elif self.power_state == 1:
@@ -163,7 +178,7 @@ class WebView(FieldStorage):
             jackd_info = '<span style=\"color: red\">&eacute;teint</span>'
         else:
             jackd_info = '<span style=\"color: green\">d&eacute;marr&eacute;</span>'
-        
+
         print "<div class=\"hardware\">"
         print "<div class=\"title\">Informations mat&eacute;rielles</div>"
         print "<table class=\"hardware\">"
@@ -189,7 +204,7 @@ class WebView(FieldStorage):
         print "<td>%s</td></tr>" % jackd_info
         print "</table>"
         print "</div>"
-        
+
 
     def start_form(self, message=''):
         self.refresh = False
@@ -236,8 +251,8 @@ class WebView(FieldStorage):
         print "<div class=\"tools\">"
         print "<div class=\"buttons\">"
         #print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
-        print "<button type=\"submit\" name=\"action\" value=\"start\" class=\"negative\"><img src=\"img/stop.png\" alt=\"\">Record</button>"
         print "<button type=\"submit\" class=\"positive\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
+        print "<button type=\"submit\" name=\"action\" value=\"start\" class=\"negative\"><img src=\"img/stop.png\" alt=\"\">Record</button>"
         print "<a href=\""+self.url+"/media/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
         print "<a href=\""+self.url+"/backup/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"
         #print "<INPUT TYPE = submit VALUE = \"Enregistrer\">"
@@ -277,9 +292,22 @@ class WebView(FieldStorage):
         print "</table>"
         #print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
+
+        print """<div class="rss" id="chan">
+                <b><div id="chan_description"></div></b><br>
+                <div id="chan_title"></div>
+                <div id="chan_link"></div>
+                <div id="chan_description"></div>
+                <a id="chan_image_link" href=""></a>
+                <div id="chan_items"></div>
+                <div id="chan_pubDate"></div>
+                <div id="chan_copyright"></div>
+            </div>"""
+
         print "<div class=\"tools\">"
         print "<form method=\"post\" action=\""+self.url+"/telecaster/telecaster.py\">"
         print "<div class=\"buttons\">"
+        print "<button type=\"submit\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
         if writing:
             print "<button type=\"submit\" class=\"positive\"><img src=\"img/drive_add.png\" alt=\"\">Recording...</button>"
         else:
@@ -288,7 +316,6 @@ class WebView(FieldStorage):
             print "<button type=\"submit\" class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\">Diffusing...</button>"
         else:
             print "<button type=\"submit\" class=\"negative\"><img src=\"img/transmit_error.png\" alt=\"\">NOT Diffusing !</button>"
-        print "<button type=\"submit\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
         print "<a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
         print "<button type=\"submit\" name=\"action\" value=\"stop\" class=\"negative\"><img src=\"img/cancel.png\" alt=\"\">Stop</button>"
         print "</div>"

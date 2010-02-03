@@ -1,5 +1,5 @@
 <telecaster>
-    <url>http://localhost</url>
+    <host>augustins.pre-barreau.com</host>
     <title>Pre-Barreau</title>
     <port>8000</port>
     <format>mp3</format>

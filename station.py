@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 # *-* coding: utf-8 *-*
 """
    telecaster
@@ -27,6 +28,7 @@ import time
 import codecs
 import string
 import signal
+import jack
 import unicodedata
 from tools import *
 from mutagen.oggvorbis import OggVorbis
@@ -34,8 +36,9 @@ from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TCO, COM
 
 class Conference:
     """A conference object including metadata"""
-    
+
     def __init__(self, dict):
+        self.dict = dict
         self.title = dict['title']
         self.department = dict['department']
         self.conference = dict['conference']
@@ -50,25 +53,29 @@ class Conference:
 class Station(Conference):
     """Control the Oddcastv3-jack thread which send audio data to the icecast server
     and the Streamripper thread which write audio on the hard disk"""
-    
+
     def __init__(self, conf_file, conference_dict, lock_file):
         Conference.__init__(self, conference_dict)
         self.date = datetime.datetime.now().strftime("%Y")
         self.time = datetime.datetime.now().strftime("%x-%X")
-        self.time1 = self.time.replace('/','_')
-        self.time2 = self.time1.replace(':','_')
-        self.time = self.time2.replace(' ','_')
+        self.time_txt = self.time.replace('/','_').replace(':','_').replace(' ','_')
         self.conf = xml2dict(conf_file)
         self.conf = self.conf['telecaster']
         self.root_dir = self.conf['server']['root_dir']
+        self.url_ext = self.conf['infos']['url']
         self.media_dir = self.conf['media']['dir']
         self.host = self.conf['server']['host']
         self.port = self.conf['server']['port']
+        self.rss_dir = self.conf['server']['rss']['dir']
+        self.rss_file = 'telecaster.xml'
         self.password = self.conf['server']['sourcepassword']
-        self.url = 'http://'+self.host+':'+self.port
+        self.url_int = 'http://'+self.host+':'+self.port
         self.odd_conf_file = self.conf['server']['odd_conf_file']
         self.bitrate = self.conf['media']['bitrate']
+        self.dict['Bitrate'] = str(self.bitrate) + ' kbps'
+        self.ogg_quality = self.conf['media']['ogg_quality']
         self.format = self.conf['media']['format']
+        self.channels = int(self.conf['media']['channels'])
         self.description = [self.title, self.department, self.conference, self.session, self.professor, self.comment]
         self.server_name = [self.title, self.department, self.conference]
         self.ServerDescription = clean_string('_-_'.join(self.description))
@@ -77,12 +84,12 @@ class Station(Conference):
                                  clean_string(self.department) + '_-_' + \
                                  clean_string(self.conference)+'.'+self.format
         self.lock_file = self.root_dir + os.sep + self.conf['server']['lock_file']
-        self.filename = clean_string('_-_'.join(self.description[1:])) + '_-_' + self.time + '.' + self.format
+        self.filename = clean_string('_-_'.join(self.description[1:])) + '_-_' + self.time_txt + '.' + self.format
         self.output_dir = self.media_dir + os.sep + self.department + os.sep + self.date
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
         self.odd_pid = get_pid('^oddcastv3\ -n', self.uid)
-        self.rip_pid = get_pid('streamripper ' + self.url + self.mount_point, self.uid)
+        self.rip_pid = get_pid('streamripper ' + self.url_int + self.mount_point, self.uid)
         self.new_title = clean_string('_-_'.join(self.server_name)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
         self.short_title = clean_string('_-_'.join(self.conference)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
         self.genre = 'Vocal'
@@ -95,6 +102,11 @@ class Station(Conference):
         if not os.path.exists(self.raw_dir):
             os.makedirs(self.raw_dir)
 
+        self.jack_inputs = []
+        if 'jack' in self.conf:
+            for jack_input in self.conf['jack']['input']:
+                self.jack_inputs.append(jack_input['name'])
+
     def set_oddcast_conf(self):
         #oddconf_temp = NamedTemporaryFile(suffix='.cfg')
         oddconf = open(self.odd_conf_file,'r')
@@ -105,7 +117,7 @@ class Station(Conference):
             if 'ServerDescription' in line.split('='):
                 newlines.append('ServerDescription=' + \
                                 self.ServerDescription.replace(' ','_') + '\n')
-                
+
             elif 'ServerName' in line.split('='):
                 newlines.append('ServerName=' + self.ServerName + '\n')
 
@@ -114,10 +126,15 @@ class Station(Conference):
 
             elif 'ServerPassword' in line.split('='):
                 newlines.append('ServerPassword=' + self.password + '\n')
-                
+
             elif 'SaveDirectory' in line.split('='):
                 newlines.append('SaveDirectory=' + self.raw_dir + '\n')
-
+            elif 'NumberChannels' in line.split('='):
+                newlines.append('NumberChannels=' + str(len(self.jack_inputs)) + '\n')
+            elif 'BitrateNominal' in line.split('='):
+                newlines.append('BitrateNominal=' + str(self.bitrate) + '\n')
+            elif 'OggQuality' in line.split('='):
+                newlines.append('OggQuality=' + str(self.ogg_quality) + '\n')
             else:
                 newlines.append(line)
 
@@ -128,8 +145,14 @@ class Station(Conference):
         self.odd_conf = odd_conf_file
 
     def start_oddcast(self):
+        if not self.jack_inputs:
+            jack.attach('telecaster')
+            for jack_input in jack.get_ports():
+                if 'system' in jack_input and 'capture' in jack_input.split(':')[1] :
+                    self.jack_inputs.append(jack_input)
+        jack_ports = ' '.join(self.jack_inputs)
         command = 'oddcastv3 -n "'+clean_string(self.conference)[0:16]+'" -c "'+self.odd_conf+ \
-                  '" alsa_pcm:capture_1 > /dev/null &'
+                  '" '+ jack_ports + ' > /dev/null &'
         os.system(command)
         self.set_lock()
         time.sleep(1)
@@ -147,7 +170,7 @@ class Station(Conference):
     def start_rip(self):
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
-        command = 'streamripper ' + self.url + self.mount_point + \
+        command = 'streamripper ' + self.url_int + self.mount_point + \
                   ' -d '+self.output_dir+' -D \"%S\" -s -t --quiet > /dev/null &'
         os.system(command)
         time.sleep(1)
@@ -155,22 +178,25 @@ class Station(Conference):
     def stop_oddcast(self):
         if len(self.odd_pid) != 0:
             os.system('kill -9 '+self.odd_pid[0])
-        
+
     def stop_rip(self):
         if len(self.rip_pid) != 0:
             os.system('kill -9 ' + self.rip_pid[0])
         time.sleep(1)
         date = datetime.datetime.now().strftime("%Y")
         if os.path.exists(self.file_dir) and os.path.exists(self.file_dir + os.sep + 'incomplete'):
-            shutil.move(self.file_dir+os.sep+'incomplete'+os.sep+' - .'+self.format, self.file_dir+os.sep)
-            os.rename(self.file_dir+os.sep+' - .'+self.format, self.file_dir+os.sep+self.filename)
-            shutil.rmtree(self.file_dir+os.sep+'incomplete'+os.sep)
+            try:
+                shutil.move(self.file_dir+os.sep+'incomplete'+os.sep+' - .'+self.format, self.file_dir+os.sep)
+                os.rename(self.file_dir+os.sep+' - .'+self.format, self.file_dir+os.sep+self.filename)
+                shutil.rmtree(self.file_dir+os.sep+'incomplete'+os.sep)
+            except:
+                pass
 
     def mp3_convert(self):
         os.system('oggdec -o - '+ self.file_dir+os.sep+self.filename+' | lame -S -m m -h -b '+ self.bitrate + \
             ' --add-id3v2 --tt "'+ self.new_title + '" --ta "'+self.professor+'" --tl "'+self.title+'" --ty "'+self.date+ \
         '" --tg "'+self.genre+'" - ' + self.file_dir+os.sep+self.ServerDescription + '.mp3 &')
-    
+
     def write_tags_ogg(self):
        file = self.file_dir + os.sep + self.filename
        if os.path.exists(file):
@@ -184,7 +210,7 @@ class Station(Conference):
             audio['ENCODER'] = self.encoder
             audio['COMMENT'] = self.comment
             audio.save()
-    
+
     def write_tags_mp3(self):
         file = self.file_dir + os.sep + self.filename
         if os.path.exists(file):
@@ -210,6 +236,7 @@ class Station(Conference):
         self.set_oddcast_conf()
         self.start_oddcast()
         self.start_rip()
+        self.update_rss()
 
     def stop(self):
         self.stop_rip()
@@ -222,7 +249,7 @@ class Station(Conference):
         #self.mp3_convert()
         #self.rsync_out()
 
-    def start_mp3cast(self):        
+    def start_mp3cast(self):
         item_id = item_id
         source = source
         metadata = metadata
@@ -234,9 +261,9 @@ class Station(Conference):
         stream = self.core_process(self.command,self.buffer_size,self.dest)
         for chunk in stream:
             yield chunk
-    
+
     def core_process(self, command, buffer_size, dest):
-        """Encode and stream audio data through a generator"""     
+        """Encode and stream audio data through a generator"""
         __chunk = 0
         file_out = open(dest,'w')
         try:
@@ -264,3 +291,38 @@ class Station(Conference):
         local_uname = os.uname()
         hostname = local_uname[1]
         os.system('rsync -a '+self.media_dir+os.sep+' '+self.rsync_host+':'+os.sep+hostname+os.sep)
+
+    def update_rss(self):
+        rss_item_list = []
+        if not os.path.exists(self.rss_dir):
+            os.makedirs(self.rss_dir)
+
+        time_now = datetime.datetime.now().strftime("%x-%X")
+
+        media_description = '<table>'
+        media_description_item = '<tr><td>%s:   </td><td><b>%s</b></td></tr>'
+        for key in self.dict.keys():
+            if self.dict[key] != '':
+                media_description += media_description_item % (key.capitalize(), self.dict[key])
+        media_description += '</table>'
+
+        media_link = self.url_ext + '/rss/' + self.rss_file
+        media_link = media_link.decode('utf-8')
+
+        rss_item_list.append(RSSItem(
+            title = self.ServerName,
+            link = media_link,
+            description = media_description,
+            guid = Guid(media_link),
+            pubDate = self.time_txt,)
+            )
+
+        rss = RSS2(title = self.title + ' - ' + self.department,
+                            link = self.url_ext,
+                            description = self.ServerDescription.decode('utf-8'),
+                            lastBuildDate = str(time_now),
+                            items = rss_item_list,)
+
+        f = open(self.rss_dir + os.sep + self.rss_file, 'w')
+        rss.write_xml(f, 'utf-8')
+        f.close()
