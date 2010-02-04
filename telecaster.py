@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 # *-* coding: utf-8 *-*
 """
    telecaster
@@ -20,7 +21,7 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 """
 
-version = '0.3.5'
+version = '0.3.6'
 # Only for Unix and Linux systems
 
 import os
@@ -64,27 +65,27 @@ class TeleCaster:
         writing = False
         casting = False
         writing = rip_pid != []
-        casting = odd_pid != []        
+        casting = odd_pid != []
         form = WebView(self.school_file, self.url, version)
-        
+
         if odd_pid == [] and form.has_key("action") and \
             form.has_key("department") and form.has_key("conference") and \
             form.has_key("professor") and form.has_key("comment") and \
             form["action"].value == "start":
-            
+
             self.conference_dict = {'title': self.title,
                         'department': form.getfirst("department"),
                         'conference': form.getfirst("conference"),
                         'session': form.getfirst("session"),
                         'professor': form.getfirst("professor"),
                         'comment': form.getfirst("comment")}
-            
+
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
             time.sleep(1)
             #w.stop_form(self.conference_dict, writing, casting)
             self.main()
-            
+
         elif odd_pid != [] and os.path.exists(self.lock_file) and not form.has_key("action"):
             self.conference_dict = get_conference_from_lock(self.lock_file)
             form.stop_form(self.conference_dict, writing, casting)
