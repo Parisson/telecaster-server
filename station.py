@@ -25,6 +25,7 @@ import os
 import shutil
 import datetime
 import time
+import urllib
 import codecs
 import string
 import signal
@@ -201,14 +202,14 @@ class Station(Conference):
        file = self.file_dir + os.sep + self.filename
        if os.path.exists(file):
             audio = OggVorbis(file)
-            audio['TITLE'] = self.new_title
-            audio['ARTIST'] = self.professor
-            audio['ALBUM'] = self.title
-            audio['DATE'] = self.date
-            audio['GENRE'] = self.genre
-            audio['SOURCE'] = self.title
-            audio['ENCODER'] = self.encoder
-            audio['COMMENT'] = self.comment
+            audio['TITLE'] = self.new_title.decode('utf8')
+            audio['ARTIST'] = self.professor.decode('utf8')
+            audio['ALBUM'] = self.title.decode('utf8')
+            audio['DATE'] = self.date.decode('utf8')
+            audio['GENRE'] = self.genre.decode('utf8')
+            audio['SOURCE'] = self.title.decode('utf8')
+            audio['ENCODER'] = self.encoder.decode('utf8')
+            audio['COMMENT'] = self.comment.decode('utf8')
             audio.save()
 
     def write_tags_mp3(self):
@@ -217,15 +218,15 @@ class Station(Conference):
             os.system('mp3info -t "a" -a "a" '+file)
             audio = ID3(file)
             #tag = tags.__dict__['TITLE']
-            audio.add(TIT2(encoding=3, text=self.new_title))
+            audio.add(TIT2(encoding=3, text=self.new_title.decode('utf8')))
             #tag = tags.__dict__['ARTIST']
-            audio.add(TP1(encoding=3, text=self.professor))
+            audio.add(TP1(encoding=3, text=self.professor.decode('utf8')))
             #tag = tags.__dict__['ALBUM']
-            audio.add(TAL(encoding=3, text=self.title))
+            audio.add(TAL(encoding=3, text=self.title.decode('utf8')))
             #tag = tags.__dict__['DATE']
-            audio.add(TDA(encoding=3, text=self.date))
+            audio.add(TDA(encoding=3, text=self.date.decode('utf8')))
             #tag = tags.__dict__['GENRE']
-            audio.add(TCO(encoding=3, text=self.genre))
+            audio.add(TCO(encoding=3, text=self.genre.decode('utf8')))
             #tag = tags.__dict__['COMMENT']
             #audio.add(COM(encoding=3, text=self.comment))
             audio.save()
@@ -323,6 +324,6 @@ class Station(Conference):
                             lastBuildDate = str(time_now),
                             items = rss_item_list,)
 
-        f = open(self.rss_dir + os.sep + self.rss_file, 'w')
-        rss.write_xml(f, 'utf-8')
-        f.close()
+        #f = open(self.rss_dir + os.sep + self.rss_file, 'w')
+        #rss.write_xml(f, 'utf-8')
+        #f.close()

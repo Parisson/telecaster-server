@@ -50,8 +50,8 @@ def get_lines(file):
 def clean_string(string):
 	"""removes blank spaces and accents"""
 	string = string.replace(' ','_')
-	string = string.replace('é','e')
-	string = string.replace('è','e')
+	#string = string.replace('é','e')
+	#string = string.replace('è','e')
 	return string
 
 def xml2dict(conf_file):

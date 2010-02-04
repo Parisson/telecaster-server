@@ -74,6 +74,7 @@ class WebView(FieldStorage):
         self.conference_nb_max = 40
         self.professor_nb_max = 40
         self.refresh = False
+        self.refresh_value = 20
         self.uid = os.getuid()
 
     def header(self):
@@ -112,16 +113,19 @@ class WebView(FieldStorage):
         print '      formulaire.conference.selectedIndex=0;}'
         print '</script>'
 
+        # rss ajax
+        #print "<script type=\"text/javascript\" src=\"js/rssajax.js\"></script>"
+        #print "<script type=\"text/javascript\">"
+        #print " function rss_reload(url) {"
+        #print "  getRSS(url)"
+        #print "  setTimeout(\"rss_reload(\'\" + url + \"\')\", 10000);}"
+        #print "</script>"
 
-        print "<script type=\"text/javascript\" src=\"js/rssajax.js\"></script>"
-        print "<script type=\"text/javascript\">"
-        print " function rss_reload(url) {"
-        print "  getRSS(url)"
-        print "  setTimeout(\"rss_reload(\'\" + url + \"\')\", 10000);}"
-        print "</script>"
         if self.refresh:
-            print "<meta http-equiv=\"refresh\" content=\"10; URL=telecaster.py\">"
+            print "<meta http-equiv=\"refresh\" content=\"" + str(self.refresh_value) + "; URL=telecaster.py\">"
+
         print "</HEAD>\n"
+
         #print "<BODY bgcolor =\"#ffffff\" onload=\"rss_reload(\'" + self.rss_url + "\');\">"
         print "<BODY bgcolor =\"#ffffff\">"
         print "<div class=\"bg\">"
