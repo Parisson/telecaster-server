@@ -5,7 +5,6 @@ div.header { background-color: #030250;
 	     line-height: 10px;
          font: 0.8125em/1em Verdana, sans-serif;
          font-size: 1em;
-
 }
 
 div.bg { background-color: #FFFFFF;
@@ -42,7 +41,7 @@ div.colophon { background-color: transparent;
 }
 
 div.colophon a { color: #000000;
-                 
+
 }
 
 div.title { background-color: #030250;

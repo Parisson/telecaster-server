@@ -127,7 +127,7 @@ class WebView(FieldStorage):
         print "</HEAD>\n"
 
         #print "<BODY bgcolor =\"#ffffff\" onload=\"rss_reload(\'" + self.rss_url + "\');\">"
-        print "<BODY bgcolor =\"#ffffff\">"
+        print "<BODY>"
         print "<div class=\"bg\">"
         print "<div class=\"header\">"
         print "<H3>&nbsp;TeleCaster - L'enregistrement et la diffusion audio en direct par internet</H3>"
