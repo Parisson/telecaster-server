@@ -60,7 +60,7 @@ class TeleCaster:
         self.url = self.conf['infos']['url']
 
     def main(self):
-        odd_pid = get_pid('^oddcastv3\ -n', self.uid)
+        odd_pid = get_pid('^edcast_jack\ -n', self.uid)
         rip_pid = get_pid('streamripper ', self.uid)
         writing = False
         casting = False

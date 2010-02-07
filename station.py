@@ -89,7 +89,7 @@ class Station(Conference):
         self.output_dir = self.media_dir + os.sep + self.department + os.sep + self.date
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
-        self.odd_pid = get_pid('^oddcastv3\ -n', self.uid)
+        self.odd_pid = get_pid('^edcast_jack\ -n', self.uid)
         self.rip_pid = get_pid('streamripper ' + self.url_int + self.mount_point, self.uid)
         self.new_title = clean_string('_-_'.join(self.server_name)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
         self.short_title = clean_string('_-_'.join(self.conference)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
@@ -152,7 +152,7 @@ class Station(Conference):
                 if 'system' in jack_input and 'capture' in jack_input.split(':')[1] :
                     self.jack_inputs.append(jack_input)
         jack_ports = ' '.join(self.jack_inputs)
-        command = 'oddcastv3 -n "'+clean_string(self.conference)[0:16]+'" -c "'+self.odd_conf+ \
+        command = 'edcast_jack -n "'+clean_string(self.conference)[0:16]+'" -c "'+self.odd_conf+ \
                   '" '+ jack_ports + ' > /dev/null &'
         os.system(command)
         self.set_lock()
