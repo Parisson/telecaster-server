@@ -21,7 +21,7 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 """
 
-version = '0.3.6'
+version = '0.3.7'
 # Only for Unix and Linux systems
 
 import os
