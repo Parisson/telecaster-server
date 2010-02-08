@@ -76,6 +76,8 @@ class WebView(FieldStorage):
         self.refresh = False
         self.refresh_value = 20
         self.uid = os.getuid()
+        self.casting = False
+        self.writing = False
 
     def header(self):
         # Required header that tells the browser how to render the HTML.
@@ -130,7 +132,8 @@ class WebView(FieldStorage):
         print "<BODY>"
         print "<div class=\"bg\">"
         print "<div class=\"header\">"
-        print "<H3>&nbsp;TeleCaster - L'enregistrement et la diffusion audio en direct par internet</H3>"
+        print "<img src=\"img/logo_telecaster_wh.png\">"
+        print "<div class=\"title_main\">&nbsp;TeleCaster - Audio Web Live Recording</div>"
         print "</div>"
 
     def colophon(self):
@@ -206,6 +209,17 @@ class WebView(FieldStorage):
         print "<td>%s</td></tr>" % ip_info
         print "<tr><td>Serveur JACK :</td>"
         print "<td>%s</td></tr>" % jackd_info
+        print "<td><div class=\"buttons\">"
+        if self.writing:
+            print "<button type=\"submit\" class=\"positive\"><img src=\"img/drive_add.png\" alt=\"\">Recording...</button>"
+        else:
+            print "<button type=\"submit\" class=\"negative\"><img src=\"img/drive_error.png\" alt=\"\">NOT Recording !</button>"
+        print "</div></td><td><div class=\"buttons\">"
+        if self.casting:
+            print "<button type=\"submit\" class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\">Diffusing...</button>"
+        else:
+            print "<button type=\"submit\" class=\"negative\"><img src=\"img/transmit_error.png\" alt=\"\">NOT Diffusing !</button>"
+        print "</div>"
         print "</table>"
         print "</div>"
 
@@ -213,6 +227,8 @@ class WebView(FieldStorage):
     def start_form(self, message=''):
         self.refresh = False
         self.header()
+        self.casting = False
+        self.writing = False
         self.hardware_data()
         print "<form method=\"post\" action=\""+self.url+"/telecaster/telecaster.py\" name=\"formulaire\">"
         print "<div class=\"main\">"
@@ -282,6 +298,8 @@ class WebView(FieldStorage):
         session = conference_dict['session']
         professor = conference_dict['professor']
         comment = conference_dict['comment']
+        self.writing = writing
+        self.casting = casting
         self.refresh = True
         self.header()
         self.hardware_data()
@@ -297,31 +315,25 @@ class WebView(FieldStorage):
         #print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
 
-        print """<div class="rss" id="chan">
-                <b><div id="chan_description"></div></b><br>
-                <div id="chan_title"></div>
-                <div id="chan_link"></div>
-                <div id="chan_description"></div>
-                <a id="chan_image_link" href=""></a>
-                <div id="chan_items"></div>
-                <div id="chan_pubDate"></div>
-                <div id="chan_copyright"></div>
-            </div>"""
+        #print """<div class="rss" id="chan">
+                #<b><div id="chan_description"></div></b><br>
+                #<div id="chan_title"></div>
+                #<div id="chan_link"></div>
+                #<div id="chan_description"></div>
+                #<a id="chan_image_link" href=""></a>
+                #<div id="chan_items"></div>
+                #<div id="chan_pubDate"></div>
+                #<div id="chan_copyright"></div>
+            #</div>"""
 
         print "<div class=\"tools\">"
         print "<form method=\"post\" action=\""+self.url+"/telecaster/telecaster.py\">"
         print "<div class=\"buttons\">"
         print "<button type=\"submit\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
-        if writing:
-            print "<button type=\"submit\" class=\"positive\"><img src=\"img/drive_add.png\" alt=\"\">Recording...</button>"
-        else:
-            print "<button type=\"submit\" class=\"negative\"><img src=\"img/drive_error.png\" alt=\"\">NOT Recording !</button>"
-        if casting:
-            print "<button type=\"submit\" class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\">Diffusing...</button>"
-        else:
-            print "<button type=\"submit\" class=\"negative\"><img src=\"img/transmit_error.png\" alt=\"\">NOT Diffusing !</button>"
         print "<a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
         print "<button type=\"submit\" name=\"action\" value=\"stop\" class=\"negative\"><img src=\"img/cancel.png\" alt=\"\">Stop</button>"
+        print "<a href=\""+self.url+"/media/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
+        print "<a href=\""+self.url+"/backup/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"
         print "</div>"
         print "</form>"
         print "</div>"
