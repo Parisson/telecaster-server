@@ -48,7 +48,7 @@ import jack
 import unicodedata
 from tools import *
 from mutagen.oggvorbis import OggVorbis
-from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TCO, COM
+from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TDAT, TDRC, TCO, COM
 
 class Conference:
     """A conference object including metadata"""
@@ -239,7 +239,7 @@ class Station(Conference):
             #tag = tags.__dict__['ALBUM']
             audio.add(TAL(encoding=3, text=self.title.decode('utf8')))
             #tag = tags.__dict__['DATE']
-            audio.add(TDA(encoding=3, text=self.date.decode('utf8')))
+            audio.add(TDRC(encoding=3, text=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             #tag = tags.__dict__['GENRE']
             audio.add(TCO(encoding=3, text=self.genre.decode('utf8')))
             #tag = tags.__dict__['COMMENT']
