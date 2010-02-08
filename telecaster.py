@@ -33,6 +33,7 @@
 # knowledge of the CeCILL license and that you accept its terms.
 
 # Author: Guillaume Pellerin <yomguy@parisson.com>
+"""
 
 version = '0.3.7'
 # Only for Unix and Linux systems
