@@ -35,7 +35,7 @@
 # Author: Guillaume Pellerin <yomguy@parisson.com>
 """
 
-version = '0.3.7'
+version = '0.3.8'
 # Only for Unix and Linux systems
 
 import os
