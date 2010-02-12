@@ -198,7 +198,7 @@ class WebView(FieldStorage):
         if jackd_pid == []:
             jackd_info = '<span style=\"color: red\">&eacute;teint</span>'
         else:
-            jackd_info = '<span style=\"color: green\">d&eacute;marr&eacute;</span>'
+            jackd_info = '<span style=\"color: green\">d&eacute;marr&eacute; (jack)</span>'
 
         print "<div class=\"hardware\">"
         print "<div class=\"title\">Informations mat&eacute;rielles</div>"
@@ -212,16 +212,16 @@ class WebView(FieldStorage):
         #print "<tr><td>Estimation dur&eacute;e batterie :</td>"
         #print "<td>%s</td></tr>" % self.acpi.estimated_lifetime()
         try:
-            print "<tr><td>Temp Core 1 :</td><td>%s</td></tr>" % self.acpi.temperature(0)
+            print "<tr><td>Temp core 1 :</td><td>%s</td></tr>" % self.acpi.temperature(0)
         except:
             pass
         try:
-            print "<tr><td>Temp Core 2 :</td><td>%s</td></tr>" % self.acpi.temperature(1)
+            print "<tr><td>Temp core 2 :</td><td>%s</td></tr>" % self.acpi.temperature(1)
         except:
             pass
-        print "<tr><td>Address IP :</td>"
+        print "<tr><td>Addresse IP :</td>"
         print "<td>%s</td></tr>" % ip_info
-        print "<tr><td>Serveur JACK :</td>"
+        print "<tr><td>Serveur audio :</td>"
         print "<td>%s</td></tr>" % jackd_info
         print "<td><div class=\"buttons\">"
         if self.writing:
@@ -265,11 +265,7 @@ class WebView(FieldStorage):
             print "<option value=\""+str(i)+"\">"+str(i)+"</option>"
         print "</select></TD></TR>"
         print "<TR><TH align=\"left\">Professeur:</TH>"
-        print "<TD><select name=\"professor\">"
-        print "<option selected>...........Choisissez un professeur...........</option>"
-        for professor in self.professors:
-            print "<option value=\""+professor['name']+"\">"+professor['name']+"</option>"
-        print "</select></TD></TR>"
+        print "<TD><INPUT type = text name = \"professor\"></TD></TR>"
         print "<TR><TH align=\"left\">Commentaire:</TH>"
         print "<TD><INPUT type = text name = \"comment\"></TD></TR>"
 

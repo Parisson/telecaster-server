@@ -60,6 +60,8 @@ class Conference:
         self.conference = dict['conference']
         self.session = dict['session']
         self.professor = dict['professor']
+        if '....' in self.professor or self.professor == '':
+            self.professor = 'Inconnu'
         self.comment = dict['comment']
 
     def get_info(self):

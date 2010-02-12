@@ -21,8 +21,8 @@
     </server>
     <media>
         <record>true</record>
-        <dir>/home/prebarreau/media</dir>
-        <raw_dir>/home/prebarreau/backup</raw_dir>
+        <dir>/home/pre-barreau/media</dir>
+        <raw_dir>/home/pre-barreau/backup</raw_dir>
         <format>mp3</format>
         <bitrate>96</bitrate>
         <channels>2</channels>
