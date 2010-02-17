@@ -57,11 +57,15 @@ class Conference:
         self.dict = dict
         self.title = dict['title']
         self.department = dict['department']
+        if '....' in self.department or self.department == '':
+            self.department = 'Undefined'
         self.conference = dict['conference']
+        if '....' in self.conference or self.conference == '':
+            self.conference = 'Undefined'
         self.session = dict['session']
         self.professor = dict['professor']
         if '....' in self.professor or self.professor == '':
-            self.professor = 'Inconnu'
+            self.professor = 'Undefined'
         self.comment = dict['comment']
 
     def get_info(self):

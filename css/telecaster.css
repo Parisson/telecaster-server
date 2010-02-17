@@ -61,9 +61,8 @@ div.title {
 
 div.hardware {
     clear: both;
-    font: 0.8125em/1em Verdana, sans-serif;
+    font: 0.8125em Verdana, sans-serif;
     color: #000000;
-    font-size: 1em;
     position: absolute;
     right: 1em;
     text-align: left;
