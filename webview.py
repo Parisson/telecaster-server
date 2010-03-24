@@ -203,32 +203,32 @@ class WebView(FieldStorage):
         print "<div class=\"hardware\">"
         print "<div class=\"title\">Informations mat&eacute;rielles</div>"
         print "<table class=\"hardware\">"
-        print "<tr><td>Alimentation :</td>"
+        print "<tr><td>Alimentation</td><TD> : </TD>"
         print "<td>%s</td></tr>" % power_info
         #print "<tr><td>Etat batterie :</td>"
         #print "<td>%s</td></tr>" % batt_info
-        print "<tr><td>Capacit&eacute; batterie :</td>"
+        print "<tr><td>Capacit&eacute; batterie</td><TD> : </TD>"
         print "<td>%s</td></tr>" % batt_charge
         #print "<tr><td>Estimation dur&eacute;e batterie :</td>"
         #print "<td>%s</td></tr>" % self.acpi.estimated_lifetime()
         try:
-            print "<tr><td>Temp core 1 :</td><td>%s</td></tr>" % self.acpi.temperature(0)
+            print "<tr><td>Temp core 1</td><TD> : </TD><td>%s</td></tr>" % self.acpi.temperature(0)
         except:
             pass
         try:
-            print "<tr><td>Temp core 2 :</td><td>%s</td></tr>" % self.acpi.temperature(1)
+            print "<tr><td>Temp core 2</td><TD> : </TD><td>%s</td></tr>" % self.acpi.temperature(1)
         except:
             pass
-        print "<tr><td>Addresse IP :</td>"
+        print "<tr><td>Addresse IP</td><TD> : </TD>"
         print "<td>%s</td></tr>" % ip_info
-        print "<tr><td>Serveur audio :</td>"
+        print "<tr><td>Serveur audio</td><TD> : </TD>"
         print "<td>%s</td></tr>" % jackd_info
         print "<td><div class=\"buttons\">"
         if self.writing:
             print "<button type=\"submit\" class=\"positive\"><img src=\"img/drive_add.png\" alt=\"\">Recording...</button>"
         else:
             print "<button type=\"submit\" class=\"negative\"><img src=\"img/drive_error.png\" alt=\"\">NOT Recording !</button>"
-        print "</div></td><td><div class=\"buttons\">"
+        print "</div></td><TD> </TD><td><div class=\"buttons\">"
         if self.casting:
             print "<button type=\"submit\" class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\">Diffusing...</button>"
         else:
@@ -247,26 +247,26 @@ class WebView(FieldStorage):
         print "<form method=\"post\" action=\""+self.url+"/telecaster/telecaster.py\" name=\"formulaire\">"
         print "<div class=\"main\">"
         print "<table class=\"form\">"
-        print "<TR><TH align=\"left\">Titre:</TH><TD>"+self.title+"</TD></TR>"
-        print "<TR><TH align=\"left\">D&eacute;partement:</TH>"
+        print "<TR><TH align=\"left\">Titre</TH><TD> : </TD><TD>"+self.title+"</TD></TR>"
+        print "<TR><TH align=\"left\">D&eacute;partement</TH><TD> : </TD>"
         print "<TD><select name=\"department\" onChange=\"choix(this.form)\">"
         print "<option selected>...........Choisissez un d&eacute;partement...........</option>"
         for department in self.departments:
             print "<option value=\""+department['name']+"\">"+department['name']+"</option>"
         print "</select></TD></TR>"
-        print "<TR><TH align=\"left\">Conf&eacute;rence:</TH>"
+        print "<TR><TH align=\"left\">Conf&eacute;rence</TH><TD> : </TD>"
         print "<TD><select name=\"conference\">"
         print "<option selected>...........Choisissez une conf&eacute;rence...........</option>"
         for i in range(1,self.conference_nb_max):
             print "<option></option>"
         print "</select></TD></TR>"
-        print "<TR><TH align=\"left\">Session:</TH><TD><select name=\"session\">"
+        print "<TR><TH align=\"left\">Session</TH><TD> : </TD><TD><select name=\"session\">"
         for i in range(1,21):
             print "<option value=\""+str(i)+"\">"+str(i)+"</option>"
         print "</select></TD></TR>"
-        print "<TR><TH align=\"left\">Professeur:</TH>"
+        print "<TR><TH align=\"left\">Professeur</TH><TD> : </TD>"
         print "<TD><INPUT type = text name = \"professor\"></TD></TR>"
-        print "<TR><TH align=\"left\">Commentaire:</TH>"
+        print "<TR><TH align=\"left\">Commentaire</TH><TD> : </TD>"
         print "<TD><INPUT type = text name = \"comment\"></TD></TR>"
 
         #print "<TD><select name=\"comment\">"
@@ -315,12 +315,12 @@ class WebView(FieldStorage):
         self.hardware_data()
         print "<div class=\"main\">"
         print "<table class=\"form\">"
-        print "<TR><TH align=\"left\">Titre :</TH><TD>"+self.title+"</TD></TR>"
-        print "<TR><TH align=\"left\">D&eacute;partement :</TH><TD>"+department+"</TD></TR>"
-        print "<TR><TH align=\"left\">Conference :</TH><TD>"+conference+"</TD></TR>"
-        print "<TR><TH align=\"left\">Session :</TH><TD>"+session+"</TD></TR>"
-        print "<TR><TH align=\"left\">Professeur :</TH><TD>"+professor+"</TD></TR>"
-        print "<TR><TH align=\"left\">Commentaire :</TH><TD>"+comment+"</TD></TR>"
+        print "<TR><TH align=\"left\">Titre</TH><TD> : </TD><TD>"+self.title+"</TD></TR>"
+        print "<TR><TH align=\"left\">D&eacute;partement</TH><TD> : </TD><TD>"+department+"</TD></TR>"
+        print "<TR><TH align=\"left\">Conference</TH><TD> : </TD><TD>"+conference+"</TD></TR>"
+        print "<TR><TH align=\"left\">Session</TH><TD> : </TD><TD>"+session+"</TD></TR>"
+        print "<TR><TH align=\"left\">Professeur</TH><TD> : </TD><TD>"+professor+"</TD></TR>"
+        print "<TR><TH align=\"left\">Commentaire</TH><TD> : </TD><TD>"+comment+"</TD></TR>"
         print "</table>"
         #print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
