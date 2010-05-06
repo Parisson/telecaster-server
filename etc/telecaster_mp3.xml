@@ -3,7 +3,7 @@
         <short_name>Pre-Barreau</short_name>
         <name>Pre-Barreau</name>
         <description>La preparation au Barreau de Paris</description>
-        <url>http://augustins.pre-barreau.com</url>
+        <url>http:///telecaster-04.parisson.com</url>
         <genre>Other</genre>
     </infos>
     <server>
@@ -25,16 +25,13 @@
         <raw_dir>/home/pre-barreau/backup</raw_dir>
         <format>mp3</format>
         <bitrate>96</bitrate>
-        <channels>2</channels>
+        <channels>1</channels>
         <ogg_quality>3</ogg_quality>
         <samplerate>44100</samplerate>
     </media>
     <jack>
         <input>
-        <name>jack_rack:out_1</name>
-        </input>
-        <input>
-        <name>jack_rack:out_2</name>
+        <name>system:capture_1</name>
         </input>
     </jack>
 </telecaster>

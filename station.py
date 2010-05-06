@@ -44,7 +44,7 @@ import urllib
 import codecs
 import string
 import signal
-import jack
+#import jack
 import unicodedata
 from tools import *
 from mutagen.oggvorbis import OggVorbis
@@ -126,8 +126,12 @@ class Station(Conference):
 
         self.jack_inputs = []
         if 'jack' in self.conf:
-            for jack_input in self.conf['jack']['input']:
-                self.jack_inputs.append(jack_input['name'])
+            jack_inputs = self.conf['jack']['input']
+            if len(jack_inputs) > 1: 
+                for jack_input in jack_inputs:
+                    self.jack_inputs.append(jack_input['name'])
+            else:
+                self.jack_inputs.append(jack_inputs['name'])
 
     def set_oddcast_conf(self):
         #oddconf_temp = NamedTemporaryFile(suffix='.cfg')

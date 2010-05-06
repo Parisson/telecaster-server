@@ -94,6 +94,9 @@ class TeleCaster:
                         'professor': form.getfirst("professor"),
                         'comment': form.getfirst("comment")}
 
+            if rip_pid != []:
+                os.system('kill -9 '+rip_pid[0])
+                time.sleep(3)
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
             time.sleep(1)
@@ -117,8 +120,8 @@ class TeleCaster:
 
 
 # Call main function.
-conf_file = 'etc/telecaster_mp3.xml'
-school_file = 'etc/pre-barreau_conferences.xml'
+conf_file = '/etc/telecaster/telecaster_mp3.xml'
+school_file = '/etc/telecaster/pre-barreau_conferences.xml'
 
 if __name__ == '__main__':
     t = TeleCaster(conf_file, school_file)
