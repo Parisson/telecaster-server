@@ -1,5 +1,5 @@
 <telecaster>
-    <host>telecaster-04.parisson.com</host>
+    <host>localhost</host>
     <title>Pre-Barreau</title>
     <port>8000</port>
     <format>mp3</format>

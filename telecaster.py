@@ -120,8 +120,8 @@ class TeleCaster:
 
 
 # Call main function.
-conf_file = '/etc/telecaster/telecaster_mp3.xml'
-school_file = '/etc/telecaster/pre-barreau_conferences.xml'
+conf_file = '/etc/telecaster/telecaster.xml'
+school_file = '/etc/telecaster/sessions.xml'
 
 if __name__ == '__main__':
     t = TeleCaster(conf_file, school_file)

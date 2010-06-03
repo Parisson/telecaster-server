@@ -1,7 +1,9 @@
-<teleoddcast>
-    <url>http://localhost</url>
-    <title>Example University</title>
+<telecaster>
+    <url>localhost</url>
+    <title>My Streams</title>
     <port>8000</port>
+    <format>mp3</format>
+
     <department>
         <name>Audio</name>
         <conferences>
@@ -46,4 +48,4 @@
             </conference>
         </conferences>
     </department>
-</teleoddcast>
+</telecaster>

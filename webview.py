@@ -163,6 +163,8 @@ class WebView(FieldStorage):
 
     def hardware_data(self):
         jackd_pid = get_pid('jackd ', self.uid)
+        if jackd_pid == []:
+            jackd_pid = get_pid('/usr/bin/jackdbus ', self.uid)
         self.acpi.update()
         self.power_state = self.acpi.charging_state()
         if self.power_state == 0:
