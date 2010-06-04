@@ -5,9 +5,9 @@ div.header {
 	     padding: 0.5em;
 	     height: 42px;
          font: 0.8125em/1em Verdana, sans-serif;
-         -moz-border-radius: 25px 0 0 0;
-         -webkit-border-radius: 25px 0 0 0;
-         border-radius: 25px 0 0 0;
+         -moz-border-radius: 25px 25px 0 0;
+         -webkit-border-radius: 25px 25px 0 0;
+         border-radius: 25px 25px 0 0;
 }
 
 div.title_main {
