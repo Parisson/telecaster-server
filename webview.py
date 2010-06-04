@@ -162,9 +162,9 @@ class WebView(FieldStorage):
         print "</HTML>"
 
     def hardware_data(self):
-        jackd_pid = get_pid('jackd ', self.uid)
+        jackd_pid = get_pid('jackd', self.uid)
         if jackd_pid == []:
-            jackd_pid = get_pid('/usr/bin/jackdbus ', self.uid)
+            jackd_pid = get_pid('jackdbus', self.uid)
         self.acpi.update()
         self.power_state = self.acpi.charging_state()
         if self.power_state == 0:
@@ -188,28 +188,28 @@ class WebView(FieldStorage):
         else:
             percent = self.acpi.percent()
             if percent < 10:
-                batt_charge = '<span style=\"color: red\">'+str(percent)+' &#37;</span>'
+                batt_charge = '<span style=\"color: red\"><b>'+str(percent)+' &#37;</b></span>'
             else:
                 batt_charge = '<span style=\"color: green\">'+str(percent)+' &#37;</span>'
 
         if self.ip == 'localhost':
-            ip_info = '<span style=\"color: red\">'+self.ip+'</span>'
+            ip_info = '<span style=\"color: red\"><b>'+self.ip+'</b></span>'
         else:
             ip_info = '<span style=\"color: green\">'+self.ip+'</span>'
 
         if jackd_pid == []:
-            jackd_info = '<span style=\"color: red\">&eacute;teint</span>'
+            jackd_info = '<span style=\"color: red\"><b>OFF</b></span>'
         else:
-            jackd_info = '<span style=\"color: green\">d&eacute;marr&eacute; (jack)</span>'
+            jackd_info = '<span style=\"color: green\">On</span>'
 
         print "<div class=\"hardware\">"
-        print "<div class=\"title\">Informations mat&eacute;rielles</div>"
+        print "<div class=\"title\">Status</div>"
         print "<table class=\"hardware\">"
-        print "<tr><td>Alimentation</td><TD> : </TD>"
+        print "<tr><td>Power</td><TD> : </TD>"
         print "<td>%s</td></tr>" % power_info
         #print "<tr><td>Etat batterie :</td>"
         #print "<td>%s</td></tr>" % batt_info
-        print "<tr><td>Capacit&eacute; batterie</td><TD> : </TD>"
+        print "<tr><td>Battery charge</td><TD> : </TD>"
         print "<td>%s</td></tr>" % batt_charge
         #print "<tr><td>Estimation dur&eacute;e batterie :</td>"
         #print "<td>%s</td></tr>" % self.acpi.estimated_lifetime()
@@ -221,9 +221,9 @@ class WebView(FieldStorage):
             print "<tr><td>Temp core 2</td><TD> : </TD><td>%s</td></tr>" % self.acpi.temperature(1)
         except:
             pass
-        print "<tr><td>Addresse IP</td><TD> : </TD>"
+        print "<tr><td>IP address</td><TD> : </TD>"
         print "<td>%s</td></tr>" % ip_info
-        print "<tr><td>Serveur audio</td><TD> : </TD>"
+        print "<tr><td>JACK audio server</td><TD> : </TD>"
         print "<td>%s</td></tr>" % jackd_info
         print "<td><div class=\"buttons\">"
         if self.writing:
