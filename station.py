@@ -4,7 +4,7 @@
 """
    telecaster
 
-   Copyright (c) 2006-2008 Guillaume Pellerin <yomguy@parisson.org>
+   Copyright (c) 2006-2010 Guillaume Pellerin <yomguy@parisson.org>
 
 # This software is governed by the CeCILL  license under French law and
 # abiding by the rules of distribution of free software.  You can  use,
@@ -127,7 +127,7 @@ class Station(Conference):
         self.jack_inputs = []
         if 'jack' in self.conf:
             jack_inputs = self.conf['jack']['input']
-            if len(jack_inputs) > 1: 
+            if len(jack_inputs) > 1:
                 for jack_input in jack_inputs:
                     self.jack_inputs.append(jack_input['name'])
             else:
