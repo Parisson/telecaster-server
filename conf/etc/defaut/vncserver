@@ -1,0 +1,12 @@
+# Set to "yes" to start vncserver at boot
+START_DAEMON=yes
+
+# The vncserver process will run under this user
+USER=prebarreau
+
+# The vncserver port (i.e. 2 for 5902)
+PORT="1"
+
+# Options to pass to vncserver
+OPTIONS="-geometry 1024x768 -depth 8"
+
