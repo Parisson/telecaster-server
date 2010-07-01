@@ -41,14 +41,11 @@ import shutil
 import datetime
 import time
 import urllib
-import codecs
-import string
-import signal
-#import jack
-import unicodedata
 from tools import *
 from mutagen.oggvorbis import OggVorbis
 from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TDAT, TDRC, TCO, COM
+#import jack
+
 
 class Conference:
     """A conference object including metadata"""
@@ -119,6 +116,9 @@ class Station(Conference):
         self.rsync_host = self.conf['server']['rsync_host']
         self.record = str_to_bool(self.conf['media']['record'])
         self.raw_dir = self.conf['media']['raw_dir']
+        self.user = os.get_login()
+        self.user_dir = '/home/' + self.user + '.telecaster'
+
         if not os.path.exists(self.media_dir):
             os.makedirs(self.media_dir)
         if not os.path.exists(self.raw_dir):
@@ -164,7 +164,7 @@ class Station(Conference):
             else:
                 newlines.append(line)
 
-        odd_conf_file = 'etc/'+self.title+'.cfg'
+        odd_conf_file = self.user_dir + os.sep + self.title+'.cfg'
         oddconf = open(odd_conf_file,'w')
         oddconf.writelines(newlines)
         oddconf.close()

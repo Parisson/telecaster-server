@@ -1,5 +1,5 @@
 <telecaster>
-    <host>localhost</host>
+    <host>augustins.pre-barreau.com</host>
     <title>Pre-Barreau</title>
     <port>8000</port>
     <format>mp3</format>
@@ -117,13 +117,16 @@
                 <name>Administratif_Cours</name>
             </conference>
             <conference>
+                <name>Administratif_Correction</name>
+            </conference>
+            <conference>
                 <name>Adm_Correction</name>
             </conference>
             <conference>
                 <name>Civil_Correction</name>
             </conference>
             <conference>
-                <name>Commercial_Correctio</name>
+                <name>Commercial_Correction</name>
             </conference>
             <conference>
                 <name>Commercial_Cours</name>
@@ -132,7 +135,7 @@
                 <name>Deontologie_Cours</name>
             </conference>
             <conference>
-                <name>Droit civil - Cours</name>
+                <name>Civil_Cours</name>
             </conference>
             <conference>
                 <name>Methodo_Oraux</name>
@@ -150,7 +153,7 @@
                 <name>Reunion_info</name>
             </conference>
             <conference>
-                <name>Social_Corrections</name>
+                <name>Social_Correction</name>
             </conference>
             <conference>
                 <name>Social_Cours</name>

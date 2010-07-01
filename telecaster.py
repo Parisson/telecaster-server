@@ -36,23 +36,16 @@
 """
 
 version = '0.3.9'
-# Only for Unix and Linux systems
+
 
 import os
 import cgi
 import cgitb
 import shutil
-import datetime
 import time
-import codecs
-import string
-import signal
-import unicodedata
 from tools import *
 from webview import *
 from station import *
-from mutagen.oggvorbis import OggVorbis
-from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TCO, COM
 cgitb.enable()
 
 
@@ -72,6 +65,10 @@ class TeleCaster:
         self.title = self.conf['infos']['name']
         self.uid = os.getuid()
         self.url = self.conf['infos']['url']
+        self.user = os.get_login()
+        self.user_dir = '/home/' + self.user + '.telecaster'
+        if not os.path.exists(self.user_dir):
+            os.makedirs(self.user_dir)
 
     def main(self):
         odd_pid = get_pid('^edcast_jack\ -n', self.uid)
