@@ -3,31 +3,27 @@
         <short_name>Pre-Barreau</short_name>
         <name>Pre-Barreau</name>
         <description>La preparation au Barreau de Paris</description>
-        <url>http:///telecaster-04.parisson.com</url>
+        <url>http://telecaster-04.parisson.com</url>
         <genre>Other</genre>
     </infos>
     <server>
-        <host>localhost</host>
+        <host>stream.pre-barreau.com</host>
         <port>8000</port>
         <sourcepassword>source2parisson</sourcepassword>
         <public>0</public>
         <root_dir>/var/www/telecaster/</root_dir>
-        <odd_conf_file>/etc/telecaster/telecaster_edcast_mp3.cfg</odd_conf_file>
-        <lock_file>lock/telecaster.lock</lock_file>
-        <rsync_host>localhost/tmp/</rsync_host>
         <rss>
             <dir>/var/www/rss/</dir>
         </rss>
     </server>
     <media>
         <record>true</record>
-        <dir>/home/pre-barreau/media</dir>
-        <raw_dir>/home/pre-barreau/backup</raw_dir>
+        <dir>/home/prebarreau/media</dir>
         <format>mp3</format>
-        <bitrate>96</bitrate>
+        <bitrate>48</bitrate>
         <channels>1</channels>
         <ogg_quality>3</ogg_quality>
-        <samplerate>44100</samplerate>
+        <samplerate>48000</samplerate>
     </media>
     <jack>
         <input>

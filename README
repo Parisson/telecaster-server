@@ -1,5 +1,6 @@
-TELECASTER
-==========
+===================
+README - TELECASTER
+===================
 
 LICENCE
 =======
@@ -35,17 +36,23 @@ LICENCE
 
 # Author: Guillaume Pellerin <yomguy@parisson.com>
 
+
 ARCHITECTURE
 ============
 Builds well on Debian GNU/Linux 5.0.4
 
+
 DEPENDS
 ========
 
-required : python, icecast2, jackd, edcast-jack (=3.1.7), vorbis-tools, python-mutagen, streamrippper, procps
+required : python, icecast2, apache2, jackd, edcast-jack (=3.1.7), vorbis-tools,
+           python-mutagen, streamrippper, procps
+
 optional : lame
+
 
 MORE INFOS
 ==========
+
 See http://svn.parisson.org/telecaster/
 
