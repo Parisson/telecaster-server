@@ -1,0 +1,34 @@
+<telecaster>
+    <infos>
+        <short_name>Pre-Barreau</short_name>
+        <name>Pre-Barreau</name>
+        <description>La preparation au Barreau de Paris</description>
+        <url>http:///telecaster-04.parisson.com</url>
+        <genre>Vocal</genre>
+    </infos>
+    <server>
+        <host>localhost</host>
+        <port>8000</port>
+        <sourcepassword>source2parisson</sourcepassword>
+        <public>0</public>
+        <deefuzzer_default_conf>/etc/telecaster/deefuzzer.xml</odd_conf_file>
+        <rss>
+            <dir>/var/www/rss/</dir>
+        </rss>
+    </server>
+    <media>
+        <record>true</record>
+        <play_dir>/home/pre-barreau/media</dir>
+        <rec_dir>/home/pre-barreau/backup</rec_dir>
+        <format>mp3</format>
+        <bitrate>96</bitrate>
+        <channels>1</channels>
+        <ogg_quality>3</ogg_quality>
+        <samplerate>44100</samplerate>
+    </media>
+    <jack>
+        <input>
+        <name>jack_rack:out_1</name>
+        </input>
+    </jack>
+</telecaster>
