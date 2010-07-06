@@ -40,7 +40,7 @@
             <shuffle>1</shuffle>
         </jingles>
         <control>
-            <mode>0</mode>
+            <mode>1</mode>
             <port>1234</port>
         </control>
         <relay>
