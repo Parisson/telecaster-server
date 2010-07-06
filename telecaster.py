@@ -39,6 +39,7 @@ version = '0.4.0'
 
 
 import os
+import pwd
 import cgi
 import cgitb
 import time
@@ -61,15 +62,15 @@ class TeleCaster:
         self.title = self.conf['infos']['name']
         self.uid = os.getuid()
         self.url = self.conf['infos']['url']
-        self.user = os.get_login()
-        self.user_dir = '/home/' + self.user + '.telecaster'
+        self.user = pwd.getpwuid(os.getuid())[0]
+        self.user_dir = '/home' + os.sep + self.user + os.sep + '.telecaster'
         if not os.path.exists(self.user_dir):
             os.makedirs(self.user_dir)
         self.lock_file = self.user_dir + os.sep + 'telecaster.lock'
 
     def main(self):
-        edcast_pid = get_pid('^edcast_jack\ -n', self.uid)
-        deefuzzer_pid = get_pid('deefuzzer', self.uid)
+        edcast_pid = get_pid('^edcast_jack', self.uid)
+        deefuzzer_pid = get_pid('/usr/bin/deefuzzer', self.uid)
         writing = deefuzzer_pid != []
         casting = edcast_pid != []
         form = WebView(self.session_file, self.url, version)

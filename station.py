@@ -37,6 +37,7 @@
 """
 
 import os
+import pwd
 import shutil
 import datetime
 import time
@@ -81,20 +82,22 @@ class Station(Conference):
         self.conf = xml2dict(conf_file)
         self.lock_file = lock_file
         self.conf = self.conf['telecaster']
-        self.user = os.get_login()
-        self.user_dir = '/home/' + self.user + '.telecaster'
+        self.user = pwd.getpwuid(os.getuid())[0]
+        self.user_dir = '/home' + os.sep + self.user + os.sep + '.telecaster'
         self.url_ext = self.conf['infos']['url']
-        self.media_dir = self.conf['media']['dir']
+        self.rec_dir = self.conf['media']['rec_dir']
         self.host = self.conf['server']['host']
         self.port = self.conf['server']['port']
         self.rss_dir = self.conf['server']['rss']['dir']
         self.rss_file = 'telecaster.xml'
         self.password = self.conf['server']['sourcepassword']
         self.url_int = 'http://'+self.host+':'+self.port
-        self.deefuzzer_default_conf_file = self.conf['server']['deefuzzer_dict']
-        self.deefuzzer_user_file = self.user + os.sep + 'deefuzzer.xml'
+        self.deefuzzer_default_conf_file = self.conf['server']['deefuzzer_default_conf']
+        self.deefuzzer_user_file = self.user_dir + os.sep + 'deefuzzer.xml'
         self.bitrate = self.conf['media']['bitrate']
         self.dict['Bitrate'] = str(self.bitrate) + ' kbps'
+        self.record = str_to_bool(self.conf['media']['record'])
+        self.rec_dir = self.conf['media']['rec_dir']
         self.ogg_quality = self.conf['media']['ogg_quality']
         self.format = self.conf['media']['format']
         self.channels = int(self.conf['media']['channels'])
@@ -102,27 +105,20 @@ class Station(Conference):
         self.server_name = [self.title, self.department, self.conference]
         self.ServerDescription = clean_string('_-_'.join(self.description))
         self.ServerName = clean_string('_-_'.join(self.server_name))
-        self.mount_point = '/' + clean_string(self.title) + '_-_' + \
+        self.mount_point = clean_string(self.title) + '_-_' + \
                                  clean_string(self.department) + '_-_' + \
                                  clean_string(self.conference)
         self.filename = clean_string('_-_'.join(self.description[1:])) + '_-_' + self.time_txt + '.' + self.format
-        self.output_dir = self.media_dir + os.sep + self.department + os.sep + self.date
+        self.output_dir = self.rec_dir + os.sep + self.department + os.sep + self.date
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
-        self.odd_pid = get_pid('^edcast_jack\ -n', self.uid)
-        self.deefuzzer_pid = get_pid('deefuzzer', self.uid)
+        self.odd_pid = get_pid('^edcast_jack', self.uid)
+        self.deefuzzer_pid = get_pid('/usr/bin/deefuzzer', self.uid)
         self.new_title = clean_string('_-_'.join(self.server_name)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
         self.short_title = clean_string('_-_'.join(self.conference)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
         self.genre = 'Vocal'
         self.encoder = 'TeleCaster by Parisson'
-        self.rsync_host = self.conf['server']['rsync_host']
-        self.record = str_to_bool(self.conf['media']['record'])
-        self.rec_dir = self.conf['media']['rec_dir']
-        self.user = os.get_login()
-        self.user_dir = '/home/' + self.user + '.telecaster'
 
-        if not os.path.exists(self.media_dir):
-            os.makedirs(self.media_dir)
         if not os.path.exists(self.rec_dir):
             os.makedirs(self.rec_dir)
 
@@ -135,23 +131,21 @@ class Station(Conference):
             else:
                 self.jack_inputs.append(jack_inputs['name'])
 
-    def set_deefuzzer_dict(self):
-        conf_file = open(self.deefuzzer_default_conf_file,'r')
-        xml_data = conf_file.read()
-        deefuzzer_dict.close()
-        deefuzzer_dict = xml2dict(xml_data)
+    def set_deefuzzer_conf(self):
+        deefuzzer_dict = xml2dict(self.deefuzzer_default_conf_file)
 
         deefuzzer_dict['deefuzzer']['station']['infos']['short_name'] = self.mount_point
         deefuzzer_dict['deefuzzer']['station']['infos']['name'] = self.ServerName
         deefuzzer_dict['deefuzzer']['station']['infos']['description'] = self.ServerDescription.replace(' ','_')
-        deefuzzer_dict['deefuzzer']['server']['host'] = self.host
-        deefuzzer_dict['deefuzzer']['server']['port'] = self.port
-        deefuzzer_dict['deefuzzer']['server']['password'] = self.password
-        deefuzzer_dict['deefuzzer']['media']['bitrate'] = self.bitrate
-        deefuzzer_dict['deefuzzer']['media']['voices'] = str(len(self.jack_inputs))
-        deefuzzer_dict['deefuzzer']['record']['mode'] = '1'
-        deefuzzer_dict['deefuzzer']['record']['dir'] = self.rec_dir
-        deefuzzer_dict['deefuzzer']['relay']['mode'] = '1'
+        deefuzzer_dict['deefuzzer']['station']['server']['host'] = self.host
+        deefuzzer_dict['deefuzzer']['station']['server']['port'] = self.port
+        deefuzzer_dict['deefuzzer']['station']['server']['sourcepassword'] = self.password
+        deefuzzer_dict['deefuzzer']['station']['media']['bitrate'] = self.bitrate
+        deefuzzer_dict['deefuzzer']['station']['media']['dir'] = self.rec_dir
+        deefuzzer_dict['deefuzzer']['station']['media']['voices'] = str(len(self.jack_inputs))
+        deefuzzer_dict['deefuzzer']['station']['record']['mode'] = '0'
+        deefuzzer_dict['deefuzzer']['station']['record']['dir'] = self.rec_dir
+        deefuzzer_dict['deefuzzer']['station']['relay']['mode'] = '1'
 
         deefuzzer_xml = dicttoxml(deefuzzer_dict)
         conf_file = open(self.deefuzzer_user_file,'w')
