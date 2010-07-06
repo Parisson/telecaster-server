@@ -98,6 +98,7 @@ class Station(Conference):
         self.dict['Bitrate'] = str(self.bitrate) + ' kbps'
         self.record = str_to_bool(self.conf['media']['record'])
         self.rec_dir = self.conf['media']['rec_dir']
+        self.play_dir = self.conf['media']['play_dir']
         self.ogg_quality = self.conf['media']['ogg_quality']
         self.format = self.conf['media']['format']
         self.channels = int(self.conf['media']['channels'])
@@ -141,9 +142,9 @@ class Station(Conference):
         deefuzzer_dict['deefuzzer']['station']['server']['port'] = self.port
         deefuzzer_dict['deefuzzer']['station']['server']['sourcepassword'] = self.password
         deefuzzer_dict['deefuzzer']['station']['media']['bitrate'] = self.bitrate
-        deefuzzer_dict['deefuzzer']['station']['media']['dir'] = self.rec_dir
+        deefuzzer_dict['deefuzzer']['station']['media']['dir'] = self.play_dir
         deefuzzer_dict['deefuzzer']['station']['media']['voices'] = str(len(self.jack_inputs))
-        deefuzzer_dict['deefuzzer']['station']['record']['mode'] = '0'
+        deefuzzer_dict['deefuzzer']['station']['record']['mode'] = '1'
         deefuzzer_dict['deefuzzer']['station']['record']['dir'] = self.rec_dir
         deefuzzer_dict['deefuzzer']['station']['relay']['mode'] = '1'
 

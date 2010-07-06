@@ -19,6 +19,7 @@
     </server>
     <media>
         <record>true</record>
+        <play_dir>/home/momo/mymusic/telecaster/media</play_dir>
         <rec_dir>/home/momo/mymusic/telecaster/backup</rec_dir>
         <format>mp3</format>
         <bitrate>256</bitrate>
