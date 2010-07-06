@@ -79,8 +79,10 @@ class Station(Conference):
         self.time = datetime.datetime.now().strftime("%x-%X")
         self.time_txt = self.time.replace('/','_').replace(':','_').replace(' ','_')
         self.conf = xml2dict(conf_file)
+        self.lock_file = lock_file
         self.conf = self.conf['telecaster']
-        self.root_dir = self.conf['server']['root_dir']
+        self.user = os.get_login()
+        self.user_dir = '/home/' + self.user + '.telecaster'
         self.url_ext = self.conf['infos']['url']
         self.media_dir = self.conf['media']['dir']
         self.host = self.conf['server']['host']
@@ -89,7 +91,8 @@ class Station(Conference):
         self.rss_file = 'telecaster.xml'
         self.password = self.conf['server']['sourcepassword']
         self.url_int = 'http://'+self.host+':'+self.port
-        self.odd_conf_file = self.conf['server']['odd_conf_file']
+        self.deefuzzer_default_conf_file = self.conf['server']['deefuzzer_dict']
+        self.deefuzzer_user_file = self.user + os.sep + 'deefuzzer.xml'
         self.bitrate = self.conf['media']['bitrate']
         self.dict['Bitrate'] = str(self.bitrate) + ' kbps'
         self.ogg_quality = self.conf['media']['ogg_quality']
@@ -101,28 +104,27 @@ class Station(Conference):
         self.ServerName = clean_string('_-_'.join(self.server_name))
         self.mount_point = '/' + clean_string(self.title) + '_-_' + \
                                  clean_string(self.department) + '_-_' + \
-                                 clean_string(self.conference)+'.'+self.format
-        self.lock_file = self.root_dir + os.sep + self.conf['server']['lock_file']
+                                 clean_string(self.conference)
         self.filename = clean_string('_-_'.join(self.description[1:])) + '_-_' + self.time_txt + '.' + self.format
         self.output_dir = self.media_dir + os.sep + self.department + os.sep + self.date
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
         self.odd_pid = get_pid('^edcast_jack\ -n', self.uid)
-        self.rip_pid = get_pid('streamripper ' + self.url_int + self.mount_point, self.uid)
+        self.deefuzzer_pid = get_pid('deefuzzer', self.uid)
         self.new_title = clean_string('_-_'.join(self.server_name)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
         self.short_title = clean_string('_-_'.join(self.conference)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
         self.genre = 'Vocal'
         self.encoder = 'TeleCaster by Parisson'
         self.rsync_host = self.conf['server']['rsync_host']
         self.record = str_to_bool(self.conf['media']['record'])
-        self.raw_dir = self.conf['media']['raw_dir']
+        self.rec_dir = self.conf['media']['rec_dir']
         self.user = os.get_login()
         self.user_dir = '/home/' + self.user + '.telecaster'
 
         if not os.path.exists(self.media_dir):
             os.makedirs(self.media_dir)
-        if not os.path.exists(self.raw_dir):
-            os.makedirs(self.raw_dir)
+        if not os.path.exists(self.rec_dir):
+            os.makedirs(self.rec_dir)
 
         self.jack_inputs = []
         if 'jack' in self.conf:
@@ -133,55 +135,40 @@ class Station(Conference):
             else:
                 self.jack_inputs.append(jack_inputs['name'])
 
-    def set_oddcast_conf(self):
-        #oddconf_temp = NamedTemporaryFile(suffix='.cfg')
-        oddconf = open(self.odd_conf_file,'r')
-        lines = oddconf.readlines()
-        oddconf.close()
-        newlines = []
-        for line in lines:
-            if 'ServerDescription' in line.split('='):
-                newlines.append('ServerDescription=' + \
-                                self.ServerDescription.replace(' ','_') + '\n')
+    def set_deefuzzer_dict(self):
+        conf_file = open(self.deefuzzer_default_conf_file,'r')
+        xml_data = conf_file.read()
+        deefuzzer_dict.close()
+        deefuzzer_dict = xml2dict(xml_data)
 
-            elif 'ServerName' in line.split('='):
-                newlines.append('ServerName=' + self.ServerName + '\n')
+        deefuzzer_dict['deefuzzer']['station']['infos']['short_name'] = self.mount_point
+        deefuzzer_dict['deefuzzer']['station']['infos']['name'] = self.ServerName
+        deefuzzer_dict['deefuzzer']['station']['infos']['description'] = self.ServerDescription.replace(' ','_')
+        deefuzzer_dict['deefuzzer']['server']['host'] = self.host
+        deefuzzer_dict['deefuzzer']['server']['port'] = self.port
+        deefuzzer_dict['deefuzzer']['server']['password'] = self.password
+        deefuzzer_dict['deefuzzer']['media']['bitrate'] = self.bitrate
+        deefuzzer_dict['deefuzzer']['media']['voices'] = str(len(self.jack_inputs))
+        deefuzzer_dict['deefuzzer']['record']['mode'] = '1'
+        deefuzzer_dict['deefuzzer']['record']['dir'] = self.rec_dir
+        deefuzzer_dict['deefuzzer']['relay']['mode'] = '1'
 
-            elif 'ServerMountpoint' in line.split('='):
-                newlines.append('ServerMountpoint=' + self.mount_point + '\n')
+        deefuzzer_xml = dicttoxml(deefuzzer_dict)
+        conf_file = open(self.deefuzzer_user_file,'w')
+        conf_file.write(deefuzzer_xml)
+        conf_file.close()
 
-            elif 'ServerPassword' in line.split('='):
-                newlines.append('ServerPassword=' + self.password + '\n')
+    def start_deefuzzer(self):
+        #if not self.jack_inputs:
+            #jack.attach('telecaster')
+            #for jack_input in jack.get_ports():
+                #if 'system' in jack_input and 'capture' in jack_input.split(':')[1] :
+                    #self.jack_inputs.append(jack_input)
+        #jack_ports = ' '.join(self.jack_inputs)
 
-            elif 'SaveDirectory' in line.split('='):
-                newlines.append('SaveDirectory=' + self.raw_dir + '\n')
-            elif 'NumberChannels' in line.split('='):
-                newlines.append('NumberChannels=' + str(len(self.jack_inputs)) + '\n')
-            elif 'BitrateNominal' in line.split('='):
-                newlines.append('BitrateNominal=' + str(self.bitrate) + '\n')
-            elif 'OggQuality' in line.split('='):
-                newlines.append('OggQuality=' + str(self.ogg_quality) + '\n')
-            else:
-                newlines.append(line)
-
-        odd_conf_file = self.user_dir + os.sep + self.title+'.cfg'
-        oddconf = open(odd_conf_file,'w')
-        oddconf.writelines(newlines)
-        oddconf.close()
-        self.odd_conf = odd_conf_file
-
-    def start_oddcast(self):
-        if not self.jack_inputs:
-            jack.attach('telecaster')
-            for jack_input in jack.get_ports():
-                if 'system' in jack_input and 'capture' in jack_input.split(':')[1] :
-                    self.jack_inputs.append(jack_input)
-        jack_ports = ' '.join(self.jack_inputs)
-        command = 'edcast_jack -n "'+clean_string(self.conference)[0:16]+'" -c "'+self.odd_conf+ \
-                  '" '+ jack_ports + ' > /dev/null &'
+        command = 'deefuzzer ' + self.deefuzzer_user_file + ' &'
         os.system(command)
         self.set_lock()
-        time.sleep(1)
 
     def set_lock(self):
         lock = open(self.lock_file,'w')
@@ -193,30 +180,23 @@ class Station(Conference):
     def del_lock(self):
         os.remove(self.lock_file)
 
-    def start_rip(self):
-        if not os.path.exists(self.output_dir):
-            os.makedirs(self.output_dir)
-        command = 'streamripper ' + self.url_int + self.mount_point + \
-                  ' -d '+self.output_dir+' -D \"%S\" -s -t --quiet > /dev/null &'
-        os.system(command)
-        time.sleep(1)
+    def stop_deefuzzer(self):
+        if len(self.deefuzzer_pid) != 0:
+            os.system('kill -9 '+self.deefuzzer_pid[0])
 
-    def stop_oddcast(self):
-        if len(self.odd_pid) != 0:
-            os.system('kill -9 '+self.odd_pid[0])
-
-    def stop_rip(self):
-        if len(self.rip_pid) != 0:
-            os.system('kill -9 ' + self.rip_pid[0])
-        time.sleep(1)
-        date = datetime.datetime.now().strftime("%Y")
-        if os.path.exists(self.file_dir) and os.path.exists(self.file_dir + os.sep + 'incomplete'):
-            try:
-                shutil.move(self.file_dir+os.sep+'incomplete'+os.sep+' - .'+self.format, self.file_dir+os.sep)
-                os.rename(self.file_dir+os.sep+' - .'+self.format, self.file_dir+os.sep+self.filename)
-                shutil.rmtree(self.file_dir+os.sep+'incomplete'+os.sep)
-            except:
-                pass
+    def stop_rec(self):
+        pass
+        #if len(self.rip_pid) != 0:
+            #os.system('kill -9 ' + self.rip_pid[0])
+        #time.sleep(1)
+        #date = datetime.datetime.now().strftime("%Y")
+        #if os.path.exists(self.file_dir) and os.path.exists(self.file_dir + os.sep + 'incomplete'):
+            #try:
+                #shutil.move(self.file_dir+os.sep+'incomplete'+os.sep+' - .'+self.format, self.file_dir+os.sep)
+                #os.rename(self.file_dir+os.sep+' - .'+self.format, self.file_dir+os.sep+self.filename)
+                #shutil.rmtree(self.file_dir+os.sep+'incomplete'+os.sep)
+            #except:
+                #pass
 
     def mp3_convert(self):
         os.system('oggdec -o - '+ self.file_dir+os.sep+self.filename+' | lame -S -m m -h -b '+ self.bitrate + \
@@ -259,14 +239,13 @@ class Station(Conference):
 
     def start(self):
         self.set_lock()
-        self.set_oddcast_conf()
-        self.start_oddcast()
-        self.start_rip()
-        self.update_rss()
+        self.set_deefuzzer_conf()
+        self.start_deefuzzer()
+        #self.update_rss()
 
     def stop(self):
-        self.stop_rip()
-        self.stop_oddcast()
+        self.stop_rec()
+        self.stop_deefuzzer()
         if self.format == 'ogg':
             self.write_tags_ogg()
         elif self.format == 'mp3':
@@ -274,49 +253,6 @@ class Station(Conference):
         self.del_lock()
         #self.mp3_convert()
         #self.rsync_out()
-
-    def start_mp3cast(self):
-        item_id = item_id
-        source = source
-        metadata = metadata
-        args = get_args(options)
-        ext = get_file_extension()
-        args = ' '.join(args)
-        command = 'sox "%s" -q -w -r 44100 -t wav -c2 - | lame %s -' % (source, args)
-        # Processing (streaming + cache writing)
-        stream = self.core_process(self.command,self.buffer_size,self.dest)
-        for chunk in stream:
-            yield chunk
-
-    def core_process(self, command, buffer_size, dest):
-        """Encode and stream audio data through a generator"""
-        __chunk = 0
-        file_out = open(dest,'w')
-        try:
-            proc = subprocess.Popen(command,
-                    shell = True,
-                    bufsize = buffer_size,
-                    stdin = subprocess.PIPE,
-                    stdout = subprocess.PIPE,
-                    close_fds = True)
-        except:
-            raise ExportProcessError('Command failure:', command, proc)
-        # Core processing
-        while True:
-            __chunk = proc.stdout.read(buffer_size)
-            status = proc.poll()
-            if status != None and status != 0:
-                raise ExportProcessError('Command failure:', command, proc)
-            if len(__chunk) == 0:
-                break
-            yield __chunk
-            file_out.write(__chunk)
-        file_out.close()
-
-    def rsync_out(self):
-        local_uname = os.uname()
-        hostname = local_uname[1]
-        os.system('rsync -a '+self.media_dir+os.sep+' '+self.rsync_host+':'+os.sep+hostname+os.sep)
 
     def update_rss(self):
         rss_item_list = []

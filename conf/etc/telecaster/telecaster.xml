@@ -4,14 +4,14 @@
         <name>Pre-Barreau</name>
         <description>La preparation au Barreau de Paris</description>
         <url>http://telecaster-04.parisson.com</url>
-        <genre>Other</genre>
+        <genre>Vocal</genre>
     </infos>
     <server>
         <host>stream.pre-barreau.com</host>
         <port>8000</port>
         <sourcepassword>source2parisson</sourcepassword>
         <public>0</public>
-        <root_dir>/var/www/telecaster/</root_dir>
+        <deefuzzer_conf>/etc/telecaster/deefuzzer.xml</deefuzzer_conf>
         <rss>
             <dir>/var/www/rss/</dir>
         </rss>

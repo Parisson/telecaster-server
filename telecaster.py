@@ -35,13 +35,12 @@
 # Author: Guillaume Pellerin <yomguy@parisson.com>
 """
 
-version = '0.3.9'
+version = '0.4.0'
 
 
 import os
 import cgi
 import cgitb
-import shutil
 import time
 from tools import *
 from webview import *
@@ -53,15 +52,12 @@ class TeleCaster:
     """Manage the calls of Station and Webview to get the network and
     disk streams"""
 
-    def __init__(self, conf_file, school_file):
+    def __init__(self, conf_file, session_file):
         """Main function"""
         self.conf_file = conf_file
-        self.school_file = school_file
-        conf_t = xml2dict(self.conf_file)
-        self.conf = conf_t['telecaster']
-        self.title = self.conf['infos']['name']
-        self.root_dir = self.conf['server']['root_dir']
-        self.lock_file = self.root_dir + os.sep + self.conf['server']['lock_file']
+        self.session_file = session_file
+        conf_dict = xml2dict(self.conf_file)
+        self.conf = conf_dict['telecaster']
         self.title = self.conf['infos']['name']
         self.uid = os.getuid()
         self.url = self.conf['infos']['url']
@@ -69,17 +65,16 @@ class TeleCaster:
         self.user_dir = '/home/' + self.user + '.telecaster'
         if not os.path.exists(self.user_dir):
             os.makedirs(self.user_dir)
+        self.lock_file = self.user_dir + os.sep + 'telecaster.lock'
 
     def main(self):
-        odd_pid = get_pid('^edcast_jack\ -n', self.uid)
-        rip_pid = get_pid('streamripper ', self.uid)
-        writing = False
-        casting = False
-        writing = rip_pid != []
-        casting = odd_pid != []
-        form = WebView(self.school_file, self.url, version)
+        edcast_pid = get_pid('^edcast_jack\ -n', self.uid)
+        deefuzzer_pid = get_pid('deefuzzer', self.uid)
+        writing = deefuzzer_pid != []
+        casting = edcast_pid != []
+        form = WebView(self.session_file, self.url, version)
 
-        if odd_pid == [] and form.has_key("action") and \
+        if deefuzzer_pid == [] and form.has_key("action") and \
             form.has_key("department") and form.has_key("conference") and \
             form.has_key("professor") and form.has_key("comment") and \
             form["action"].value == "start":
@@ -91,20 +86,16 @@ class TeleCaster:
                         'professor': form.getfirst("professor"),
                         'comment': form.getfirst("comment")}
 
-            if rip_pid != []:
-                os.system('kill -9 '+rip_pid[0])
-                time.sleep(3)
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
             time.sleep(1)
-            #w.stop_form(self.conference_dict, writing, casting)
             self.main()
 
-        elif odd_pid != [] and os.path.exists(self.lock_file) and not form.has_key("action"):
+        elif deefuzzer_pid != [] and os.path.exists(self.lock_file) and not form.has_key("action"):
             self.conference_dict = get_conference_from_lock(self.lock_file)
             form.stop_form(self.conference_dict, writing, casting)
 
-        elif odd_pid != [] and form.has_key("action") and form["action"].value == "stop":
+        elif deefuzzer_pid and form.has_key("action") and form["action"].value == "stop":
             if os.path.exists(self.lock_file):
                 self.conference_dict = get_conference_from_lock(self.lock_file)
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
@@ -112,15 +103,14 @@ class TeleCaster:
             time.sleep(1)
             self.main()
 
-        elif odd_pid == []:
+        elif deefuzzer_pid == []:
             form.start_form()
 
 
-# Call main function.
 conf_file = '/etc/telecaster/telecaster.xml'
-school_file = '/etc/telecaster/sessions.xml'
+session_file = '/etc/telecaster/sessions.xml'
 
 if __name__ == '__main__':
-    t = TeleCaster(conf_file, school_file)
+    t = TeleCaster(conf_file, session_file)
     t.main()
 
