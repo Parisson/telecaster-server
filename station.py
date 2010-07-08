@@ -104,19 +104,19 @@ class Station(Conference):
         self.channels = int(self.conf['media']['channels'])
         self.description = [self.title, self.department, self.conference, self.session, self.professor, self.comment]
         self.server_name = [self.title, self.department, self.conference]
-        self.ServerDescription = clean_string('_-_'.join(self.description))
-        self.ServerName = clean_string('_-_'.join(self.server_name))
-        self.mount_point = clean_string(self.title) + '_-_' + \
-                                 clean_string(self.department) + '_-_' + \
+        self.ServerDescription = clean_string('-'.join(self.description))
+        self.ServerName = clean_string('-'.join(self.server_name))
+        self.mount_point = clean_string(self.title) + '-' + \
+                                 clean_string(self.department) + '-' + \
                                  clean_string(self.conference)
-        self.filename = clean_string('_-_'.join(self.description[1:])) + '_-_' + self.time_txt + '.' + self.format
+        self.filename = clean_string('-'.join(self.description[1:])) + '-' + self.time_txt + '.' + self.format
         self.output_dir = self.rec_dir + os.sep + self.department + os.sep + self.date
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
         self.odd_pid = get_pid('^edcast_jack', self.uid)
         self.deefuzzer_pid = get_pid('/usr/bin/deefuzzer', self.uid)
-        self.new_title = clean_string('_-_'.join(self.server_name)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
-        self.short_title = clean_string('_-_'.join(self.conference)+'_-_'+self.session+'_-_'+self.professor+'_-_'+self.comment)
+        self.new_title = clean_string('-'.join(self.server_name)+'-'+self.session+'-'+self.professor+'-'+self.comment)
+        self.short_title = clean_string('-'.join(self.conference)+'-'+self.session+'-'+self.professor+'-'+self.comment)
         self.genre = 'Vocal'
         self.encoder = 'TeleCaster by Parisson'
 
