@@ -1,32 +1,33 @@
 <deefuzzer>
-    <log>/var/log/deefuzzer/deefuzzer.log</log>
-    <m3u>/var/www/m3u/deefuzzer.m3u</m3u>
+    <log>/var/log/deefuzzer/preb.log</log>
+    <m3u>/var/www/m3u/preb.m3u</m3u>
+
     <station>
         <infos>
-            <short_name>TeleCaster</short_name>
-            <name>TeleCaster Live Session</name>
-            <description>LIVE Talk and Music</description>
-            <url>http://parisson.com</url>
-            <genre>Various Funk Groove</genre>
+            <short_name>telecaster_04</short_name>
+            <name>TeleCaster #4</name>
+            <description>TeleCaster testing</description>
+            <url>http://crfpa.pre-barreau.com</url>
+            <genre>School</genre>
         </infos>
         <server>
-            <host>parisson.com</host>
+            <host>stream.parisson.com</host>
             <port>8000</port>
             <sourcepassword>source2parisson</sourcepassword>
             <public>0</public>
         </server>
         <media>
-            <dir>/path/to/mp3/</dir>
+            <dir>/home/prebarreau/media/CRFPA/2009/</dir>
             <format>mp3</format>
-            <bitrate>192</bitrate>
+            <bitrate>96</bitrate>
             <ogg_quality>7</ogg_quality>
             <samplerate>44100</samplerate>
-            <voices>1</voices>
+            <voices>2</voices>
             <shuffle>1</shuffle>
         </media>
         <rss>
-            <dir>/var/www/rss/</dir>
-            <enclosure>1</enclosure>
+            <dir>/var/www/rss</dir>
+            <enclosure>0</enclosure>
         </rss>
         <twitter>
             <mode>0</mode>
@@ -44,7 +45,7 @@
             <port>1234</port>
         </control>
         <relay>
-            <mode>0</mode>
+            <mode>1</mode>
             <url>http://localhost:8000/telecaster_live.mp3</url>
         </relay>
         <record>
@@ -52,6 +53,7 @@
             <dir>/path/to/archives</dir>
         </record>
     </station>
+
 </deefuzzer>
 
 

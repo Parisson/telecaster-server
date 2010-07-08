@@ -1,38 +1,34 @@
 <telecaster>
     <infos>
-        <short_name>yomix</short_name>
-        <name>Yomix Streams</name>
-        <description>My streams</description>
-        <url>http://wm16.parisson.org</url>
-        <genre>Other</genre>
+        <short_name>Pre-Barreau</short_name>
+        <name>Pre-Barreau</name>
+        <description>La preparation au Barreau de Paris</description>
+        <url>http:///telecaster-04.parisson.com</url>
+        <genre>Vocal</genre>
     </infos>
     <server>
-        <host>parisson.com</host>
+        <host>stream.parisson.com</host>
         <port>8000</port>
         <sourcepassword>source2parisson</sourcepassword>
         <public>0</public>
         <deefuzzer_default_conf>/etc/telecaster/deefuzzer.xml</deefuzzer_default_conf>
-        <lock_file>lock/telecaster.lock</lock_file>
         <rss>
             <dir>/var/www/rss/</dir>
         </rss>
     </server>
     <media>
         <record>true</record>
-        <play_dir>/home/momo/mymusic/telecaster/media</play_dir>
-        <rec_dir>/home/momo/mymusic/telecaster/backup</rec_dir>
+        <play_dir>/home/pre-barreau/media/CRFPA</play_dir>
+        <rec_dir>/home/pre-barreau/backup</rec_dir>
         <format>mp3</format>
-        <bitrate>256</bitrate>
-        <channels>2</channels>
-        <ogg_quality>8</ogg_quality>
+        <bitrate>96</bitrate>
+        <channels>1</channels>
+        <ogg_quality>3</ogg_quality>
         <samplerate>44100</samplerate>
     </media>
     <jack>
         <input>
-        <name>system:capture_1</name>
-        </input>
-        <input>
-        <name>system:capture_2</name>
+        <name>jack_rack:out_1</name>
         </input>
     </jack>
 </telecaster>
