@@ -42,6 +42,7 @@ import shutil
 import datetime
 import time
 import urllib
+import liblo
 from tools import *
 from mutagen.oggvorbis import OggVorbis
 from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TDAT, TDRC, TCO, COM
@@ -120,8 +121,8 @@ class Station(Conference):
         self.genre = 'Vocal'
         self.encoder = 'TeleCaster by Parisson'
 
-        if not os.path.exists(self.rec_dir):
-            os.makedirs(self.rec_dir)
+        if not os.path.exists(self.file_dir):
+            os.makedirs(self.file_dir)
 
         self.jack_inputs = []
         if 'jack' in self.conf:
@@ -132,25 +133,26 @@ class Station(Conference):
             else:
                 self.jack_inputs.append(jack_inputs['name'])
 
-    def set_deefuzzer_conf(self):
-        deefuzzer_dict = xml2dict(self.deefuzzer_default_conf_file)
-
-        deefuzzer_dict['deefuzzer']['station']['infos']['short_name'] = self.mount_point
-        deefuzzer_dict['deefuzzer']['station']['infos']['name'] = self.ServerName
-        deefuzzer_dict['deefuzzer']['station']['infos']['description'] = self.ServerDescription.replace(' ','_')
-        deefuzzer_dict['deefuzzer']['station']['server']['host'] = self.host
-        deefuzzer_dict['deefuzzer']['station']['server']['port'] = self.port
-        deefuzzer_dict['deefuzzer']['station']['server']['sourcepassword'] = self.password
-        deefuzzer_dict['deefuzzer']['station']['media']['bitrate'] = self.bitrate
-        deefuzzer_dict['deefuzzer']['station']['media']['dir'] = self.play_dir
-        deefuzzer_dict['deefuzzer']['station']['media']['voices'] = str(len(self.jack_inputs))
-        deefuzzer_dict['deefuzzer']['station']['record']['mode'] = '1'
-        deefuzzer_dict['deefuzzer']['station']['record']['dir'] = self.rec_dir
-        deefuzzer_dict['deefuzzer']['station']['relay']['mode'] = '1'
-
-        deefuzzer_xml = dicttoxml(deefuzzer_dict)
+        self.deefuzzer_dict = xml2dict(self.deefuzzer_default_conf_file)
+        self.deefuzzer_dict['deefuzzer']['station']['infos']['short_name'] = self.mount_point
+        self.deefuzzer_dict['deefuzzer']['station']['infos']['name'] = self.ServerName
+        self.deefuzzer_dict['deefuzzer']['station']['infos']['description'] = self.ServerDescription.replace(' ','_')
+        self.deefuzzer_dict['deefuzzer']['station']['server']['host'] = self.host
+        self.deefuzzer_dict['deefuzzer']['station']['server']['port'] = self.port
+        self.deefuzzer_dict['deefuzzer']['station']['server']['sourcepassword'] = self.password
+        self.deefuzzer_dict['deefuzzer']['station']['media']['bitrate'] = self.bitrate
+        self.deefuzzer_dict['deefuzzer']['station']['media']['dir'] = self.play_dir
+        self.deefuzzer_dict['deefuzzer']['station']['media']['voices'] = str(len(self.jack_inputs))
+        self.deefuzzer_dict['deefuzzer']['station']['record']['mode'] = '1'
+        self.deefuzzer_dict['deefuzzer']['station']['record']['dir'] = self.file_dir
+        self.deefuzzer_dict['deefuzzer']['station']['relay']['mode'] = '1'
+        self.deefuzzer_dict['deefuzzer']['station']['relay']['author'] = self.professor
+        self.deefuzzer_port = self.deefuzzer_dict['deefuzzer']['station']['control']['port']
+        self.deefuzzer_xml = dicttoxml(self.deefuzzer_dict)
+        
+    def write_deefuzzer_conf(self):
         conf_file = open(self.deefuzzer_user_file,'w')
-        conf_file.write(deefuzzer_xml)
+        conf_file.write(self.deefuzzer_xml)
         conf_file.close()
 
     def start_deefuzzer(self):
@@ -175,28 +177,18 @@ class Station(Conference):
     def del_lock(self):
         os.remove(self.lock_file)
 
-    def stop_deefuzzer(self):
-        if len(self.deefuzzer_pid) != 0:
+    def stop_deefuzzer(self):    
             os.system('kill -9 '+self.deefuzzer_pid[0])
 
     def stop_rec(self):
-        pass
-        #if len(self.rip_pid) != 0:
-            #os.system('kill -9 ' + self.rip_pid[0])
-        #time.sleep(1)
-        #date = datetime.datetime.now().strftime("%Y")
-        #if os.path.exists(self.file_dir) and os.path.exists(self.file_dir + os.sep + 'incomplete'):
-            #try:
-                #shutil.move(self.file_dir+os.sep+'incomplete'+os.sep+' - .'+self.format, self.file_dir+os.sep)
-                #os.rename(self.file_dir+os.sep+' - .'+self.format, self.file_dir+os.sep+self.filename)
-                #shutil.rmtree(self.file_dir+os.sep+'incomplete'+os.sep)
-            #except:
-                #pass
+        if len(self.deefuzzer_pid) != 0:
+            target = liblo.Address(self.deefuzzer_port)
+            liblo.send(target, "/record", 0)
 
     def mp3_convert(self):
         os.system('oggdec -o - '+ self.file_dir+os.sep+self.filename+' | lame -S -m m -h -b '+ self.bitrate + \
             ' --add-id3v2 --tt "'+ self.new_title + '" --ta "'+self.professor+'" --tl "'+self.title+'" --ty "'+self.date+ \
-        '" --tg "'+self.genre+'" - ' + self.file_dir+os.sep+self.ServerDescription + '.mp3 &')
+            '" --tg "'+self.genre+'" - ' + self.file_dir+os.sep+self.ServerDescription + '.mp3 &')
 
     def write_tags_ogg(self):
        file = self.file_dir + os.sep + self.filename
@@ -230,21 +222,21 @@ class Station(Conference):
             #tag = tags.__dict__['COMMENT']
             #audio.add(COM(encoding=3, text=self.comment))
             audio.save()
-        time.sleep(1)
 
     def start(self):
         self.set_lock()
-        self.set_deefuzzer_conf()
+        self.write_deefuzzer_conf()
         self.start_deefuzzer()
         #self.update_rss()
 
     def stop(self):
         self.stop_rec()
+        time.sleep(5)
         self.stop_deefuzzer()
-        if self.format == 'ogg':
-            self.write_tags_ogg()
-        elif self.format == 'mp3':
-            self.write_tags_mp3()
+        #if self.format == 'ogg':
+        #    self.write_tags_ogg()
+        #elif self.format == 'mp3':
+        #    self.write_tags_mp3()
         self.del_lock()
         #self.mp3_convert()
         #self.rsync_out()
