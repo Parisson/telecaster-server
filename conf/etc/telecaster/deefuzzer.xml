@@ -17,7 +17,7 @@
             <public>0</public>
         </server>
         <media>
-            <dir>/home/prebarreau/media/CRFPA/2009/</dir>
+            <dir>/path/to/mp3</dir>
             <format>mp3</format>
             <bitrate>96</bitrate>
             <ogg_quality>7</ogg_quality>
@@ -47,6 +47,7 @@
         <relay>
             <mode>1</mode>
             <url>http://localhost:8000/telecaster_live.mp3</url>
+            <author>Parisson</author>
         </relay>
         <record>
             <mode>0</mode>

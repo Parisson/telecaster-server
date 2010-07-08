@@ -18,8 +18,8 @@
     </server>
     <media>
         <record>true</record>
-        <play_dir>/home/pre-barreau/media/CRFPA</play_dir>
-        <rec_dir>/home/pre-barreau/backup</rec_dir>
+        <play_dir>/home/prebarreau/media</play_dir>
+        <rec_dir>/home/prebarreau/archives</rec_dir>
         <format>mp3</format>
         <bitrate>96</bitrate>
         <channels>1</channels>

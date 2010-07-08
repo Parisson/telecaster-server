@@ -111,7 +111,7 @@ class Station(Conference):
                                  clean_string(self.department) + '-' + \
                                  clean_string(self.conference)
         self.filename = clean_string('-'.join(self.description[1:])) + '-' + self.time_txt + '.' + self.format
-        self.output_dir = self.rec_dir + os.sep + self.department + os.sep + self.date
+        self.output_dir = self.rec_dir + os.sep + self.date + os.sep + self.department 
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
         self.odd_pid = get_pid('^edcast_jack', self.uid)
