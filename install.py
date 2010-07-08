@@ -41,13 +41,7 @@
 import os, sys
 import platform
 
-if len(sys.argv) == 1:
-    install_dir = '/usr/share/telecaster'
-elif len(sys.argv) > 2:
-    sys.exit('Give just one directory to install the TeleCaster, or none.')
-else:
-    install_dir = sys.argv[1]
-
+install_dir = '/usr/share/telecaster'
 if not os.path.exists(install_dir):
     os.mkdir(install_dir)
 
@@ -76,6 +70,7 @@ for dir in home_dirs:
     if not os.path.exists(home_dir):
         os.mkdir(home_dir)
     os.system('cp ' + conf_dir + os.sep + 'telecaster/home/' + dir + '/* ' + home_dir)
+    os.system('chown -R ' + user + ':' + user + ' ' + home_dir) 
 
 print """
    Installation successfull !
