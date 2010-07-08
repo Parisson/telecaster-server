@@ -240,11 +240,11 @@ class WebView(FieldStorage):
         print "</div>"
 
 
-    def start_form(self, message=''):
+    def start_form(self, writing, casting, message=''):
         self.refresh = False
         self.header()
-        self.casting = False
-        self.writing = False
+        self.casting = writing
+        self.writing = casting
         self.hardware_data()
         print "<form method=\"post\" action=\""+self.url+"/telecaster/telecaster.py\" name=\"formulaire\">"
         print "<div class=\"main\">"

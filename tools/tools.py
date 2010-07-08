@@ -84,8 +84,7 @@ def get_pid(proc,uid):
         for proc in procs:
             pid = proc.split(' ')[0]
             command = ' '.join(proc.split(' ')[1:])[:-1]
-            if not 'LIVE' in command:
-                pids.append(pid)
+            pids.append(pid)
     return pids
 
 def get_params_from_lock(lock_file):

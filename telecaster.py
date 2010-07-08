@@ -69,10 +69,10 @@ class TeleCaster:
         self.lock_file = self.user_dir + os.sep + 'telecaster.lock'
 
     def main(self):
-        edcast_pid = get_pid('^edcast_jack', self.uid)
+        edcast_pid = get_pid('edcast_jack', self.uid)
         deefuzzer_pid = get_pid('/usr/bin/deefuzzer', self.uid)
-        writing = deefuzzer_pid != []
-        casting = edcast_pid != []
+        writing = edcast_pid != []
+        casting = deefuzzer_pid != []
         form = WebView(self.session_file, self.url, version)
 
         if deefuzzer_pid == [] and form.has_key("action") and \
@@ -105,7 +105,7 @@ class TeleCaster:
             self.main()
 
         elif deefuzzer_pid == []:
-            form.start_form()
+            form.start_form(writing, casting)
 
 
 conf_file = '/etc/telecaster/telecaster.xml'
