@@ -41,7 +41,7 @@
 import os, sys
 import platform
 
-install_dir = '/usr/share/telecaster'
+install_dir = '/var/www/telecaster'
 if not os.path.exists(install_dir):
     os.mkdir(install_dir)
 
@@ -62,6 +62,7 @@ if not os.path.exists(init_link):
     os.system('ln -s /etc/init.d/vncserver ' + init_link)
     
 user = raw_input('Give a user to use the TeleCaster system : ')
+os.system('chown -R ' + user + ':' + user + ' ' + install_dir) 
 home = os.sep + 'home' + os.sep + user + os.sep
 home_dirs = ['fluxbox', 'vnc']
 
@@ -71,6 +72,10 @@ for dir in home_dirs:
         os.mkdir(home_dir)
     os.system('cp ' + conf_dir + os.sep + 'telecaster/home/' + dir + '/* ' + home_dir)
     os.system('chown -R ' + user + ':' + user + ' ' + home_dir) 
+
+#var_dir = '/var/www/telecaster'
+#if not os.path.exists(var_dir):
+#    os.system('ln -s ' + install_dir + ' ' + var_dir)
 
 print """
    Installation successfull !

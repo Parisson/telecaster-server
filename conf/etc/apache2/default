@@ -3,7 +3,10 @@
 	ServerAdmin webmaster@localhost
 	ServerName telecaster-04.parisson.com
 	DocumentRoot /var/www/
+
+	# BEGIN TELECASTER	
 	SuexecUserGroup prebarreau prebarreau
+	# END TELECASTER
 
 	<Directory />
 		Options FollowSymLinks
@@ -15,8 +18,8 @@
 		Order allow,deny
 		allow from all
 		# This directive allows us to have apache2's default start page
-                # in /apache2-default/, but still have / go to the right place
-                RedirectMatch ^/$ /telecaster/telecaster.py
+        # in /apache2-default/, but still have / go to the right place
+        RedirectMatch ^/$ /telecaster/telecaster.py
 	</Directory>
 
 	ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
@@ -45,16 +48,16 @@
         Allow from 127.0.0.0/255.0.0.0 ::1/128
     </Directory>
 
-Alias /telecaster/ /var/www/telecaster/
-<Directory /var/www/telecaster>
-     AllowOverride All
-     AddHandler cgi-script cgi py
-     Options ExecCGI
-     Order allow,deny
-     Allow from all
-</Directory>
-
-Alias favicon.ico /var/www/favicon.ico
-#Alias /telecaster/favicon.ico /var/www/favicon.ico
+    # BEGIN TELECASTER
+    Alias /telecaster/ /var/www/telecaster/
+    <Directory /var/www/telecaster>
+         AllowOverride All
+         AddHandler cgi-script cgi py
+         Options ExecCGI
+         Order allow,deny
+         Allow from all
+    </Directory>
+    Alias favicon.ico /var/www/telecaster/favicon.ico
+    # END TELECASTER
 
 </VirtualHost>
