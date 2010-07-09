@@ -111,14 +111,14 @@ class Station(Conference):
                                  clean_string(self.department) + '-' + \
                                  clean_string(self.conference)
         self.filename = clean_string('-'.join(self.description[1:])) + '-' + self.time_txt + '.' + self.format
-        self.output_dir = self.rec_dir + os.sep + self.date + os.sep + self.department 
+        self.output_dir = self.rec_dir + os.sep + self.date + os.sep + self.department
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
         self.odd_pid = get_pid('^edcast_jack', self.uid)
         self.deefuzzer_pid = get_pid('/usr/bin/deefuzzer', self.uid)
         self.new_title = clean_string('-'.join(self.server_name)+'-'+self.session+'-'+self.professor+'-'+self.comment)
         self.short_title = clean_string('-'.join(self.conference)+'-'+self.session+'-'+self.professor+'-'+self.comment)
-        self.genre = 'Vocal'
+        self.genre = self.conf['infos']['genre']
         self.encoder = 'TeleCaster by Parisson'
 
         if not os.path.exists(self.file_dir):
@@ -137,6 +137,7 @@ class Station(Conference):
         self.deefuzzer_dict['deefuzzer']['station']['infos']['short_name'] = self.mount_point
         self.deefuzzer_dict['deefuzzer']['station']['infos']['name'] = self.ServerName
         self.deefuzzer_dict['deefuzzer']['station']['infos']['description'] = self.ServerDescription.replace(' ','_')
+        self.deefuzzer_dict['deefuzzer']['station']['infos']['genre'] = self.genre
         self.deefuzzer_dict['deefuzzer']['station']['server']['host'] = self.host
         self.deefuzzer_dict['deefuzzer']['station']['server']['port'] = self.port
         self.deefuzzer_dict['deefuzzer']['station']['server']['sourcepassword'] = self.password
@@ -149,7 +150,7 @@ class Station(Conference):
         self.deefuzzer_dict['deefuzzer']['station']['relay']['author'] = self.professor
         self.deefuzzer_port = self.deefuzzer_dict['deefuzzer']['station']['control']['port']
         self.deefuzzer_xml = dicttoxml(self.deefuzzer_dict)
-        
+
     def write_deefuzzer_conf(self):
         conf_file = open(self.deefuzzer_user_file,'w')
         conf_file.write(self.deefuzzer_xml)
@@ -177,7 +178,7 @@ class Station(Conference):
     def del_lock(self):
         os.remove(self.lock_file)
 
-    def stop_deefuzzer(self):    
+    def stop_deefuzzer(self):
             os.system('kill -9 '+self.deefuzzer_pid[0])
 
     def stop_rec(self):
