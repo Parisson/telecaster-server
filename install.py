@@ -50,7 +50,9 @@ os.system('cp -ra ./* ' + install_dir + os.sep)
 conf_dir = '/etc'
 if not os.path.exists(conf_dir):
     os.mkdir(conf_dir)
+os.system('chown -R  root:root ./conf/etc/')
 os.system('cp -ra ./conf/etc/* ' + conf_dir + os.sep)
+
 
 init_dir = '/etc/rc2.d'
 init_link = init_dir + os.sep + 'S97jackd'
