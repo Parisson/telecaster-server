@@ -46,7 +46,7 @@ DEPENDS
 ========
 
 required : python, icecast2, apache2, jackd, edcast-jack (=3.1.7), vorbis-tools,
-           deefuzzer, python-mutagen, streamrippper, procps
+           deefuzzer, python-mutagen, procps, meterbridge
 
 optional : lame
 
