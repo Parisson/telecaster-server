@@ -246,7 +246,7 @@ class WebView(FieldStorage):
         self.casting = writing
         self.writing = casting
         self.hardware_data()
-        print "<form method=\"post\" action=\""+self.url+"/telecaster/telecaster.py\" name=\"formulaire\">"
+        print "<form method=\"post\" action=\"telecaster.py\" name=\"formulaire\">"
         print "<div class=\"main\">"
         print "<table class=\"form\">"
         print "<TR><TH align=\"left\">Titre</TH><TD> : </TD><TD>"+self.title+"</TD></TR>"
@@ -339,7 +339,7 @@ class WebView(FieldStorage):
             #</div>"""
 
         print "<div class=\"tools\">"
-        print "<form method=\"post\" action=\""+self.url+"/telecaster/telecaster.py\">"
+        print "<form method=\"post\" action=\"telecaster.py\">"
         print "<div class=\"buttons\">"
         print "<button type=\"submit\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
         print "<a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
