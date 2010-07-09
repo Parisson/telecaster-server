@@ -232,7 +232,7 @@ class Station(Conference):
 
     def stop(self):
         self.stop_rec()
-        time.sleep(5)
+        time.sleep(2)
         self.stop_deefuzzer()
         #if self.format == 'ogg':
         #    self.write_tags_ogg()
