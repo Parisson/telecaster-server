@@ -2,8 +2,8 @@
 START_DAEMON=yes
 
 # The jackd process will run under this user
-USER=prebarreau
+USER=telecaster
 
 # Options to pass to jackd
-OPTIONS="-R -P70 -dalsa -r48000 -p1024 -n3 -D -Chw:0,1 -Phw:0,1 "
+OPTIONS="-r -dalsa -r48000 -p1024 -n8 -D -Chw:0 -Phw:0 "
 

@@ -14,13 +14,20 @@ or Ubuntu / Kubuntu (>= 10.4). So please install one of these OS before.
 2. Install dependencies
 =======================
 
+Needed::
+
 $ sudo aptitude update
 
-$ sudo aptitude install python python-xml python-setuptools icecast2 apache2 apache2-suexec jackd vorbis-tools \
-                        python-mutagen procps meterbridge fluxbox vnc4server vncviewer \ 
-                        swh-plusgins jack-rack python-liblo
+$ sudo aptitude install python python-dev python-xml python-libxml2 python-setuptools python-twitter python-liblo python-mutagen \
+                        icecast2 apache2 apache2-suexec jackd libjack-dev vorbis-tools procps meterbridge fluxbox \
+                        vnc4server vncviewer swh-plugins jack-rack libshout3 libshout3-dev libmad0-dev libogg-dev g++
 
-2.1. Install edcast-jack
+Optional::
+
+$ sudo aptitude install libfaac-dev libmp3lame-dev libflac-dev 
+
+
+2.1. Install EdCast-Jack
 ------------------------
 
 $ cd telecaster-0.4.0/tools/edcast-jack
@@ -31,7 +38,8 @@ $ make
 
 $ sudo make install
 
-2.2. Install edcast-jack
+
+2.2. Install DeeFuzzer
 ------------------------
 
 $ cd telecaster-0.4.0/tools/deefuzzer
@@ -50,11 +58,13 @@ $ sudo python install.py
 4. Configuration
 ================
 
-Edit the following files to setup TeleCaster :
+Edit the following files to setup TeleCaster. Please be careful with the XML syntax::
 
 /etc/telecaster/telecaster.xml
 /etc/telecaster/session.xml
 /etc/telecaster/deefuzzer.xml
+
+and,
 
 /etc/default/jackd
 /etc/default/vncserver
@@ -65,4 +75,37 @@ Edit the following files to setup TeleCaster :
 
 $ sudo /etc/init.d/jackd start
 $ sudo /etc/init.d/vncserver start
+
+
+6. Configure Apache2
+====================
+
+Read conf/etc/apache2/default
+and copy #TELECASTER lines into your apache local VirtualHost 
+in /etc/apache2/sites-available/default
+
+Note that TeleCaster in install in /var/www/telecaster/ by default.
+
+Reload Apache::
+
+$ sudo /etc/init.d/apache2 reload
+
+
+7. Usage 
+========
+
+Browse the TeleCaster web control page::
+
+http://localhost/telecaster/telecaster.py
+
+Fill in the form and start any free recording and broadcasting stream !
+
+
+8. Contact
+==========
+
+Any questions, suggestions ? Please contact the main developer :
+
+Guillaume Pellerin <yomguy@parisson.com>
+
 

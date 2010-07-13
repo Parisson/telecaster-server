@@ -46,6 +46,8 @@ if not os.path.exists(install_dir):
     os.mkdir(install_dir)
 
 os.system('cp -ra ./* ' + install_dir + os.sep)
+os.system('rm -rf ' + install_dir + os.sep + 'tools/edcast-jack')
+os.system('rm -rf ' + install_dir + os.sep + 'tools/deefuzzer')
 
 conf_dir = '/etc'
 if not os.path.exists(conf_dir):

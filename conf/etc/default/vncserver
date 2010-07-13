@@ -2,7 +2,7 @@
 START_DAEMON=yes
 
 # The vncserver process will run under this user
-USER=prebarreau
+USER=telecaster
 
 # The vncserver port (i.e. 2 for 5902)
 PORT="1"

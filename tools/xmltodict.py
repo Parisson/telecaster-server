@@ -5,7 +5,7 @@
 # http://www.gmta.info/publications/parsing-simple-xml-structure-to-a-python-dictionary
 
 import xml.dom.minidom
-import xml.dom.ext
+#import xml.dom.ext
 from xml.sax.saxutils import escape
 
 
