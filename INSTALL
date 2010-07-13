@@ -1,0 +1,68 @@
+==================
+INSTALL TeleCaster
+==================
+
+
+1. Operating System
+===================
+
+TeleCaster now only works on GNU/Linux systems. The installer and the following instructions
+are based on Debian like software management so that it should work on Debian (>= Squeeze) 
+or Ubuntu / Kubuntu (>= 10.4). So please install one of these OS before.
+
+
+2. Install dependencies
+=======================
+
+$ sudo aptitude update
+
+$ sudo aptitude install python python-xml python-setuptools icecast2 apache2 apache2-suexec jackd vorbis-tools \
+                        python-mutagen procps meterbridge fluxbox vnc4server vncviewer \ 
+                        swh-plusgins jack-rack python-liblo
+
+2.1. Install edcast-jack
+------------------------
+
+$ cd telecaster-0.4.0/tools/edcast-jack
+
+$ ./configure
+
+$ make
+
+$ sudo make install
+
+2.2. Install edcast-jack
+------------------------
+
+$ cd telecaster-0.4.0/tools/deefuzzer
+
+$ sudo python install.py
+
+
+3. Install TeleCaster
+=====================
+
+$ cd telecaster-0.4.0/
+
+$ sudo python install.py
+
+
+4. Configuration
+================
+
+Edit the following files to setup TeleCaster :
+
+/etc/telecaster/telecaster.xml
+/etc/telecaster/session.xml
+/etc/telecaster/deefuzzer.xml
+
+/etc/default/jackd
+/etc/default/vncserver
+
+
+5. Start audio deamons
+======================
+
+$ sudo /etc/init.d/jackd start
+$ sudo /etc/init.d/vncserver start
+
