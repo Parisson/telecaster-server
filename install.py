@@ -49,12 +49,12 @@ os.system('cp -ra ./* ' + install_dir + os.sep)
 os.system('rm -rf ' + install_dir + os.sep + 'tools/edcast-jack')
 os.system('rm -rf ' + install_dir + os.sep + 'tools/deefuzzer')
 
-conf_dir = '/etc'
+etc_dir = '/etc'
+conf_dir = etc_dir + os.sep + 'telecaster'
 if not os.path.exists(conf_dir):
     os.mkdir(conf_dir)
-os.system('chown -R  root:root ./conf/etc/')
-os.system('cp -ra ./conf/etc/* ' + conf_dir + os.sep)
-
+    os.system('chown -R  root:root ./conf/etc/')
+    os.system('cp -ra ./conf/etc/* ' + etc_dir + os.sep)
 
 init_dir = '/etc/rc2.d'
 init_link = init_dir + os.sep + 'S97jackd'
@@ -74,7 +74,7 @@ for dir in home_dirs:
     home_dir = home + '.' + dir
     if not os.path.exists(home_dir):
         os.mkdir(home_dir)
-    os.system('cp ' + conf_dir + os.sep + 'telecaster/home/' + dir + '/* ' + home_dir)
+    os.system('cp ' + conf_dir + os.sep + 'home' + os.sep + dir + '/* ' + home_dir)
     os.system('chown -R ' + user + ':' + user + ' ' + home_dir) 
 
 #var_dir = '/var/www/telecaster'
