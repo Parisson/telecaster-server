@@ -133,22 +133,42 @@ class Station(Conference):
             else:
                 self.jack_inputs.append(jack_inputs['name'])
 
+        # DeeFuzzzer setup
         self.deefuzzer_dict = xml2dict(self.deefuzzer_default_conf_file)
-        self.deefuzzer_dict['deefuzzer']['station']['infos']['short_name'] = self.mount_point
-        self.deefuzzer_dict['deefuzzer']['station']['infos']['name'] = self.ServerName
-        self.deefuzzer_dict['deefuzzer']['station']['infos']['description'] = self.ServerDescription.replace(' ','_')
-        self.deefuzzer_dict['deefuzzer']['station']['infos']['genre'] = self.genre
-        self.deefuzzer_dict['deefuzzer']['station']['server']['host'] = self.host
-        self.deefuzzer_dict['deefuzzer']['station']['server']['port'] = self.port
-        self.deefuzzer_dict['deefuzzer']['station']['server']['sourcepassword'] = self.password
-        self.deefuzzer_dict['deefuzzer']['station']['media']['bitrate'] = self.bitrate
-        self.deefuzzer_dict['deefuzzer']['station']['media']['dir'] = self.play_dir
-        self.deefuzzer_dict['deefuzzer']['station']['media']['voices'] = str(len(self.jack_inputs))
-        self.deefuzzer_dict['deefuzzer']['station']['record']['mode'] = '1'
-        self.deefuzzer_dict['deefuzzer']['station']['record']['dir'] = self.file_dir
-        self.deefuzzer_dict['deefuzzer']['station']['relay']['mode'] = '1'
-        self.deefuzzer_dict['deefuzzer']['station']['relay']['author'] = self.professor
-        self.deefuzzer_port = self.deefuzzer_dict['deefuzzer']['station']['control']['port']
+        self.station_local = self.deefuzzer_dict['deefuzzer']['station'][0]
+        self.station_distant = self.deefuzzer_dict['deefuzzer']['station'][1]
+
+        self.station_local['infos']['short_name'] = self.mount_point
+        self.station_local['infos']['name'] = self.ServerName
+        self.station_local['infos']['description'] = self.ServerDescription.replace(' ','_')
+        self.station_local['infos']['genre'] = self.genre
+        self.station_local['server']['host'] = '127.0.0.1'
+        self.station_local['server']['port'] = self.port
+        self.station_local['server']['sourcepassword'] = self.password
+        self.station_local['media']['bitrate'] = self.bitrate
+        self.station_local['media']['dir'] = self.play_dir
+        self.station_local['media']['voices'] = str(len(self.jack_inputs))
+        self.station_local['record']['mode'] = '1'
+        self.station_local['record']['dir'] = self.file_dir
+        self.station_local['relay']['mode'] = '1'
+        self.station_local['relay']['author'] = self.professor
+
+        self.station_distant['infos']['short_name'] = self.mount_point
+        self.station_distant['infos']['name'] = self.ServerName
+        self.station_distant['infos']['description'] = self.ServerDescription.replace(' ','_')
+        self.station_distant['infos']['genre'] = self.genre
+        self.station_distant['server']['host'] = self.host
+        self.station_distant['server']['port'] = self.port
+        self.station_distant['server']['sourcepassword'] = self.password
+        self.station_distant['media']['bitrate'] = self.bitrate
+        self.station_distant['media']['dir'] = self.play_dir
+        self.station_distant['media']['voices'] = str(len(self.jack_inputs))
+        self.station_distant['record']['mode'] = '0'
+        self.station_distant['record']['dir'] = self.file_dir
+        self.station_distant['relay']['mode'] = '1'
+        self.station_distant['relay']['author'] = self.professor
+
+        self.deefuzzer_local_port = self.station_local['control']['port']
         self.deefuzzer_xml = dicttoxml(self.deefuzzer_dict)
 
     def write_deefuzzer_conf(self):
@@ -176,7 +196,7 @@ class Station(Conference):
 
     def stop_rec(self):
         if len(self.deefuzzer_pid) != 0:
-            target = liblo.Address(self.deefuzzer_port)
+            target = liblo.Address(self.deefuzzer_local_port)
             liblo.send(target, "/record", 0)
 
     def mp3_convert(self):
