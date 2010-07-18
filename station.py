@@ -157,13 +157,6 @@ class Station(Conference):
         conf_file.close()
 
     def start_deefuzzer(self):
-        #if not self.jack_inputs:
-            #jack.attach('telecaster')
-            #for jack_input in jack.get_ports():
-                #if 'system' in jack_input and 'capture' in jack_input.split(':')[1] :
-                    #self.jack_inputs.append(jack_input)
-        #jack_ports = ' '.join(self.jack_inputs)
-
         command = 'deefuzzer ' + self.deefuzzer_user_file + ' &'
         os.system(command)
         self.set_lock()
