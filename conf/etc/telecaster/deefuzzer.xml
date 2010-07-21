@@ -46,7 +46,7 @@
         </control>
         <relay>
             <mode>1</mode>
-            <url>http://localhost:8000/telecaster_live.mp3</url>
+            <url>http://127.0.0.1:8000/telecaster_live.mp3</url>
             <author>Parisson</author>
         </relay>
         <record>
@@ -100,7 +100,7 @@
         </control>
         <relay>
             <mode>1</mode>
-            <url>http://localhost:8000/telecaster_live.mp3</url>
+            <url>http://127.0.0.1:8000/telecaster_live.mp3</url>
             <author>Parisson</author>
         </relay>
         <record>
