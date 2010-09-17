@@ -45,6 +45,9 @@ install_dir = '/var/www/telecaster'
 if not os.path.exists(install_dir):
     os.mkdir(install_dir)
 
+user = raw_input('Give a user to use the TeleCaster system : ')
+print 'Installing...'
+
 os.system('cp -ra ./* ' + install_dir + os.sep)
 os.system('rm -rf ' + install_dir + os.sep + 'tools/edcast-jack')
 os.system('rm -rf ' + install_dir + os.sep + 'tools/deefuzzer')
@@ -53,9 +56,9 @@ etc_dir = '/etc'
 conf_dir = etc_dir + os.sep + 'telecaster'
 if not os.path.exists(conf_dir):
     os.mkdir(conf_dir)
-    os.system('chown -R  root:root ./conf/etc/')
     os.system('cp -ra ./conf/etc/* ' + etc_dir + os.sep)
-
+    os.system('chown -R  root:root ' + etc_dir)
+    
 init_dir = '/etc/rc2.d'
 init_link = init_dir + os.sep + 'S97jackd'
 if not os.path.exists(init_link):
@@ -65,7 +68,6 @@ init_link = init_dir + os.sep + 'S99vncserver'
 if not os.path.exists(init_link):
     os.system('ln -s /etc/init.d/vncserver ' + init_link)
     
-user = raw_input('Give a user to use the TeleCaster system : ')
 os.system('chown -R ' + user + ':' + user + ' ' + install_dir) 
 home = os.sep + 'home' + os.sep + user + os.sep
 home_dirs = ['fluxbox', 'vnc']
@@ -74,8 +76,8 @@ for dir in home_dirs:
     home_dir = home + '.' + dir
     if not os.path.exists(home_dir):
         os.mkdir(home_dir)
-    os.system('cp ' + conf_dir + os.sep + 'home' + os.sep + dir + '/* ' + home_dir)
-    os.system('chown -R ' + user + ':' + user + ' ' + home_dir) 
+        os.system('cp ' + conf_dir + os.sep + 'home' + os.sep + dir + '/* ' + home_dir)
+        os.system('chown -R ' + user + ':' + user + ' ' + home_dir) 
 
 #var_dir = '/var/www/telecaster'
 #if not os.path.exists(var_dir):

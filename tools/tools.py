@@ -45,6 +45,27 @@ from xmltodict import *
 import socket
 import fcntl
 import struct
+import subprocess
+
+class SubProcessPipe:
+    def __init__(self, command, stdin=None):
+        """Read media and stream data through a generator.
+        Taken from Telemeta (see http://telemeta.org)"""
+
+        self.buffer_size = 0xFFFF
+
+        if not stdin:
+            stdin =  subprocess.PIPE
+
+        self.proc = subprocess.Popen(command.encode('utf-8'),
+                    shell = True,
+                    bufsize = self.buffer_size,
+                    stdin = stdin,
+                    stdout = subprocess.PIPE,
+                    close_fds = True)
+
+        self.input = self.proc.stdin
+        self.output = self.proc.stdout
 
 def get_ip_address(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -77,16 +98,21 @@ def xml2dict(conf_file):
 
 def get_pid(proc,uid):
     """Get a process pid filtered by arguments and uid"""
-    (list1, list2) = os.popen4('pgrep -fl -U '+str(uid)+' '+'"'+proc+'"')
-    procs = list2.readlines()
+    command = 'pgrep -fl -U '+str(uid)+' '+'"'+proc+'"'
+    proc = SubProcessPipe(command)
+    list = proc.output
+    procs = list.readlines()
     pids = []
     if procs != '':
         for proc in procs:
             pid = proc.split(' ')[0]
             command = ' '.join(proc.split(' ')[1:])[:-1]
             pids.append(pid)
-    return pids
-
+    if len(pids) == 1:
+        return [] 
+    else:
+        return [pids[0]]
+        
 def get_params_from_lock(lock_file):
     lockfile = open(lock_file,'r')
     params = lockfile.readline()

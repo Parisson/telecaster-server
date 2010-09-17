@@ -4,7 +4,7 @@
 """
    telecaster
 
-   Copyright (c) 2006-2008 Guillaume Pellerin <yomguy@parisson.org>
+   Copyright (c) 2006-2010 Guillaume Pellerin <yomguy@parisson.org>
 
 # This software is governed by the CeCILL  license under French law and
 # abiding by the rules of distribution of free software.  You can  use,
@@ -52,11 +52,10 @@ cgitb.enable()
 class WebView(FieldStorage):
     """Gives the web CGI frontend"""
 
-    def __init__(self, school_file, url, version):
+    def __init__(self, conf,  version):
         FieldStorage.__init__(self)
+        self.conf = conf
         self.version = version
-        self.conf = xml2dict(school_file)
-        self.conf = self.conf['telecaster']
         self.interfaces = ['eth0', 'eth1', 'eth2']
         ip = ''
         for interface in self.interfaces:
@@ -67,22 +66,20 @@ class WebView(FieldStorage):
                 break
             except:
                 self.ip = 'localhost'
-        if 'host' in self.conf:
-            self.host = self.conf['host']
+        if 'url' in self.conf['infos']:
+            self.url = 'http://' + self.conf['infos']['url']
         else:
-            self.host = self.ip
-        self.url = 'http://' + self.host
+            self.url = 'http://' + self.ip
         self.rss_url = self.url+'/rss/telecaster.xml'
-        self.port = self.conf['port']
+        self.port = '8000'
         self.acpi = acpi.Acpi()
-        self.format = self.conf['format']
-        self.title = self.conf['title']
+        self.format = self.conf['media']['format']
+        self.short_name = self.conf['infos']['short_name']
+        self.title = self.conf['infos']['name'] + ' - ' +  self.conf['infos']['description']
         self.departments = self.conf['department']
         self.professors = self.conf['professor']
         self.professors.sort()
         self.comments = self.conf['comment']
-        #print self.departments
-        #self.conferences = self.conf['department']['conferences']
         self.len_departments = len(self.departments)
         self.len_professors = len(self.professors)
         self.conference_nb_max = 40
@@ -95,7 +92,7 @@ class WebView(FieldStorage):
 
     def header(self):
         # Required header that tells the browser how to render the HTML.
-        print "Content-Type: text/html\n\n"
+        print "Content-Type: text/html\n"
         print "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"
         print "<HTML>"
         print "<HEAD>"
@@ -173,16 +170,7 @@ class WebView(FieldStorage):
             power_info = "<span style=\"color: green\">secteur</span>"
         else:
             power_info = ""
-
-        #if self.power_state == 0:
-            #batt_info = "en d&eacute;charge"
-        #elif self.power_state == 1:
-            #batt_info = "charg&eacute;e"
-        #elif self.power_state == 2:
-            #batt_info = "en charge"
-        #else:
-            #batt_info = ""
-
+            
         if self.acpi.percent() == 127:
             batt_charge = '<span style=\"color: green\">100 &#37;</span>'
         else:
@@ -205,14 +193,14 @@ class WebView(FieldStorage):
         print "<div class=\"hardware\">"
         print "<div class=\"title\">Status</div>"
         print "<table class=\"hardware\">"
+        print "<tr><td>Name</td><TD> : </TD>"
+        print "<td>%s</td></tr>" % self.conf['infos']['url']
+        print "<tr><td>IP address</td><TD> : </TD>"
+        print "<td>%s</td></tr>" % ip_info
         print "<tr><td>Power</td><TD> : </TD>"
         print "<td>%s</td></tr>" % power_info
-        #print "<tr><td>Etat batterie :</td>"
-        #print "<td>%s</td></tr>" % batt_info
         print "<tr><td>Battery charge</td><TD> : </TD>"
         print "<td>%s</td></tr>" % batt_charge
-        #print "<tr><td>Estimation dur&eacute;e batterie :</td>"
-        #print "<td>%s</td></tr>" % self.acpi.estimated_lifetime()
         try:
             print "<tr><td>Temp core 1</td><TD> : </TD><td>%s</td></tr>" % self.acpi.temperature(0)
         except:
@@ -221,8 +209,6 @@ class WebView(FieldStorage):
             print "<tr><td>Temp core 2</td><TD> : </TD><td>%s</td></tr>" % self.acpi.temperature(1)
         except:
             pass
-        print "<tr><td>IP address</td><TD> : </TD>"
-        print "<td>%s</td></tr>" % ip_info
         print "<tr><td>JACK audio server</td><TD> : </TD>"
         print "<td>%s</td></tr>" % jackd_info
         print "<td><div class=\"buttons\">"
@@ -241,10 +227,11 @@ class WebView(FieldStorage):
 
 
     def start_form(self, writing, casting, message=''):
-        self.refresh = False
-        self.header()
         self.casting = writing
         self.writing = casting
+        self.refresh = False
+        
+        self.header()
         self.hardware_data()
         print "<form method=\"post\" action=\"telecaster.py\" name=\"formulaire\">"
         print "<div class=\"main\">"
@@ -270,49 +257,31 @@ class WebView(FieldStorage):
         print "<TD><INPUT type = text name = \"professor\"></TD></TR>"
         print "<TR><TH align=\"left\">Commentaire</TH><TD> : </TD>"
         print "<TD><INPUT type = text name = \"comment\"></TD></TR>"
-
-        #print "<TD><select name=\"comment\">"
-        #print "<option selected>...........Choisissez un commentaire...........</option>"
-        #for comment in self.comments:
-        #    print "<option value=\""+comment['text']+"\">"+comment['text']+"</option>"
-        #print "</select></TD></TR>"
-
         print "</table>"
         print "</div>"
-        #print "<h5><a href=\""+self.url+":"+self.port+"/augustins.pre-barreau.com_live."+self.format+".m3u\">Cliquez ici pour &eacute;couter le flux continu 24/24 en direct</a></h5>"
         print "<div class=\"tools\">"
         print "<div class=\"buttons\">"
-        #print "<INPUT TYPE = hidden NAME = \"action\" VALUE = \"start\">"
         print "<button type=\"submit\" class=\"positive\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
         print "<button type=\"submit\" name=\"action\" value=\"start\" class=\"negative\"><img src=\"img/stop.png\" alt=\"\">Record</button>"
-        print "<a href=\"http://"+self.ip+"/archives/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
-        print "<a href=\"http://"+self.ip+"/trash/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"
-        #print "<INPUT TYPE = submit VALUE = \"Enregistrer\">"
+        print "<a href=\"http://"+self.url+"/archives/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
+        print "<a href=\"http://"+self.url+"/trash/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"
         print "</div>"
         print "</div>"
         print "</form>"
         self.colophon()
         self.footer()
 
-    def encode_form(self, message=''):
-        self.header()
-        print "<div class=\"main\">"
-        print "<h5><span style=\"color: red\">"+message+"</span></h5>"
-        print "<h5><span style=\"color: red\">ENCODAGE EN COURS !</span></h5>"
-        print "</div>"
-        self.colophon()
-        self.footer()
-
     def stop_form(self, conference_dict, writing, casting):
-        """Stop page"""
         department = conference_dict['department']
         conference = conference_dict['conference']
         session = conference_dict['session']
         professor = conference_dict['professor']
         comment = conference_dict['comment']
+        self.mount_point ='-'.join([clean_string(self.short_name),clean_string(department), clean_string(conference)])+'.'+self.format+'.m3u'
         self.writing = writing
         self.casting = casting
         self.refresh = True
+        
         self.header()
         self.hardware_data()
         print "<div class=\"main\">"
@@ -324,28 +293,15 @@ class WebView(FieldStorage):
         print "<TR><TH align=\"left\">Professeur</TH><TD> : </TD><TD>"+professor+"</TD></TR>"
         print "<TR><TH align=\"left\">Commentaire</TH><TD> : </TD><TD>"+comment+"</TD></TR>"
         print "</table>"
-        #print "<h5><a href=\""+self.url+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\">Cliquez ici pour &eacute;couter cette formation en direct</a></h5>"
         print "</div>"
-
-        #print """<div class="rss" id="chan">
-                #<b><div id="chan_description"></div></b><br>
-                #<div id="chan_title"></div>
-                #<div id="chan_link"></div>
-                #<div id="chan_description"></div>
-                #<a id="chan_image_link" href=""></a>
-                #<div id="chan_items"></div>
-                #<div id="chan_pubDate"></div>
-                #<div id="chan_copyright"></div>
-            #</div>"""
-
         print "<div class=\"tools\">"
         print "<form method=\"post\" action=\"telecaster.py\">"
         print "<div class=\"buttons\">"
         print "<button type=\"submit\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
-        print "<a href=\"http://"+self.ip+":"+self.port+"/"+clean_string(self.title)+"_-_"+clean_string(department)+"_-_"+clean_string(conference)+"."+self.format+".m3u\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
+        print "<a href=\"http://"+self.url+":"+self.port+"/"+self.mount_point+"\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
         print "<button type=\"submit\" name=\"action\" value=\"stop\" class=\"negative\"><img src=\"img/cancel.png\" alt=\"\">Stop</button>"
-        print "<a href=\"http://"+self.ip+"/archives/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
-        print "<a href=\"http://"+self.ip+"/trash/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"
+        print "<a href=\"http://"+self.url+"/archives/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
+        print "<a href=\"http://"+self.url+"/trash/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"
         print "</div>"
         print "</form>"
         print "</div>"

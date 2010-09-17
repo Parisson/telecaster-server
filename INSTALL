@@ -22,6 +22,8 @@ $ sudo aptitude install python python-dev python-xml python-libxml2 python-setup
                         icecast2 apache2 apache2-suexec jackd libjack-dev vorbis-tools procps meterbridge fluxbox \
                         vnc4server vncviewer swh-plugins jack-rack libshout3 libshout3-dev libmad0-dev libogg-dev g++
 
+On Debian Squeeze or recent Ubuntu, change libjack-dev to libjack-jackd2-dev
+
 Optional::
 
 $ sudo aptitude install libfaac-dev libmp3lame-dev libflac-dev 

@@ -85,15 +85,8 @@ class Station(Conference):
         self.conf = self.conf['telecaster']
         self.user = pwd.getpwuid(os.getuid())[0]
         self.user_dir = '/home' + os.sep + self.user + os.sep + '.telecaster'
-        self.url_ext = self.conf['infos']['url']
         self.rec_dir = self.conf['media']['rec_dir']
-        self.host = self.conf['server']['host']
-        self.port = self.conf['server']['port']
-        self.rss_dir = self.conf['server']['rss']['dir']
-        self.rss_file = 'telecaster.xml'
-        self.password = self.conf['server']['sourcepassword']
-        self.url_int = 'http://'+self.host+':'+self.port
-        self.deefuzzer_default_conf_file = self.conf['server']['deefuzzer_default_conf']
+        self.deefuzzer_default_conf_file = self.conf['deefuzzer']['conf']
         self.deefuzzer_user_file = self.user_dir + os.sep + 'deefuzzer.xml'
         self.bitrate = self.conf['media']['bitrate']
         self.dict['Bitrate'] = str(self.bitrate) + ' kbps'
@@ -107,9 +100,7 @@ class Station(Conference):
         self.server_name = [self.title, self.department, self.conference]
         self.ServerDescription = clean_string('-'.join(self.description))
         self.ServerName = clean_string('-'.join(self.server_name))
-        self.mount_point = clean_string(self.title) + '-' + \
-                                 clean_string(self.department) + '-' + \
-                                 clean_string(self.conference)
+        self.mount_point = '-'.join([clean_string(self.title),  clean_string(self.department),  clean_string(self.conference)])
         self.filename = clean_string('-'.join(self.description[1:])) + '-' + self.time_txt + '.' + self.format
         self.output_dir = self.rec_dir + os.sep + self.date + os.sep + self.department
         self.file_dir = self.output_dir + os.sep + self.ServerName
@@ -133,50 +124,42 @@ class Station(Conference):
             else:
                 self.jack_inputs.append(jack_inputs['name'])
 
-        # DeeFuzzzer setup
         self.deefuzzer_dict = xml2dict(self.deefuzzer_default_conf_file)
-        self.station_local = self.deefuzzer_dict['deefuzzer']['station'][0]
-        self.station_distant = self.deefuzzer_dict['deefuzzer']['station'][1]
+        self.deefuzzer_osc_ports =  []
+        self.server_ports = []
+        
+        for station in self.deefuzzer_dict['deefuzzer']['station']:
+            if station['control']['mode'] == 1:
+                self.deefuzzer_osc_ports.append(station['control']['port'])
+                self.server_ports.append(station['server']['port'])
+            if station['server']['host'] == 'localhost' or  station['server']['host'] == '127.0.0.1':
+                self.conf['play_port'] = station['server']['port']
+            else:
+                self.conf['play_port'] = '8000'
 
-        self.station_local['infos']['short_name'] = self.mount_point
-        self.station_local['infos']['name'] = self.ServerName
-        self.station_local['infos']['description'] = self.ServerDescription.replace(' ','_')
-        self.station_local['infos']['genre'] = self.genre
-        self.station_local['server']['host'] = '127.0.0.1'
-        self.station_local['server']['port'] = self.port
-        self.station_local['server']['sourcepassword'] = self.password
-        self.station_local['media']['bitrate'] = self.bitrate
-        self.station_local['media']['dir'] = self.play_dir
-        self.station_local['media']['voices'] = str(len(self.jack_inputs))
-        self.station_local['record']['mode'] = '1'
-        self.station_local['record']['dir'] = self.file_dir
-        self.station_local['relay']['mode'] = '1'
-        self.station_local['relay']['author'] = self.professor
-
-        self.station_distant['infos']['short_name'] = self.mount_point
-        self.station_distant['infos']['name'] = self.ServerName
-        self.station_distant['infos']['description'] = self.ServerDescription.replace(' ','_')
-        self.station_distant['infos']['genre'] = self.genre
-        self.station_distant['server']['host'] = self.host
-        self.station_distant['server']['port'] = self.port
-        self.station_distant['server']['sourcepassword'] = self.password
-        self.station_distant['media']['bitrate'] = self.bitrate
-        self.station_distant['media']['dir'] = self.play_dir
-        self.station_distant['media']['voices'] = str(len(self.jack_inputs))
-        self.station_distant['record']['mode'] = '0'
-        self.station_distant['record']['dir'] = self.file_dir
-        self.station_distant['relay']['mode'] = '1'
-        self.station_distant['relay']['author'] = self.professor
-
-        self.deefuzzer_local_port = self.station_local['control']['port']
+    def deefuzzer_setup(self):
+        i = 0
+        for station in self.deefuzzer_dict['deefuzzer']['station']:
+            station['infos']['short_name'] = self.mount_point
+            station['infos']['name'] = self.ServerName
+            station['infos']['description'] = self.ServerDescription.replace(' ','_')
+            station['infos']['genre'] = self.genre
+            station['media']['bitrate'] = self.bitrate
+            station['media']['dir'] = self.play_dir
+            station['media']['voices'] = str(len(self.jack_inputs))
+            station['record']['dir'] = self.file_dir
+            station['relay']['mode'] = '1'
+            station['relay']['author'] = self.professor
+            self.deefuzzer_dict['deefuzzer']['station'][i] = station
+            i += 1        
         self.deefuzzer_xml = dicttoxml(self.deefuzzer_dict)
 
-    def write_deefuzzer_conf(self):
+    def deefuzzer_write_conf(self):
         conf_file = open(self.deefuzzer_user_file,'w')
         conf_file.write(self.deefuzzer_xml)
         conf_file.close()
 
-    def start_deefuzzer(self):
+    def deefuzzer_start(self):
         command = 'deefuzzer ' + self.deefuzzer_user_file + ' &'
         os.system(command)
         self.set_lock()
@@ -191,13 +174,14 @@ class Station(Conference):
     def del_lock(self):
         os.remove(self.lock_file)
 
-    def stop_deefuzzer(self):
-            os.system('kill -9 '+self.deefuzzer_pid[0])
+    def deefuzzer_stop(self):
+        os.system('kill -9 '+self.deefuzzer_pid[0])
 
-    def stop_rec(self):
+    def rec_stop(self):
         if len(self.deefuzzer_pid) != 0:
-            target = liblo.Address(self.deefuzzer_local_port)
-            liblo.send(target, "/record", 0)
+            for port in self.deefuzzer_osc_ports:
+                target = liblo.Address(port)
+                liblo.send(target, "/record", 0)
 
     def mp3_convert(self):
         os.system('oggdec -o - '+ self.file_dir+os.sep+self.filename+' | lame -S -m m -h -b '+ self.bitrate + \
@@ -239,53 +223,12 @@ class Station(Conference):
 
     def start(self):
         self.set_lock()
-        self.write_deefuzzer_conf()
-        self.start_deefuzzer()
-        #self.update_rss()
+        self.deefuzzer_setup()
+        self.deefuzzer_write_conf()
+        self.deefuzzer_start()
 
     def stop(self):
-        self.stop_rec()
-        time.sleep(2)
-        self.stop_deefuzzer()
-        #if self.format == 'ogg':
-        #    self.write_tags_ogg()
-        #elif self.format == 'mp3':
-        #    self.write_tags_mp3()
+        self.rec_stop()
+        time.sleep(1)
+        self.deefuzzer_stop()
         self.del_lock()
-        #self.mp3_convert()
-        #self.rsync_out()
-
-    def update_rss(self):
-        rss_item_list = []
-        if not os.path.exists(self.rss_dir):
-            os.makedirs(self.rss_dir)
-
-        time_now = datetime.datetime.now().strftime("%x-%X")
-
-        media_description = '<table>'
-        media_description_item = '<tr><td>%s:   </td><td><b>%s</b></td></tr>'
-        for key in self.dict.keys():
-            if self.dict[key] != '':
-                media_description += media_description_item % (key.capitalize(), self.dict[key])
-        media_description += '</table>'
-
-        media_link = self.url_ext + '/rss/' + self.rss_file
-        media_link = media_link.decode('utf-8')
-
-        rss_item_list.append(RSSItem(
-            title = self.ServerName,
-            link = media_link,
-            description = media_description,
-            guid = Guid(media_link),
-            pubDate = self.time_txt,)
-            )
-
-        rss = RSS2(title = self.title + ' - ' + self.department,
-                            link = self.url_ext,
-                            description = self.ServerDescription.decode('utf-8'),
-                            lastBuildDate = str(time_now),
-                            items = rss_item_list,)
-
-        #f = open(self.rss_dir + os.sep + self.rss_file, 'w')
-        #rss.write_xml(f, 'utf-8')
-        #f.close()
