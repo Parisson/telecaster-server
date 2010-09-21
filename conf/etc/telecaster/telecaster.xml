@@ -5,6 +5,8 @@
         <description>La preparation au Barreau de Paris</description>
         <url>telecaster-04.parisson.com</url>
         <genre>Vocal</genre>
+    </infos>
+    <log>/tmp/telecaster.log</log>
     <deefuzzer>
 	<conf>/etc/telecaster/deefuzzer.xml</conf>
     </deefuzzer>
