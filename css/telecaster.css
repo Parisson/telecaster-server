@@ -13,9 +13,9 @@ div.header {
 div.title_main {
         margin-left:42px;
         margin-top:-26px;
-        padding: 0.em;
+        padding: 0em;
         font-size: 1.5em;
-        /* text-decoration: underline; */
+       /*text-decoration: underline;*/
 }
 
 div.bg { background-color: #FFFFFF;

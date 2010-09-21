@@ -68,25 +68,25 @@ class TeleCaster:
         if not os.path.exists(self.user_dir):
             os.makedirs(self.user_dir)
         self.lock_file = self.user_dir + os.sep + 'telecaster.lock'
+        self.form = WebView(self.conf, version)
 
     def main(self):
         edcast_pid = get_pid('edcast_jack', self.uid)
         deefuzzer_pid = get_pid('/usr/bin/deefuzzer', self.uid)
         writing = edcast_pid != []
         casting = deefuzzer_pid != []
-        form = WebView(self.conf, version)
 
-        if deefuzzer_pid == [] and form.has_key("action") and \
-            form.has_key("department") and form.has_key("conference") and \
-            form.has_key("professor") and form.has_key("comment") and \
-            form["action"].value == "start":
+        if deefuzzer_pid == [] and self.form.has_key("action") and \
+            self.form.has_key("department") and self.form.has_key("conference") and \
+            self.form.has_key("professor") and self.form.has_key("comment") and \
+            self.form["action"].value == "start":
 
             self.conference_dict = {'title': self.title,
-                        'department': form.getfirst("department"),
-                        'conference': form.getfirst("conference"),
-                        'session': form.getfirst("session"),
-                        'professor': form.getfirst("professor"),
-                        'comment': form.getfirst("comment")}
+                        'department': self.form.getfirst("department"),
+                        'conference': self.form.getfirst("conference"),
+                        'session': self.form.getfirst("session"),
+                        'professor': self.form.getfirst("professor"),
+                        'comment': self.form.getfirst("comment")}
 
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
@@ -94,12 +94,12 @@ class TeleCaster:
             time.sleep(2)
             self.main()
 
-        elif deefuzzer_pid != [] and os.path.exists(self.lock_file) and not form.has_key("action"):
+        elif deefuzzer_pid != [] and os.path.exists(self.lock_file) and not self.form.has_key("action"):
             self.conference_dict = get_conference_from_lock(self.lock_file)
-            form.stop_form(self.conference_dict, writing, casting)
+            self.form.stop_form(self.conference_dict, writing, casting)
             self.logger.write_info('page stop')
 
-        elif deefuzzer_pid and form.has_key("action") and form["action"].value == "stop":
+        elif deefuzzer_pid and self.form.has_key("action") and self.form["action"].value == "stop":
             if os.path.exists(self.lock_file):
                 self.conference_dict = get_conference_from_lock(self.lock_file)
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
@@ -109,7 +109,7 @@ class TeleCaster:
             self.main()
 
         elif deefuzzer_pid == []:
-            form.start_form(writing, casting)
+            self.form.start_form(writing, casting)
             self.logger.write_info('page start')
 
 

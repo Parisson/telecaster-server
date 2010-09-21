@@ -101,6 +101,7 @@ class WebView(FieldStorage):
 
         print "<link href=\"/telecaster/css/telecaster.css\" rel=\"stylesheet\" type=\"text/css\">"
 
+    def javascript(self):
         print '<script language="Javascript" type="text/javascript" >'
         print 'function choix(formulaire)'
         print '{var j; var i = formulaire.department.selectedIndex;'
@@ -133,17 +134,16 @@ class WebView(FieldStorage):
         #print "  getRSS(url)"
         #print "  setTimeout(\"rss_reload(\'\" + url + \"\')\", 10000);}"
         #print "</script>"
-
+    
+    def sub_header(self):
         if self.refresh:
             print "<meta http-equiv=\"refresh\" content=\"" + str(self.refresh_value) + "; URL=telecaster.py\">"
-
         print "</HEAD>\n"
-
         #print "<BODY bgcolor =\"#ffffff\" onload=\"rss_reload(\'" + self.rss_url + "\');\">"
         print "<BODY>"
         print "<div class=\"bg\">"
         print "<div class=\"header\">"
-        print "<img src=\"img/logo_telecaster_wh.png\">"
+        print "<img src=\"img/logo_telecaster_wh.png\" alt=\"logo_telecaster\">"
         print "<div class=\"title_main\">&nbsp;TeleCaster - Audio Web Live Recording</div>"
         print "</div>"
 
@@ -211,17 +211,20 @@ class WebView(FieldStorage):
             pass
         print "<tr><td>JACK audio server</td><TD> : </TD>"
         print "<td>%s</td></tr>" % jackd_info
-        print "<td><div class=\"buttons\">"
+        print "<tr><td><div class=\"buttons\">"
         if self.writing:
-            print "<button type=\"submit\" class=\"positive\"><img src=\"img/drive_add.png\" alt=\"\">Recording...</button>"
+            print "<button class=\"positive\"><img src=\"img/drive_add.png\" alt=\"\">Recording...</button>"
         else:
-            print "<button type=\"submit\" class=\"negative\"><img src=\"img/drive_error.png\" alt=\"\">NOT Recording !</button>"
-        print "</div></td><TD> </TD><td><div class=\"buttons\">"
+            print "<button class=\"negative\"><img src=\"img/drive_error.png\" alt=\"\">NOT Recording !</button>"
+        print "</div></td>"
+        print "<TD> </TD>"
+        print "<td><div class=\"buttons\">"
         if self.casting:
-            print "<button type=\"submit\" class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\">Diffusing...</button>"
+            print "<button class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\">Diffusing...</button>"
         else:
-            print "<button type=\"submit\" class=\"negative\"><img src=\"img/transmit_error.png\" alt=\"\">NOT Diffusing !</button>"
+            print "<button class=\"negative\"><img src=\"img/transmit_error.png\" alt=\"\">NOT Diffusing !</button>"
         print "</div>"
+        print "</td></tr>"
         print "</table>"
         print "</div>"
 
@@ -232,20 +235,22 @@ class WebView(FieldStorage):
         self.refresh = False
         
         self.header()
+        self.javascript()
+        self.sub_header()
         self.hardware_data()
-        print "<form method=\"post\" action=\"telecaster.py\" name=\"formulaire\">"
+        print "<form method=\"POST\" action=\"telecaster.py\" name=\"formulaire_start\">"
         print "<div class=\"main\">"
         print "<table class=\"form\">"
         print "<TR><TH align=\"left\">Titre</TH><TD> : </TD><TD>"+self.title+"</TD></TR>"
         print "<TR><TH align=\"left\">D&eacute;partement</TH><TD> : </TD>"
         print "<TD><select name=\"department\" onChange=\"choix(this.form)\">"
-        print "<option selected>...........Choisissez un d&eacute;partement...........</option>"
+        print "<option value=\"unknown\">...........Choisissez un d&eacute;partement...........</option>"
         for department in self.departments:
             print "<option value=\""+department['name']+"\">"+department['name']+"</option>"
         print "</select></TD></TR>"
         print "<TR><TH align=\"left\">Conf&eacute;rence</TH><TD> : </TD>"
         print "<TD><select name=\"conference\">"
-        print "<option selected>...........Choisissez une conf&eacute;rence...........</option>"
+        print "<option value=\"unknown\">...........Choisissez une conf&eacute;rence...........</option>"
         for i in range(1,self.conference_nb_max):
             print "<option></option>"
         print "</select></TD></TR>"
@@ -283,7 +288,9 @@ class WebView(FieldStorage):
         self.refresh = True
         
         self.header()
+        self.sub_header()
         self.hardware_data()
+        print "<form method=\"POST\" action=\"telecaster.py\" name=\"formulaire_stop\">"
         print "<div class=\"main\">"
         print "<table class=\"form\">"
         print "<TR><TH align=\"left\">Titre</TH><TD> : </TD><TD>"+self.title+"</TD></TR>"
@@ -295,16 +302,15 @@ class WebView(FieldStorage):
         print "</table>"
         print "</div>"
         print "<div class=\"tools\">"
-        print "<form method=\"post\" action=\"telecaster.py\">"
         print "<div class=\"buttons\">"
-        print "<button type=\"submit\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
+        print "<button><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
         print "<a href=\"http://"+self.url+":"+self.port+"/"+self.mount_point+"\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
         print "<button type=\"submit\" name=\"action\" value=\"stop\" class=\"negative\"><img src=\"img/cancel.png\" alt=\"\">Stop</button>"
         print "<a href=\"http://"+self.url+"/archives/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
         print "<a href=\"http://"+self.url+"/trash/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"
         print "</div>"
-        print "</form>"
         print "</div>"
+        print "</form>"
         self.colophon()
         self.footer()
 
