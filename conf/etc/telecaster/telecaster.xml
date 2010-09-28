@@ -126,6 +126,18 @@
             <name>Procedure_penale_Cours</name>
           </conference>
           <conference>
+            <name>Oral-Procedures_communautaires</name>
+          </conference>
+         <conference>
+            <name>Oral-Voies_d_ex</name>
+          </conference>
+          <conference>
+            <name>Oral-Comptabilite_privee</name>
+          </conference>
+          <conference>
+            <name>Oral-Finances_publiques</name>
+          </conference>
+          <conference>
             <name>TEST</name>
           </conference>
         </conferences>

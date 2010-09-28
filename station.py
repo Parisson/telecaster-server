@@ -99,9 +99,9 @@ class Station(Conference):
         self.description = [self.title, self.department, self.conference, self.session, self.professor, self.comment]
         self.server_name = [self.title, self.department, self.conference]
         self.ServerDescription = clean_string('-'.join(self.description))
-        self.ServerName = clean_string('-'.join(self.server_name))
-        self.mount_point = '-'.join([clean_string(self.title),  clean_string(self.department),  clean_string(self.conference)])
-        self.filename = clean_string('-'.join(self.description[1:])) + '-' + self.time_txt + '.' + self.format
+        self.ServerName = clean_string('_-_'.join(self.server_name))
+        self.mount_point = self.ServerName
+        self.filename = clean_string('_-_'.join(self.description[1:])) + '-' + self.time_txt + '.' + self.format
         self.output_dir = self.rec_dir + os.sep + self.date + os.sep + self.department
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
