@@ -106,7 +106,7 @@ class Station(Conference):
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
         self.odd_pid = get_pid('^edcast_jack', self.uid)
-        self.deefuzzer_pid = get_pid('/usr/bin/deefuzzer', self.uid)
+        self.deefuzzer_pid = get_pid('/usr/bin/deefuzzer '+self.deefuzzer_user_file, self.uid)
         self.new_title = clean_string('-'.join(self.server_name)+'-'+self.session+'-'+self.professor+'-'+self.comment)
         self.short_title = clean_string('-'.join(self.conference)+'-'+self.session+'-'+self.professor+'-'+self.comment)
         self.genre = self.conf['infos']['genre']

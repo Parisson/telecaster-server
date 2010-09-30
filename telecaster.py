@@ -72,7 +72,7 @@ class TeleCaster:
 
     def main(self):
         edcast_pid = get_pid('edcast_jack', self.uid)
-        deefuzzer_pid = get_pid('/usr/bin/deefuzzer', self.uid)
+        deefuzzer_pid = get_pid('/usr/bin/deefuzzer '+self.user_dir+os.sep+'deefuzzer.xml', self.uid)
         writing = edcast_pid != []
         casting = deefuzzer_pid != []
 
