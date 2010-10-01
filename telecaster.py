@@ -68,13 +68,25 @@ class TeleCaster:
         if not os.path.exists(self.user_dir):
             os.makedirs(self.user_dir)
         self.lock_file = self.user_dir + os.sep + 'telecaster.lock'
-        self.form = WebView(self.conf, version)
+
+    def transition_head(self):
+        html_file = open('telecaster_starting_head.html', 'r')
+        html = html_file.read()
+        html_file.close()
+        return html
+
+    def transition_foot(self):
+        html_file = open('telecaster_starting_foot.html', 'r')
+        html = html_file.read()
+        html_file.close()
+        return html
 
     def main(self):
         edcast_pid = get_pid('edcast_jack', self.uid)
         deefuzzer_pid = get_pid('/usr/bin/deefuzzer '+self.user_dir+os.sep+'deefuzzer.xml', self.uid)
         writing = edcast_pid != []
         casting = deefuzzer_pid != []
+        self.form = WebView(self.conf, version)
 
         if deefuzzer_pid == [] and self.form.has_key("action") and \
             self.form.has_key("department") and self.form.has_key("conference") and \
@@ -88,16 +100,20 @@ class TeleCaster:
                         'professor': self.form.getfirst("professor"),
                         'comment': self.form.getfirst("comment")}
 
+            self.form = 0
+            #print "Content-Type: text/html\n\n"
+            #print self.transition_head()
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
+#            time.sleep(1)
+            #print self.transition_foot()
             self.logger.write_info('starting')
-            time.sleep(2)
             self.main()
 
         elif deefuzzer_pid != [] and os.path.exists(self.lock_file) and not self.form.has_key("action"):
             self.conference_dict = get_conference_from_lock(self.lock_file)
             self.form.stop_form(self.conference_dict, writing, casting)
-            self.logger.write_info('page stop')
+            self.logger.write_info('started')
 
         elif deefuzzer_pid and self.form.has_key("action") and self.form["action"].value == "stop":
             if os.path.exists(self.lock_file):
@@ -110,12 +126,13 @@ class TeleCaster:
 
         elif deefuzzer_pid == []:
             self.form.start_form(writing, casting)
-            self.logger.write_info('page start')
-
+            self.logger.write_info('stopped')
+    
 
 conf_file = '/etc/telecaster/telecaster.xml'
 
 if __name__ == '__main__':
     t = TeleCaster(conf_file)
     t.main()
+ 
 

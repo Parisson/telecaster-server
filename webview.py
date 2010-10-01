@@ -37,17 +37,13 @@
 
 import os
 import cgi
-import cgitb
-import shutil
+#import cgitb
 import datetime
 import time
-import codecs
 import string
-import signal
-import unicodedata
 from tools import *
 from cgi import FieldStorage
-cgitb.enable()
+#cgitb.enable()
 
 class WebView(FieldStorage):
     """Gives the web CGI frontend"""
@@ -92,7 +88,7 @@ class WebView(FieldStorage):
 
     def header(self):
         # Required header that tells the browser how to render the HTML.
-        print "Content-Type: text/html\n"
+        print "Content-Type: text/html\n\n"
         print "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"
         print "<HTML>"
         print "<HEAD>"
@@ -217,7 +213,7 @@ class WebView(FieldStorage):
         else:
             print "<button class=\"negative\"><img src=\"img/drive_error.png\" alt=\"\">NOT Recording !</button>"
         print "</div></td>"
-        print "<TD> </TD>"
+        print "<td></td>"
         print "<td><div class=\"buttons\">"
         if self.casting:
             print "<button class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\">Diffusing...</button>"
@@ -238,19 +234,20 @@ class WebView(FieldStorage):
         self.javascript()
         self.sub_header()
         self.hardware_data()
-        print "<form method=\"POST\" action=\"telecaster.py\" name=\"formulaire_start\">"
+        
+        print "<form method=\"POST\" action=\"telecaster.py\" name=\"formulaire\">"
         print "<div class=\"main\">"
         print "<table class=\"form\">"
         print "<TR><TH align=\"left\">Titre</TH><TD> : </TD><TD>"+self.title+"</TD></TR>"
         print "<TR><TH align=\"left\">D&eacute;partement</TH><TD> : </TD>"
         print "<TD><select name=\"department\" onChange=\"choix(this.form)\">"
-        print "<option value=\"unknown\">...........Choisissez un d&eacute;partement...........</option>"
+        print "<option selected=\"\">...........Choisissez un d&eacute;partement...........</option>"
         for department in self.departments:
             print "<option value=\""+department['name']+"\">"+department['name']+"</option>"
         print "</select></TD></TR>"
         print "<TR><TH align=\"left\">Conf&eacute;rence</TH><TD> : </TD>"
         print "<TD><select name=\"conference\">"
-        print "<option value=\"unknown\">...........Choisissez une conf&eacute;rence...........</option>"
+        print "<option selected=\"\">...........Choisissez une conf&eacute;rence...........</option>"
         for i in range(1,self.conference_nb_max):
             print "<option></option>"
         print "</select></TD></TR>"
@@ -289,8 +286,11 @@ class WebView(FieldStorage):
         
         self.header()
         self.sub_header()
+        
+        print "<form method=\"POST\" action=\"telecaster.py\" name=\"formulaire\">"
+        
         self.hardware_data()
-        print "<form method=\"POST\" action=\"telecaster.py\" name=\"formulaire_stop\">"
+        
         print "<div class=\"main\">"
         print "<table class=\"form\">"
         print "<TR><TH align=\"left\">Titre</TH><TD> : </TD><TD>"+self.title+"</TD></TR>"

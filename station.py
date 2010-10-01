@@ -38,7 +38,6 @@
 
 import os
 import pwd
-import shutil
 import datetime
 import time
 import urllib
