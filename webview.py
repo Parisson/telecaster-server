@@ -130,7 +130,7 @@ class WebView(FieldStorage):
         #print "  getRSS(url)"
         #print "  setTimeout(\"rss_reload(\'\" + url + \"\')\", 10000);}"
         #print "</script>"
-    
+
     def sub_header(self):
         if self.refresh:
             print "<meta http-equiv=\"refresh\" content=\"" + str(self.refresh_value) + "; URL=telecaster.py\">"
@@ -166,7 +166,7 @@ class WebView(FieldStorage):
             power_info = "<span style=\"color: green\">secteur</span>"
         else:
             power_info = ""
-            
+
         if self.acpi.percent() == 127:
             batt_charge = '<span style=\"color: green\">100 &#37;</span>'
         else:
@@ -229,12 +229,12 @@ class WebView(FieldStorage):
         self.casting = writing
         self.writing = casting
         self.refresh = False
-        
+
         self.header()
         self.javascript()
         self.sub_header()
         self.hardware_data()
-        
+
         print "<form method=\"POST\" action=\"telecaster.py\" name=\"formulaire\">"
         print "<div class=\"main\">"
         print "<table class=\"form\">"
@@ -283,14 +283,14 @@ class WebView(FieldStorage):
         self.writing = writing
         self.casting = casting
         self.refresh = True
-        
+
         self.header()
         self.sub_header()
-        
+
         print "<form method=\"POST\" action=\"telecaster.py\" name=\"formulaire\">"
-        
+
         self.hardware_data()
-        
+
         print "<div class=\"main\">"
         print "<table class=\"form\">"
         print "<TR><TH align=\"left\">Titre</TH><TD> : </TD><TD>"+self.title+"</TD></TR>"

@@ -100,15 +100,16 @@ class TeleCaster:
                         'professor': self.form.getfirst("professor"),
                         'comment': self.form.getfirst("comment")}
 
-            self.form = 0
+            #self.form = 0
             #print "Content-Type: text/html\n\n"
             #print self.transition_head()
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
-#            time.sleep(1)
+            time.sleep(1)
             #print self.transition_foot()
             self.logger.write_info('starting')
-            self.main()
+            self.form.stop_form(self.conference_dict, writing, casting)
+            #self.main()
 
         elif deefuzzer_pid != [] and os.path.exists(self.lock_file) and not self.form.has_key("action"):
             self.conference_dict = get_conference_from_lock(self.lock_file)
@@ -127,12 +128,12 @@ class TeleCaster:
         elif deefuzzer_pid == []:
             self.form.start_form(writing, casting)
             self.logger.write_info('stopped')
-    
+
 
 conf_file = '/etc/telecaster/telecaster.xml'
 
 if __name__ == '__main__':
     t = TeleCaster(conf_file)
     t.main()
- 
+
 
