@@ -279,7 +279,7 @@ class WebView(FieldStorage):
         session = conference_dict['session']
         professor = conference_dict['professor']
         comment = conference_dict['comment']
-        self.mount_point ='-'.join([clean_string(self.short_name),clean_string(department), clean_string(conference)])+'.'+self.format+'.m3u'
+        self.mount_point ='_-_'.join([self.short_name,department,conference])+'.'+self.format+'.m3u'
         self.writing = writing
         self.casting = casting
         self.refresh = True
@@ -304,7 +304,7 @@ class WebView(FieldStorage):
         print "<div class=\"tools\">"
         print "<div class=\"buttons\">"
         print "<button><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
-        print "<a href=\"http://"+self.url+":"+self.port+"/"+self.mount_point+"\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
+        print "<a href=\""+self.url+":"+self.port+"/"+self.mount_point+"\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
         print "<button type=\"submit\" name=\"action\" value=\"stop\" class=\"negative\"><img src=\"img/cancel.png\" alt=\"\">Stop</button>"
         print "<a href=\"http://"+self.url+"/archives/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
         print "<a href=\"http://"+self.url+"/trash/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"
