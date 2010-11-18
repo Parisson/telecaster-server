@@ -39,6 +39,7 @@ version = '0.4.2'
 
 
 import os
+import sys
 import pwd
 import cgi
 import cgitb
@@ -133,6 +134,7 @@ class TeleCaster:
 conf_file = '/etc/telecaster/telecaster.xml'
 
 if __name__ == '__main__':
+    sys.stderr = sys.stdout
     t = TeleCaster(conf_file)
     t.main()
 
