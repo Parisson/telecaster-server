@@ -73,7 +73,7 @@ os.system('chown -R ' + user + ':' + user + ' ' + install_dir)
 
 conf_dir = '/etc/telecaster'
 if not os.path.exists(conf_dir):
-    shutil.copytree('conf'+conf_dir, conf_dir)
+    shutil.copytree('conf'+conf_dir, conf_dir, ignore=shutil.ignore_patterns('*.svn*'))
 
 daemons = ['jackd', 'vncserver']
 init_dir = '/etc/init.d/'
@@ -94,7 +94,7 @@ home_dirs = ['fluxbox', 'vnc']
 for dir in home_dirs:
     home_dir = home + '/.' + dir
     if not os.path.exists(home_dir):
-        shutil.copytree('conf/home/'+dir, home_dir)
+        shutil.copytree('conf/home/'+dir, home_dir, ignore=shutil.ignore_patterns('*.svn*'))
         os.system('chown -R ' + user + ':' + user + ' ' + home_dir) 
 
 apache_conf = '/etc/apache2/sites-available/telecaster.conf'
