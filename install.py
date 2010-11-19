@@ -40,6 +40,7 @@
 
 import os, sys
 import platform
+import shutil
 
 def remove_svn(path):
     for root, dirs, files in os.walk(path):
@@ -61,13 +62,13 @@ os.system('./configure; make; sudo make install')
 
 # installing deefuzzer
 os.chdir(app_dir + '/tools/deefuzzer')
-os.system('sudo python setup.py install')
+os.system('sudo python install.py')
 
 os.chdir(app_dir)
 install_dir = '/var/www/telecaster'
 if os.path.exists(install_dir):
     shutil.rmtree(install_dir)
-shutil.copytree(current_dir, install_dir,ignore=shutil.ignore_patterns('edcast-jack*', 'deefuzzer*', '*.svn*'))
+shutil.copytree(app_dir, install_dir,ignore=shutil.ignore_patterns('edcast-jack*', 'deefuzzer*', '*.svn*'))
 os.system('chown -R ' + user + ':' + user + ' ' + install_dir)
 
 conf_dir = '/etc/telecaster'
@@ -82,18 +83,18 @@ for daemon in daemons:
     shutil.copy('conf'+conf_dir+daemon, conf_dir)
     
 init_link = '/etc/rc2.d/S97jackd'
-if not os.path.exists(init_link):
+if not os.path.islink(init_link):
     os.symlink('/etc/init.d/jackd ', init_link)
 
 init_link = '/etc/rc2.d/S99vncserver'
-if not os.path.exists(init_link):
+if not os.path.islink(init_link):
     os.symlink('/etc/init.d/vncserver ', init_link)
 
 home_dirs = ['fluxbox', 'vnc']
 for dir in home_dirs:
     home_dir = home + '/.' + dir
     if not os.path.exists(home_dir):
-        shutil.copytree('conf'+home_dir, home_dir)
+        shutil.copytree('conf/home/'+dir, home_dir)
         os.system('chown -R ' + user + ':' + user + ' ' + home_dir) 
 
 apache_conf = '/etc/apache2/sites-available/telecaster.conf'

@@ -29,26 +29,6 @@ Optional::
 $ sudo aptitude install libfaac-dev libmp3lame-dev libflac-dev 
 
 
-2.1. Install EdCast-Jack
-------------------------
-
-$ cd telecaster-0.4.0/tools/edcast-jack
-
-$ ./configure
-
-$ make
-
-$ sudo make install
-
-
-2.2. Install DeeFuzzer
-------------------------
-
-$ cd telecaster-0.4.0/tools/deefuzzer
-
-$ sudo python install.py
-
-
 3. Install TeleCaster
 =====================
 
@@ -63,10 +43,8 @@ $ sudo python install.py
 Edit the following files to setup TeleCaster. Please be careful with the XML syntax::
 
 /etc/telecaster/telecaster.xml
-/etc/telecaster/session.xml
-/etc/telecaster/deefuzzer.xml
 
-and,
+and, if neeeded,
 
 /etc/default/jackd
 /etc/default/vncserver
@@ -82,11 +60,7 @@ $ sudo /etc/init.d/vncserver start
 6. Configure Apache2
 ====================
 
-Read conf/etc/apache2/default
-and copy #TELECASTER lines into your apache local VirtualHost 
-in /etc/apache2/sites-available/default
-
-Note that TeleCaster in install in /var/www/telecaster/ by default.
+Configure your apache VirtualHost editing /etc/apache2/sites-available/telecaster.conf 
 
 Reload Apache::
 
