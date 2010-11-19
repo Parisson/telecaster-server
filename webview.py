@@ -181,6 +181,11 @@ class WebView(FieldStorage):
         else:
             jackd_info = '<span style=\"color: green\">On</span>'
 
+        if self.casting:
+            casting = '<span style=\"color: green\">On</span>'
+        else:
+            casting = '<span style=\"color: red\"><b>OFF</b></span>'
+
         print "<div class=\"hardware\">"
         print "<div class=\"title\">Status</div>"
         print "<table class=\"hardware\">"
@@ -202,6 +207,8 @@ class WebView(FieldStorage):
             pass
         print "<tr><td>JACK audio server</td><TD> : </TD>"
         print "<td>%s</td></tr>" % jackd_info
+        print "<tr><td>Encoder</td><TD> : </TD>"
+        print "<td>%s</td></tr>" % casting
         print "<tr><td><div class=\"buttons\">"
         if self.writing:
             print "<button class=\"positive\"><img src=\"img/drive_add.png\" alt=\"\">Recording...</button>"
@@ -210,10 +217,10 @@ class WebView(FieldStorage):
         print "</div></td>"
         print "<td></td>"
         print "<td><div class=\"buttons\">"
-        if self.casting:
-            print "<button class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\">Diffusing...</button>"
+        if not self.ip == 'localhost' and self.writing:
+            print "<button class=\"positive\"><img src=\"img/transmit_add.png\" alt=\"\">Broadcasting...</button>"
         else:
-            print "<button class=\"negative\"><img src=\"img/transmit_error.png\" alt=\"\">NOT Diffusing !</button>"
+            print "<button class=\"negative\"><img src=\"img/transmit_error.png\" alt=\"\">NOT Broadcasting !</button>"
         print "</div>"
         print "</td></tr>"
         print "</table>"
@@ -283,6 +290,7 @@ class WebView(FieldStorage):
         self.sub_header()
         self.hardware_data()
 
+        print "<form method=\"post\" action=\"telecaster.py\">"
         print "<div class=\"main\">"
         print "<table class=\"form\">"
         print "<TR><TH align=\"left\">Titre</TH><TD> : </TD><TD>"+self.title+"</TD></TR>"
@@ -294,7 +302,6 @@ class WebView(FieldStorage):
         print "</table>"
         print "</div>"
         print "<div class=\"tools\">"
-        print "<form method=\"post\" action=\"telecaster.py\" name=\"formulaire\">"
         print "<div class=\"buttons\">"
         print "<button type=\"submit\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
         print "<a href=\""+self.url+":"+self.port+"/"+self.mount_point+"\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
@@ -302,8 +309,8 @@ class WebView(FieldStorage):
         print "<a href=\"http://"+self.url+"/archives/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
         print "<a href=\"http://"+self.url+"/trash/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"
         print "</div>"
-        print "</form>"
         print "</div>"
+        print "</form>"
         
         self.colophon()
         self.footer()
