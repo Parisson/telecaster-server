@@ -5,7 +5,7 @@ START_DAEMON=yes
 USER=telecaster
 
 # The vncserver port (i.e. 2 for 5902)
-PORT="1"
+PORT="2"
 
 # Options to pass to vncserver
 OPTIONS="-geometry 1024x768 -depth 8"

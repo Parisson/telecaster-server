@@ -31,13 +31,13 @@ test -f $DAEMON || exit 0
 
 case "$1" in
 	start)	
-	        log_begin_msg "Starting vncserver audio server:" "vncserver"
+	    log_begin_msg "Starting vncserver audio server:" "vncserver"
             echo $DAEMON $OPTIONS :$PORT' &' > $VNCHOME/.vncserverinit
             chmod +x $VNCHOME/.vncserverinit
             su -c $VNCHOME/.vncserverinit $USER > ${LOG}
-	        sleep 2
+	    sleep 2
             pid=`pgrep -u ${USER} vncserver` 
-	        if [ pid = '' ]; then
+	    if [ pid = '' ]; then
  		        log_failure_msg "Vncserver daemon can't be started! Check logfile: ${LOG}"
             else
                 echo $pid > $PIDFILE
@@ -48,8 +48,9 @@ case "$1" in
 	        log_begin_msg "Stopping vncserver audio server:" "vncserver"
                 pid=`cat $PIDFILE | sed -e 's/\s.*//'|head -n1` 
 		if [ ! pid = '' ]; then
-                        vncserver -kill :$PORT
-                        pkill -9 edcast_jack
+			su -c "pkill -9 edcast_jack" $USER
+			sleep 1
+                        su -c "vncserver -kill :$PORT" $USER
         		log_end_msg 0
     		else
 	    		log_end_msg 1
