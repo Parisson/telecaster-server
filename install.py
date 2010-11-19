@@ -102,6 +102,10 @@ if not os.path.exists(apache_conf):
     shutil.copy('conf'+apache_conf, apache_conf)
 os.system('/etc/init.d/apache2 reload')
 
+log_dir = '/var/log/telecaster'
+os.mkdir(log_dir)
+os.system('chown -R ' + user + ':' + user + ' ' + log_dir) 
+
 print """
    Installation successfull !
    
