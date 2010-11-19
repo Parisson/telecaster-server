@@ -6,7 +6,7 @@
         <url>telecaster.parisson.com</url>
         <genre>Various</genre>
     </infos>
-    <log>/var/log/telecaster.log</log>
+    <log>/var/log/telecaster/telecaster.log</log>
     <deefuzzer>
 	<conf>/etc/telecaster/deefuzzer.xml</conf>
     </deefuzzer>
