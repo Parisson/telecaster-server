@@ -58,7 +58,7 @@ if not os.path.exists(home):
 
 # compiling edcast-jack
 os.chdir(app_dir + '/tools/edcast-jack')
-os.system('./configure; make; sudo make install')
+os.system('make; sudo make install')
 
 # installing deefuzzer
 os.chdir(app_dir + '/tools/deefuzzer')
