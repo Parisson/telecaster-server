@@ -49,6 +49,7 @@ case "$1" in
                 pid=`cat $PIDFILE | sed -e 's/\s.*//'|head -n1` 
 		if [ ! pid = '' ]; then
                         vncserver -kill :$PORT
+                        pkill -9 edcast_jack
         		log_end_msg 0
     		else
 	    		log_end_msg 1
