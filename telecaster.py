@@ -4,7 +4,7 @@
 """
    telecaster
 
-   Copyright (c) 2006-2008 Guillaume Pellerin <yomguy@parisson.org>
+   Copyright (c) 2006-2010 Guillaume Pellerin <yomguy@parisson.org>
 
 # This software is governed by the CeCILL  license under French law and
 # abiding by the rules of distribution of free software.  You can  use,
@@ -87,37 +87,33 @@ class TeleCaster:
         deefuzzer_pid = get_pid('/usr/bin/deefuzzer '+self.user_dir+os.sep+'deefuzzer.xml', self.uid)
         writing = edcast_pid != []
         casting = deefuzzer_pid != []
-        self.form = WebView(self.conf, version)
+        form = WebView(self.conf, version)
 
-        if deefuzzer_pid == [] and self.form.has_key("action") and \
-            self.form.has_key("department") and self.form.has_key("conference") and \
-            self.form.has_key("professor") and self.form.has_key("comment") and \
-            self.form["action"].value == "start":
+        if deefuzzer_pid == [] and form.has_key("action") and \
+            form.has_key("department") and form.has_key("conference") and \
+            form.has_key("professor") and form.has_key("comment") and \
+            form["action"].value == "start":
 
             self.conference_dict = {'title': self.title,
-                        'department': self.form.getfirst("department"),
-                        'conference': self.form.getfirst("conference"),
-                        'session': self.form.getfirst("session"),
-                        'professor': self.form.getfirst("professor"),
-                        'comment': self.form.getfirst("comment")}
+                        'department': form.getfirst("department"),
+                        'conference': form.getfirst("conference"),
+                        'session': form.getfirst("session"),
+                        'professor': form.getfirst("professor"),
+                        'comment': form.getfirst("comment")}
 
-            #self.form = 0
-            #print "Content-Type: text/html\n\n"
-            #print self.transition_head()
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
             time.sleep(1)
-            #print self.transition_foot()
             self.logger.write_info('starting')
-            self.form.stop_form(self.conference_dict, writing, casting)
-            #self.main()
+#            form.stop_form(self.conference_dict, writing, casting)
+            self.main()
 
-        elif deefuzzer_pid != [] and os.path.exists(self.lock_file) and not self.form.has_key("action"):
+        elif deefuzzer_pid != [] and os.path.exists(self.lock_file) and not form.has_key("action"):
             self.conference_dict = get_conference_from_lock(self.lock_file)
-            self.form.stop_form(self.conference_dict, writing, casting)
+            form.stop_form(self.conference_dict, writing, casting)
             self.logger.write_info('started')
 
-        elif deefuzzer_pid and self.form.has_key("action") and self.form["action"].value == "stop":
+        elif deefuzzer_pid and form.has_key("action") and form["action"].value == "stop":
             if os.path.exists(self.lock_file):
                 self.conference_dict = get_conference_from_lock(self.lock_file)
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
@@ -127,7 +123,7 @@ class TeleCaster:
             self.main()
 
         elif deefuzzer_pid == []:
-            self.form.start_form(writing, casting)
+            form.start_form(writing, casting)
             self.logger.write_info('stopped')
 
 

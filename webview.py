@@ -37,13 +37,13 @@
 
 import os
 import cgi
-#import cgitb
 import datetime
 import time
 import string
+import cgitb
 from tools import *
 from cgi import FieldStorage
-#cgitb.enable()
+cgitb.enable()
 
 class WebView(FieldStorage):
     """Gives the web CGI frontend"""
@@ -235,19 +235,19 @@ class WebView(FieldStorage):
         self.sub_header()
         self.hardware_data()
 
-        print "<form method=\"POST\" action=\"telecaster.py\" name=\"formulaire\">"
+        print "<form method=\"post\" action=\"telecaster.py\" name=\"formulaire\">"
         print "<div class=\"main\">"
         print "<table class=\"form\">"
         print "<TR><TH align=\"left\">Titre</TH><TD> : </TD><TD>"+self.title+"</TD></TR>"
         print "<TR><TH align=\"left\">D&eacute;partement</TH><TD> : </TD>"
         print "<TD><select name=\"department\" onChange=\"choix(this.form)\">"
-        print "<option selected=\"\">...........Choisissez un d&eacute;partement...........</option>"
+        print "<option>...........Choisissez un d&eacute;partement...........</option>"
         for department in self.departments:
             print "<option value=\""+department['name']+"\">"+department['name']+"</option>"
         print "</select></TD></TR>"
         print "<TR><TH align=\"left\">Conf&eacute;rence</TH><TD> : </TD>"
         print "<TD><select name=\"conference\">"
-        print "<option selected=\"\">...........Choisissez une conf&eacute;rence...........</option>"
+        print "<option>...........Choisissez une conf&eacute;rence...........</option>"
         for i in range(1,self.conference_nb_max):
             print "<option></option>"
         print "</select></TD></TR>"
@@ -286,9 +286,6 @@ class WebView(FieldStorage):
 
         self.header()
         self.sub_header()
-
-        print "<form method=\"POST\" action=\"telecaster.py\" name=\"formulaire\">"
-
         self.hardware_data()
 
         print "<div class=\"main\">"
@@ -302,6 +299,7 @@ class WebView(FieldStorage):
         print "</table>"
         print "</div>"
         print "<div class=\"tools\">"
+        print "<form method=\"post\" action=\"telecaster.py\" name=\"formulaire\">"
         print "<div class=\"buttons\">"
         print "<button><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
         print "<a href=\""+self.url+":"+self.port+"/"+self.mount_point+"\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
@@ -309,8 +307,9 @@ class WebView(FieldStorage):
         print "<a href=\"http://"+self.url+"/archives/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
         print "<a href=\"http://"+self.url+"/trash/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"
         print "</div>"
-        print "</div>"
         print "</form>"
+        print "</div>"
+        
         self.colophon()
         self.footer()
 
