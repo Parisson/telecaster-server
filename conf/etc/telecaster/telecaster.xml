@@ -1,19 +1,19 @@
 <telecaster>
     <infos>
-        <short_name>Pre-Barreau</short_name>
-        <name>Pre-Barreau</name>
-        <description>La preparation au Barreau de Paris</description>
-        <url>telecaster-04.parisson.com</url>
-        <genre>Vocal</genre>
+        <short_name>Parisson</short_name>
+        <name>Parisson</name>
+        <description>Parisson TeleCaster Services</description>
+        <url>telecaster.parisson.com</url>
+        <genre>Various</genre>
     </infos>
-    <log>/tmp/telecaster.log</log>
+    <log>/var/log/telecaster.log</log>
     <deefuzzer>
 	<conf>/etc/telecaster/deefuzzer.xml</conf>
     </deefuzzer>
     <media>
         <record>true</record>
-        <play_dir>/home/prebarreau/media</play_dir>
-        <rec_dir>/home/prebarreau/archives</rec_dir>
+        <play_dir>/home/telecaster/media</play_dir>
+        <rec_dir>/home/telecaster/archives</rec_dir>
         <format>mp3</format>
         <bitrate>96</bitrate>
         <channels>1</channels>

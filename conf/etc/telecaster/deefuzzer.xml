@@ -1,13 +1,13 @@
 <deefuzzer>
-    <log>/var/log/deefuzzer/preb.log</log>
-    <m3u>/var/www/m3u/preb.m3u</m3u>
+    <log>/var/log/deefuzzer/telecaster.log</log>
+    <m3u>/var/www/m3u/telecaster.m3u</m3u>
 
     <station>
         <infos>
             <short_name>telecaster_local</short_name>
-            <name>TeleCaster LocalHost</name>
+            <name>TeleCaster Localhost</name>
             <description>TeleCaster local audio streaming</description>
-            <url>http://crfpa.pre-barreau.com</url>
+            <url>http://parisson.com</url>
             <genre>Vocal</genre>
         </infos>
         <server>
@@ -59,9 +59,9 @@
     <station>
         <infos>
             <short_name>telecaster</short_name>
-            <name>TeleCaster #4</name>
-            <description>TeleCaster testing</description>
-            <url>http://crfpa.pre-barreau.com</url>
+            <name>TeleCaster Remote</name>
+            <description>TeleCaster Remote</description>
+            <url>http://parisson.com</url>
             <genre>School</genre>
         </infos>
         <server>
@@ -108,7 +108,6 @@
             <dir>/path/to/archives</dir>
         </record>
     </station>
-
 
 </deefuzzer>
 

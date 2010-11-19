@@ -41,51 +41,75 @@
 import os, sys
 import platform
 
+def remove_svn(path):
+    for root, dirs, files in os.walk(path):
+        for dir in dirs:
+            if '.svn' in dir:
+                shutil.rmtree(root + os.sep + dir)
+
+app_dir = os.getcwd()
+
+user = 'telecaster' 
+home = '/home/' + user
+if not os.path.exists(home):
+    print 'Please give some informations for the new "telecaster" user :'
+    os.system('adduser ' + user)
+
+# compiling edcast-jack
+os.chdir(app_dir + '/tools/edcast-jack')
+os.system('./configure; make; sudo make install')
+
+# installing deefuzzer
+os.chdir(app_dir + '/tools/deefuzzer')
+os.system('sudo python setup.py install')
+
+os.chdir(app_dir)
 install_dir = '/var/www/telecaster'
-if not os.path.exists(install_dir):
-    os.mkdir(install_dir)
+if os.path.exists(install_dir):
+    shutil.rmtree(install_dir)
+shutil.copytree(current_dir, install_dir,ignore=shutil.ignore_patterns('edcast-jack*', 'deefuzzer*', '*.svn*'))
+os.system('chown -R ' + user + ':' + user + ' ' + install_dir)
 
-user = raw_input('Give a user to use the TeleCaster system : ')
-print 'Installing...'
-
-os.system('cp -ra ./* ' + install_dir + os.sep)
-os.system('rm -rf ' + install_dir + os.sep + 'tools/edcast-jack')
-os.system('rm -rf ' + install_dir + os.sep + 'tools/deefuzzer')
-
-etc_dir = '/etc'
-conf_dir = etc_dir + os.sep + 'telecaster'
+conf_dir = '/etc/telecaster'
 if not os.path.exists(conf_dir):
-    os.mkdir(conf_dir)
-    os.system('cp -ra ./conf/etc/* ' + etc_dir + os.sep)
-    os.system('chown -R  root:root ' + etc_dir)
-    
-init_dir = '/etc/rc2.d'
-init_link = init_dir + os.sep + 'S97jackd'
-if not os.path.exists(init_link):
-    os.system('ln -s /etc/init.d/jackd ' + init_link)
+    shutil.copytree('conf'+conf_dir, conf_dir)
 
-init_link = init_dir + os.sep + 'S99vncserver'
-if not os.path.exists(init_link):
-    os.system('ln -s /etc/init.d/vncserver ' + init_link)
+daemons = ['jackd', 'vncserver']
+init_dir = '/etc/init.d/'
+conf_dir = '/etc/default/'
+for daemon in daemons:
+    shutil.copy('conf'+init_dir+daemon, init_dir)
+    shutil.copy('conf'+conf_dir+daemon, conf_dir)
     
-os.system('chown -R ' + user + ':' + user + ' ' + install_dir) 
-home = os.sep + 'home' + os.sep + user + os.sep
+init_link = '/etc/rc2.d/S97jackd'
+if not os.path.exists(init_link):
+    os.symlink('/etc/init.d/jackd ', init_link)
+
+init_link = '/etc/rc2.d/S99vncserver'
+if not os.path.exists(init_link):
+    os.symlink('/etc/init.d/vncserver ', init_link)
+
 home_dirs = ['fluxbox', 'vnc']
-
 for dir in home_dirs:
-    home_dir = home + '.' + dir
+    home_dir = home + '/.' + dir
     if not os.path.exists(home_dir):
-        os.mkdir(home_dir)
-        os.system('cp ' + conf_dir + os.sep + 'home' + os.sep + dir + '/* ' + home_dir)
+        shutil.copytree('conf'+home_dir, home_dir)
         os.system('chown -R ' + user + ':' + user + ' ' + home_dir) 
 
-#var_dir = '/var/www/telecaster'
-#if not os.path.exists(var_dir):
-#    os.system('ln -s ' + install_dir + ' ' + var_dir)
+apache_conf = '/etc/apache2/sites-available/telecaster.conf'
+if not os.path.exists(apache_conf):
+    shutil.copy('conf'+apache_conf, apache_conf)
+os.system('/etc/init.d/apache2 reload')
 
 print """
    Installation successfull !
-   Now configure your apache VirtualHost to get TeleCaster in your browser.
-   Please see conf/etc/apache2/default and README for more infos.
+   
+   Now, please :
+   - configure your telecaster editing /etc/telecaster/telecaster.xml
+   - configure your apache VirtualHost editing /etc/apache2/sites-available/telecaster.conf 
+
+   And use the TeleCaster system browsing http://localhost/telecaster/telecaster.py
+   
+   See README for more infos.
    """
 
