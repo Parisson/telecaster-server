@@ -102,10 +102,11 @@ if not os.path.exists(apache_conf):
     shutil.copy('conf'+apache_conf, apache_conf)
 os.system('/etc/init.d/apache2 reload')
 
-log_dir = '/var/log/telecaster'
-if not os.path.exists(log_dir):
-    os.mkdir(log_dir)
-    os.system('chown -R ' + user + ':' + user + ' ' + log_dir) 
+log_dirs = ['/var/log/telecaster', '/var/log/deefuzzer']
+for  dir in log_dirs:
+    if not os.path.exists(dir):
+        os.mkdir(dir)
+        os.system('chown -R ' + user + ':' + user + ' ' + dir) 
 
 print """
    Installation successfull !

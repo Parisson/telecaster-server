@@ -159,7 +159,7 @@ class Station(Conference):
         conf_file.close()
 
     def deefuzzer_start(self):
-        command = 'deefuzzer ' + self.deefuzzer_user_file + ' &'
+        command = 'deefuzzer ' + self.deefuzzer_user_file + ' > /dev/null &'
         os.system(command)
         self.set_lock()
 

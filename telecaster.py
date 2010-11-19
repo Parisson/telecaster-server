@@ -105,7 +105,6 @@ class TeleCaster:
             s.start()
             time.sleep(1)
             self.logger.write_info('starting')
-#            form.stop_form(self.conference_dict, writing, casting)
             self.main()
 
         elif deefuzzer_pid != [] and os.path.exists(self.lock_file) and not form.has_key("action"):

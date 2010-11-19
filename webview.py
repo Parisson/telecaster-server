@@ -40,10 +40,8 @@ import cgi
 import datetime
 import time
 import string
-import cgitb
 from tools import *
 from cgi import FieldStorage
-cgitb.enable()
 
 class WebView(FieldStorage):
     """Gives the web CGI frontend"""
@@ -109,16 +107,13 @@ class WebView(FieldStorage):
         for k in range(0, self.len_departments):
             department = self.departments[k]
             conferences = department['conferences']
-            #print conferences
             conferences_t = dict2tuple(conferences)
-            #print conferences
             conferences = '"'+'","'.join(conferences_t)+'"'
             print '       case '+str(k+1)+' : var text = new Array('+conferences+'); '
             print '       break;'
         print '       }'
         print '      for(j = 0; j<'+str(self.conference_nb_max)+'; j++)'
         print '       formulaire.conference.options[j+1].text=text[j];'
-        #print '       formulaire.conference.options[j+1].value=text[j];'
         print '}'
         print '      formulaire.conference.selectedIndex=0;}'
         print '</script>'
@@ -301,7 +296,7 @@ class WebView(FieldStorage):
         print "<div class=\"tools\">"
         print "<form method=\"post\" action=\"telecaster.py\" name=\"formulaire\">"
         print "<div class=\"buttons\">"
-        print "<button><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
+        print "<button type=\"submit\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
         print "<a href=\""+self.url+":"+self.port+"/"+self.mount_point+"\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
         print "<button type=\"submit\" name=\"action\" value=\"stop\" class=\"negative\"><img src=\"img/cancel.png\" alt=\"\">Stop</button>"
         print "<a href=\"http://"+self.url+"/archives/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
