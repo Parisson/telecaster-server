@@ -26,7 +26,7 @@
         </input>
     </jack>
 
-    <department>
+<department>
         <name>CRFPA</name>
         <conferences>
           <conference>
@@ -128,7 +128,7 @@
           <conference>
             <name>Oral-Procedures_communautaires</name>
           </conference>
-         <conference>
+	 <conference>
             <name>Oral-Voies_d_ex</name>
           </conference>
           <conference>
@@ -166,7 +166,7 @@
                 <name>Deontologie_Cours</name>
             </conference>
             <conference>
-                <name>Droit civil - Cours</name>
+                <name>Civil_Cours</name>
             </conference>
             <conference>
                 <name>Methodo_Oraux</name>
@@ -327,7 +327,6 @@
         <comment><text>13e_sem</text></comment>
         <comment><text>14e_sem</text></comment>
         <comment><text>15e_sem</text></comment>
-        <comment><text>16e_sem</text></comment>
-       
+        <comment><text>16e_sem</text></comment>       
     
 </telecaster>
