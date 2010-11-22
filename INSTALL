@@ -28,7 +28,14 @@ Optional::
 
     sudo aptitude install libfaac-dev libmp3lame-dev libflac-dev 
 
-Note that obtaining and installing a preempt RT kernel is STRONGLY advised to get a good stability.
+Note that obtaining and installing a preempt RT kernel is STRONGLY advised to get a good audio (JACK) stability.
+Moreover, edit the pam conf file to get RT "su" pam limits at boot::
+    
+    sudo vi /etc/pam.d/su
+    
+Uncomment::
+    
+    session    required   pam_limits.so
 
 
 3. Install TeleCaster
@@ -89,9 +96,9 @@ Browse the TeleCaster web control page:
 
 Fill in the form and start any free recording and broadcasting stream !
 
-To change the form options, just edit the conf file::
+To change the form options, just edit the conf file as root::
     
-    /etc/telecaster/telecaster.xml
+    sudo vi /etc/telecaster/telecaster.xml
     
 
 8. Contact
