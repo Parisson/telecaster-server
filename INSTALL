@@ -28,6 +28,8 @@ Optional::
 
     sudo aptitude install libfaac-dev libmp3lame-dev libflac-dev 
 
+Note that obtaining and installing a preempt RT kernel is STRONGLY advised to get a good stability.
+
 
 3. Install TeleCaster
 =====================
@@ -54,7 +56,7 @@ and, ONLY if needed::
 5. Start audio deamons
 ======================
 
-Just reboot your machine or start them manually:: 
+Just reboot your machine or start the deamons manually:: 
 
     sudo /etc/init.d/jackd start
     sudo /etc/init.d/vncserver start
@@ -87,6 +89,10 @@ Browse the TeleCaster web control page:
 
 Fill in the form and start any free recording and broadcasting stream !
 
+To change the form options, just edit the conf file::
+    
+    /etc/telecaster/telecaster.xml
+    
 
 8. Contact
 ==========
