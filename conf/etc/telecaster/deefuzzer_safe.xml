@@ -4,9 +4,9 @@
 
     <station>
         <infos>
-            <short_name>telecaster_safe</short_name>
-            <name>TeleCaster Localhost Safe Recorder</name>
-            <description>TeleCaster safe local audio record</description>
+            <short_name>telecaster_live_safe</short_name>
+            <name>TeleCaster Localhost Live Safe Recorder</name>
+            <description>TeleCaster safe local live audio record</description>
             <url>http://parisson.com</url>
             <genre>Vocal</genre>
         </infos>
