@@ -99,7 +99,7 @@ for dir in home_dirs:
 
 dir = 'media'
 home_dir = home + os.sep + dir
-if not os.path.exists():
+if not os.path.exists(home_dir):
     shutil.copytree('conf/home/'+dir, home_dir, ignore=shutil.ignore_patterns('*.svn*'))
     os.system('chown -R ' + user + ':' + user + ' ' + home_dir) 
     
