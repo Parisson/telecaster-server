@@ -12,7 +12,7 @@
     </deefuzzer>
     <media>
         <record>true</record>
-        <play_dir>/home/telecaster/media</play_dir>
+        <play_dir>/home/telecaster/media/mp3</play_dir>
         <rec_dir>/home/telecaster/archives</rec_dir>
         <format>mp3</format>
         <bitrate>96</bitrate>

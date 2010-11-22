@@ -97,6 +97,12 @@ for dir in home_dirs:
         shutil.copytree('conf/home/'+dir, home_dir, ignore=shutil.ignore_patterns('*.svn*'))
         os.system('chown -R ' + user + ':' + user + ' ' + home_dir) 
 
+dir = 'media'
+home_dir = home + os.sep + dir
+if not os.path.exists():
+    shutil.copytree('conf/home/'+dir, home_dir, ignore=shutil.ignore_patterns('*.svn*'))
+    os.system('chown -R ' + user + ':' + user + ' ' + home_dir) 
+    
 apache_conf = '/etc/apache2/sites-available/telecaster.conf'
 if not os.path.exists(apache_conf):
     shutil.copy('conf'+apache_conf, apache_conf)
