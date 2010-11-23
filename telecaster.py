@@ -127,7 +127,7 @@ class TeleCaster:
 
 	else:
 	    os.system('kill -9 '+deefuzzer_pid[0])
-	    self.main()
+	    #self.main()
       
 
 conf_file = '/etc/telecaster/telecaster.xml'
