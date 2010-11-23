@@ -41,9 +41,13 @@ Uncomment::
 3. Install TeleCaster
 =====================
 
+Untar the archive. For example::
+    
+    tar xzf telecaster-0.5.tar.gz
+    
 Run the install script::
     
-    cd telecaster-0.4.4/
+    cd telecaster-0.5/
     sudo python install.py
 
 
