@@ -228,6 +228,6 @@ class Station(Conference):
 
     def stop(self):
         self.rec_stop()
-        time.sleep(3)
+        time.sleep(1)
         self.deefuzzer_stop()
         self.del_lock()

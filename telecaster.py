@@ -113,18 +113,22 @@ class TeleCaster:
             self.logger.write_info('started')
 
         elif deefuzzer_pid and form.has_key("action") and form["action"].value == "stop":
+	    self.logger.write_info('stopping')
             if os.path.exists(self.lock_file):
                 self.conference_dict = get_conference_from_lock(self.lock_file)
-            s = Station(self.conf_file, self.conference_dict, self.lock_file)
-            s.stop()
-            self.logger.write_info('stopping')
-            time.sleep(1)
-            self.main()
+		s = Station(self.conf_file, self.conference_dict, self.lock_file)
+                s.stop()
+		time.sleep(1)
+		self.main()
 
         elif deefuzzer_pid == []:
             form.start_form(writing, casting)
             self.logger.write_info('stopped')
 
+	else:
+	    os.system('kill -9 '+deefuzzer_pid[0])
+	    self.main()
+      
 
 conf_file = '/etc/telecaster/telecaster.xml'
 

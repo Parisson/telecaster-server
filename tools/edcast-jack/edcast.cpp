@@ -67,7 +67,7 @@ jack_nframes_t nframes;
 const size_t sample_size = sizeof(jack_default_audio_sample_t);
 
 /* Synchronization between process thread and edcast thread. */
-#define DEFAULT_RB_SIZE 16384*16     /* ringbuffer size in frames */
+#define DEFAULT_RB_SIZE 16384*4     /* ringbuffer size in frames */
 jack_ringbuffer_t **rb;
 pthread_mutex_t edcast_thread_lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t  data_ready = PTHREAD_COND_INITIALIZER;
