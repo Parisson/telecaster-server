@@ -231,7 +231,7 @@ class WebView(FieldStorage):
         self.casting = writing
         self.writing = casting
         self.refresh = False
-
+	self.mount_point = 'telecaster_live.' + self.format + '.m3u'
         self.header()
         self.javascript()
         self.sub_header()
@@ -267,6 +267,7 @@ class WebView(FieldStorage):
         print "<div class=\"buttons\">"
         print "<button type=\"submit\" class=\"positive\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
         print "<button type=\"submit\" name=\"action\" value=\"start\" class=\"negative\"><img src=\"img/stop.png\" alt=\"\">Record</button>"
+        print "<a href=\"http://"+self.ip+":"+self.port+"/"+self.mount_point+"\"><img src=\"img/control_play_blue.png\" alt=\"\">Play Live</a>"
         print "<a href=\"/archives/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
         print "<a href=\"/trash/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"
         print "</div>"
@@ -304,7 +305,7 @@ class WebView(FieldStorage):
         print "<div class=\"tools\">"
         print "<div class=\"buttons\">"
         print "<button type=\"submit\"><img src=\"img/arrow_refresh.png\" alt=\"\">Refresh</button>"
-        print "<a href=\""+self.url+":"+self.port+"/"+self.mount_point+"\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
+        print "<a href=\"http://"+self.ip+":"+self.port+"/"+self.mount_point+"\"><img src=\"img/control_play_blue.png\" alt=\"\">Play</a>"
         print "<button type=\"submit\" name=\"action\" value=\"stop\" class=\"negative\"><img src=\"img/cancel.png\" alt=\"\">Stop</button>"
         print "<a href=\"/archives/\"><img src=\"img/folder_go.png\" alt=\"\">Archives</a>"
         print "<a href=\"/trash/\"><img src=\"img/bin.png\" alt=\"\">Trash</a>"

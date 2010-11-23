@@ -125,9 +125,9 @@ class TeleCaster:
             form.start_form(writing, casting)
             self.logger.write_info('stopped')
 
-	else:
+	elif deefuzzer_pid != []:
 	    os.system('kill -9 '+deefuzzer_pid[0])
-	    #self.main()
+	    self.main()
       
 
 conf_file = '/etc/telecaster/telecaster.xml'
