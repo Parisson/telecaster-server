@@ -101,7 +101,7 @@ class TeleCaster:
 	    if not form.has_key("comment"):
 		comment = 'Non'
 	    else:
-		form.getfirst("comment")
+		comment = form.getfirst("comment")
 		
             self.conference_dict = {'title': self.title,
                         'department': form.getfirst("department"),
