@@ -17,13 +17,13 @@
             <public>0</public>
         </server>
         <media>
-            <dir>/path/to/mp3</dir>
-            <format>mp3</format>
-            <bitrate>96</bitrate>
-            <ogg_quality>7</ogg_quality>
+            <dir>/path/to/ogg</dir>
+            <format>ogg</format>
+            <bitrate>64</bitrate>
+            <ogg_quality>4</ogg_quality>
             <samplerate>44100</samplerate>
-            <voices>2</voices>
-            <shuffle>1</shuffle>
+            <voices>1</voices>
+            <shuffle>0</shuffle>
         </media>
         <rss>
             <dir>/var/www/rss</dir>
@@ -46,7 +46,7 @@
         </control>
         <relay>
             <mode>1</mode>
-            <url>http://127.0.0.1:8000/telecaster_live.mp3</url>
+            <url>http://127.0.0.1:8000/telecaster_live.ogg</url>
             <author>Parisson</author>
         </relay>
         <record>
@@ -71,13 +71,13 @@
             <public>0</public>
         </server>
         <media>
-            <dir>/path/to/mp3</dir>
-            <format>mp3</format>
+            <dir>/path/to/ogg</dir>
+            <format>ogg</format>
             <bitrate>96</bitrate>
-            <ogg_quality>7</ogg_quality>
+            <ogg_quality>4</ogg_quality>
             <samplerate>44100</samplerate>
-            <voices>2</voices>
-            <shuffle>1</shuffle>
+            <voices>1</voices>
+            <shuffle>0</shuffle>
         </media>
         <rss>
             <dir>/var/www/rss</dir>
@@ -100,7 +100,7 @@
         </control>
         <relay>
             <mode>1</mode>
-            <url>http://127.0.0.1:8000/telecaster_live.mp3</url>
+            <url>http://127.0.0.1:8000/telecaster_live.ogg</url>
             <author>Parisson</author>
         </relay>
         <record>

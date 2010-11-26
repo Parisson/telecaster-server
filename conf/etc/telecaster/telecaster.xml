@@ -12,12 +12,12 @@
     </deefuzzer>
     <media>
         <record>true</record>
-        <play_dir>/home/telecaster/media/mp3</play_dir>
+        <play_dir>/home/telecaster/media/ogg</play_dir>
         <rec_dir>/home/telecaster/archives</rec_dir>
-        <format>mp3</format>
-        <bitrate>96</bitrate>
+        <format>ogg</format>
+        <bitrate>64</bitrate>
         <channels>1</channels>
-        <ogg_quality>3</ogg_quality>
+        <ogg_quality>4</ogg_quality>
         <samplerate>44100</samplerate>
     </media>
     <jack>
