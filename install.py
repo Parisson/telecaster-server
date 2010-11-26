@@ -73,7 +73,12 @@ os.system('chown -R ' + user + ':' + user + ' ' + install_dir)
 
 conf_dir = '/etc/telecaster'
 if not os.path.exists(conf_dir):
-    shutil.copytree('conf'+conf_dir, conf_dir, ignore=shutil.ignore_patterns('*.svn*'))
+    os.mkdir(conf_dir)
+else:
+    in_files = os.listdir('conf'+conf_dir)
+    for file in in_files:
+	if not os.path.exists(conf_dir+os.sep+file) and not '.svn' in file:
+	    shutil.copy('conf'+conf_dir+os.sep+file, conf_dir+os.sep+file)
 
 daemons = ['jackd', 'vncserver']
 init_dir = '/etc/init.d/'
