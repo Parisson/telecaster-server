@@ -109,7 +109,8 @@ class TeleCaster:
 			self.conference_dict[data] = 'Inconnu'
 		    else:
 			self.conference_dict[data] = value
-	 
+	    
+	    self.conference_dict['title'] = self.title
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
             time.sleep(1)
