@@ -1,0 +1,35 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+ start)
+   fifo=/tmp/video_fifo
+   if [ ! -e $fifo ]; then
+   mkfifo $fifo
+   fi
+
+   dir=$HOME/archives/2010/VIDEOS/
+   now=`date -R`
+
+   ffmpeg -f video4linux2 -i /dev/video1 -f jack -i ffmpeg -f ogg -r 20 -s 320x240 -vcodec libtheora -b 364k -acodec libvorbis -ab 64k -y $fifo -map 0.0 -map 1.0 &
+
+   sleep 5
+   jack_connect jack_rack:out_1 ffmpeg:input_1
+   #jack_connect jack_rack:out_1 ffmpeg:input_2
+
+   sleep 1
+   cat $fifo | tee "$dir/video_test-$now.ogg" | oggfwd -d "TeleCaster Live Video Services" -g "Vocal"  -n "TeleCaster Live Video" localhost 8000 source2parisson /telecaster_live_video.ogg &
+   ;;
+ 
+ stop)
+   jack_disconnect jack_rack:out_1 ffmpeg:input_1
+#   jack_disconnect jack_rack:out_1 ffmpeg:input_2
+   pkill -9 ffmpeg
+   ;;
+esac
+
+
+
+
+

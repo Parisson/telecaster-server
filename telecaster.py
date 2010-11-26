@@ -91,15 +91,24 @@ class TeleCaster:
 
         if deefuzzer_pid == [] and form.has_key("action") and \
             form.has_key("department") and form.has_key("conference") and \
-            form.has_key("professor") and form.has_key("comment") and \
-            form["action"].value == "start":
+            form.has_key("session") and form["action"].value == "start":
 
+	    if not form.has_key("professsor"):
+		professor = 'Inconnu'
+	    else:
+		professor = form.getfirst("professor")
+		
+	    if not form.has_key("comment"):
+		comment = 'Non'
+	    else:
+		form.getfirst("comment")
+		
             self.conference_dict = {'title': self.title,
                         'department': form.getfirst("department"),
                         'conference': form.getfirst("conference"),
                         'session': form.getfirst("session"),
-                        'professor': form.getfirst("professor"),
-                        'comment': form.getfirst("comment")}
+                        'professor': professor,
+                        'comment': comment}
 
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
