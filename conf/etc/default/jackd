@@ -5,5 +5,5 @@ START_DAEMON=yes
 USER=telecaster
 
 # Options to pass to jackd
-OPTIONS="-R -dalsa -r44100 -p512 -n3 -D -Chw:1,1 -Phw:1,0 "
+OPTIONS="-dalsa -r44100 -p4096 -n3 -D -Chw:1,1 -Phw:1,0"
 
