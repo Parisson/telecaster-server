@@ -80,13 +80,19 @@ else:
 	if not os.path.exists(conf_dir+os.sep+file) and not '.svn' in file:
 	    shutil.copy('conf'+conf_dir+os.sep+file, conf_dir+os.sep+file)
 
+
 daemons = ['jackd', 'vncserver']
-init_dir = '/etc/init.d/'
-conf_dir = '/etc/default/'
+dir = '/etc/init.d/'
 for daemon in daemons:
-    shutil.copy('conf'+init_dir+daemon, init_dir)
-    shutil.copy('conf'+conf_dir+daemon, conf_dir)
+    path = dir + daemon
+    shutil.copy('conf'+path, dir)
     
+dir = '/etc/default/'
+for daemon in daemons:
+    path = dir + daemon
+    if not os.path.exists(path):
+	shutil.copy('conf'+path, dir)
+	    
 init_link = '/etc/rc2.d/S97jackd'
 if not os.path.islink(init_link):
     os.symlink('/etc/init.d/jackd ', init_link)
