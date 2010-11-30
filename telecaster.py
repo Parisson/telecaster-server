@@ -35,7 +35,7 @@
 # Author: Guillaume Pellerin <yomguy@parisson.com>
 """
 
-version = '0.5.1'
+version = '0.5.2'
 
 
 import os
