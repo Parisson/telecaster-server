@@ -122,7 +122,7 @@ class Station(Conference):
         self.server_ports = []
         
         for station in self.deefuzzer_dict['deefuzzer']['station']:
-            if station['control']['mode'] == 1:
+            if station['control']['mode'] == '1':
                 self.deefuzzer_osc_ports.append(station['control']['port'])
                 self.server_ports.append(station['server']['port'])
             if station['server']['host'] == 'localhost' or  station['server']['host'] == '127.0.0.1':
@@ -168,13 +168,14 @@ class Station(Conference):
         os.remove(self.lock_file)
 
     def deefuzzer_stop(self):
-        os.system('kill -9 '+self.deefuzzer_pid[0])
+	if len(self.deefuzzer_pid) != 0:
+	    os.system('kill -9 '+self.deefuzzer_pid[0])
 
     def rec_stop(self):
         if len(self.deefuzzer_pid) != 0:
-            for port in self.deefuzzer_osc_ports:
-                target = liblo.Address(port)
-                liblo.send(target, "/record", 0)
+	    for port in self.deefuzzer_osc_ports:
+		target = liblo.Address(int(port))
+                liblo.send(target, '/record', 0)
 
     def mp3_convert(self):
         os.system('oggdec -o - '+ self.file_dir+os.sep+self.filename+' | lame -S -m m -h -b '+ self.bitrate + \
@@ -222,6 +223,6 @@ class Station(Conference):
 
     def stop(self):
         self.rec_stop()
-        time.sleep(1)
+        time.sleep(2)
         self.deefuzzer_stop()
         self.del_lock()
