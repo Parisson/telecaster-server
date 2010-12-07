@@ -50,7 +50,7 @@ class WebView(FieldStorage):
         FieldStorage.__init__(self)
         self.conf = conf
         self.version = version
-        self.interfaces = ['eth0', 'eth1', 'eth2', 'eth0-eth2']
+        self.interfaces = ['eth0', 'eth1', 'eth2', 'eth0-eth2','eth3']
         ip = ''
         for interface in self.interfaces:
             try:
@@ -231,7 +231,7 @@ class WebView(FieldStorage):
         self.casting = writing
         self.writing = casting
         self.refresh = False
-	self.mount_point = 'telecaster_live.' + self.format + '.m3u'
+	self.mount_point = 'telecaster_live.' + self.format
         self.header()
         self.javascript()
         self.sub_header()
@@ -282,7 +282,7 @@ class WebView(FieldStorage):
         session = conference_dict['session']
         professor = conference_dict['professor']
         comment = conference_dict['comment']
-        self.mount_point ='_-_'.join([self.short_name,department,conference])+'.'+self.format+'.m3u'
+        self.mount_point ='_-_'.join([self.short_name,department,conference])+'.'+self.format
         self.writing = writing
         self.casting = casting
         self.refresh = True
