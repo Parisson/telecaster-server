@@ -1,10 +1,11 @@
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          vncserver
+# Required-Start:
 # Required-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: init script for vncserver with RT capabilities
+# Short-Description: init script for the audio vncserver
 ### END INIT INFO
 
 
