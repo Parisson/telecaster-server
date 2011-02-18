@@ -113,7 +113,7 @@ class TeleCaster:
 	    self.conference_dict['title'] = self.title
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
-            time.sleep(1)
+            time.sleep(2)
             self.logger.write_info('starting')
             self.main()
 
@@ -128,7 +128,7 @@ class TeleCaster:
                 self.conference_dict = get_conference_from_lock(self.lock_file)
 		s = Station(self.conf_file, self.conference_dict, self.lock_file)
                 s.stop()
-		time.sleep(1)
+		time.sleep(2)
 		self.main()
 
         elif deefuzzer_pid == []:
