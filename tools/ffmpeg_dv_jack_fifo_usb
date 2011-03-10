@@ -13,7 +13,7 @@ case "$1" in
    now=`date -R`
    file=$dir/video_test2.ogg
 
-   ffmpeg -f video4linux2 -i /dev/video0 -f jack -i ffmpeg -r 20 -f ogg -vcodec libtheora -s 320x240 -b 380k -acodec libvorbis -ab 64k -ar 44100 -ac 1 -y $file -map 0.0 -map 1.0 &
+   ffmpeg -f video4linux2 -i /dev/video0 -f jack -i ffmpeg -itsoffset 00:00:00.8 -r 20 -f ogg -vcodec libtheora -s 320x240 -b 380k -acodec libvorbis -ab 64k -ar 44100 -ac 1 -y $file -map 0.0 -map 1.0 &
 
    sleep 3
    jack_connect jack_rack:out_1 ffmpeg:input_1
@@ -34,3 +34,4 @@ esac
 
 
 
+# http://www.kkoncepts.net/node/69
