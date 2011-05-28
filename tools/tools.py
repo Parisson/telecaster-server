@@ -76,18 +76,18 @@ def get_ip_address(ifname):
     )[20:24])
 
 def get_lines(file):
-	"""Get lines from a file"""
-	fic = open(file,'r')
-	lines = fic.readlines()
-	fic.close()
-	return lines
+    """Get lines from a file"""
+    fic = open(file,'r')
+    lines = fic.readlines()
+    fic.close()
+    return lines
 
 def clean_string(string):
-	"""removes blank spaces and accents"""
-	string = string.replace(' ','_')
-	#string = string.replace('é','e')
-	#string = string.replace('è','e')
-	return string
+    """removes blank spaces and accents"""
+    string = string.replace(' ','_')
+    #string = string.replace('é','e')
+    #string = string.replace('è','e')
+    return string
 
 def xml2dict(conf_file):
     confile = open(conf_file,'r')

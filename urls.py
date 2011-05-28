@@ -35,35 +35,20 @@
 """
 
 from django.conf.urls.defaults import *
-from telemeta.models import *
-from telemeta.views import WebView
+from django.conf import settings
+from telecaster.models import *
+from telecaster.views import WebView
 from jsonrpc import jsonrpc_site
 import os.path
 
-#import telecaster.config
-#telecaster.config.check()
 
 # initialization
-web_view = WebView()
-
-
+web_view = WebView(settings.TELECASTER_CONF)
 htdocs = os.path.dirname(__file__) + '/htdocs'
 
 urlpatterns = patterns('',
-    url(r'^$', web_view.index, name="telemeta-home"),
-
-    # items
-    url(r'^items/$', 'django.views.generic.list_detail.object_list', 
-        dict(all_items, paginate_by=20, template_name="telemeta/mediaitem_list.html"),
-        name="telemeta-items"),
-    url(r'^items/(?P<public_id>[A-Za-z0-9._-]+)/$', web_view.item_detail, 
-        name="telemeta-item-detail"),
-    url(r'^items/(?P<public_id>[A-Za-z0-9._-]+)/dc/$', web_view.item_detail, 
-        {'template': 'telemeta/mediaitem_detail_dc.html'},
-        name="telemeta-item-dublincore"),
-    url(r'^items/(?P<public_id>[A-Za-z0-9._-]+)/dc/xml/$', web_view.item_detail, 
-        {'format': 'dublin_core_xml'},
-
+    url(r'^', web_view.index, name="telecaster-index"),
+    
     # CSS+Images (FIXME: for developement only)
     url(r'^css/(?P<path>.*)$', 'django.views.static.serve', 
         {'document_root': htdocs+'/css'},
@@ -74,3 +59,10 @@ urlpatterns = patterns('',
     url(r'^js/(?P<path>.*)$', 'django.views.static.serve', 
         {'document_root': htdocs+'/js'},
         name="telemeta-js"),
+    
+    # JSON RPC
+    url(r'^json/$', jsonrpc_site.dispatch, name='jsonrpc_mountpoint'),
+    # for the graphical browser/web console only, omissible
+    url(r'^json/browse/', 'jsonrpc.views.browse', name="jsonrpc_browser"), 
+    
+)

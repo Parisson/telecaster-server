@@ -48,14 +48,15 @@ from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TDAT, TDRC, TCO, COM
 
 from django.db.models import *
 from django.forms import ModelForm
+from django.utils.translation import ugettext_lazy as _
 
 app_label = 'telecaster'
 
 
 class Organization(Model):
     
-    name            = CharField(_('name'))
-    description     = CharField(_('description'))
+    name            = CharField(_('name'), max_length=255)
+    description     = CharField(_('description'), max_length=255)
     
     def __str__(self):
         return self.name
@@ -65,8 +66,8 @@ class Organization(Model):
 
 class Department(Model):
     
-    name            = CharField(_('name'))
-    description     = CharField(_('description'))
+    name            = CharField(_('name'), max_length=255)
+    description     = CharField(_('description'), max_length=255)
 
     def __str__(self):
         return self.name
@@ -77,9 +78,9 @@ class Department(Model):
 
 class Conference(Model):
     
-    title           = CharField(_('title'))
-    description     = CharField(_('description'))
-    department      = Foreignkey('Department', related_name='conferences', verbose_name='department')
+    title           = CharField(_('title'), max_length=255)
+    description     = CharField(_('description'), max_length=255)
+    department      = ForeignKey('Department', related_name='conferences', verbose_name='department')
     
     def __str__(self):
         return self.title
@@ -90,8 +91,8 @@ class Conference(Model):
 
 class Session(Model):
     
-    name            = CharField(_('name'))
-    description     = CharField(_('description'))
+    name            = CharField(_('name'), max_length=255)
+    description     = CharField(_('description'), max_length=255)
     number          = IntegerField(_('number'))
     
     def __str__(self):
@@ -103,11 +104,11 @@ class Session(Model):
 
 class Professor(Model):
     
-    name            = CharField(_('name'))
-    institution     = CharField(_('institution'))
-    address         = CharField(_('address'))
-    telephone       = CharField(_('telephone'))
-    email           = CharField(_('email'))
+    name            = CharField(_('name'), max_length=255)
+    institution     = CharField(_('institution'), max_length=255)
+    address         = CharField(_('address'), max_length=255)
+    telephone       = CharField(_('telephone'), max_length=255)
+    email           = CharField(_('email'), max_length=255)
 
     def __str__(self):
         return self.name
@@ -118,10 +119,10 @@ class Professor(Model):
     
 class Station(Model):
     
-    organization      = Foreignkey('Organization', related_name='stations', verbose_name='organization')
-    conference        = Foreignkey('Conference', related_name='stations', verbose_name='conference')
-    session           = Foreignkey('Session', related_name='stations', verbose_name='session')
-    professor         = Foreignkey('Professor', related_name='stations', verbose_name='professor')
+    organization      = ForeignKey('Organization', related_name='stations', verbose_name='organization')
+    conference        = ForeignKey('Conference', related_name='stations', verbose_name='conference')
+    session           = ForeignKey('Session', related_name='stations', verbose_name='session')
+    professor         = ForeignKey('Professor', related_name='stations', verbose_name='professor')
     comment           = TextField(_('comment'))
     started           = BooleanField(_('started'))
     datetime_start    = DateTimeField(_('datetime_start'), auto_now_add=True)

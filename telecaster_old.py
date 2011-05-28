@@ -109,7 +109,7 @@ class TeleCaster:
                     self.conference_dict[data] = 'Inconnu'
                 else:
                     self.conference_dict[data] = value
-            
+        
         self.conference_dict['title'] = self.title
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
@@ -126,7 +126,7 @@ class TeleCaster:
         self.logger.write_info('stopping')
             if os.path.exists(self.lock_file):
                 self.conference_dict = get_conference_from_lock(self.lock_file)
-                s = Station(self.conf_file, self.conference_dict, self.lock_file)
+        s = Station(self.conf_file, self.conference_dict, self.lock_file)
                 s.stop()
         time.sleep(2)
         self.main()
