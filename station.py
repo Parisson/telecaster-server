@@ -168,13 +168,13 @@ class Station(Conference):
         os.remove(self.lock_file)
 
     def deefuzzer_stop(self):
-	if len(self.deefuzzer_pid) != 0:
-	    os.system('kill -9 '+self.deefuzzer_pid[0])
+        if len(self.deefuzzer_pid) != 0:
+            os.system('kill -9 '+self.deefuzzer_pid[0])
 
     def rec_stop(self):
         if len(self.deefuzzer_pid) != 0:
-	    for port in self.deefuzzer_osc_ports:
-		target = liblo.Address(int(port))
+            for port in self.deefuzzer_osc_ports:
+                target = liblo.Address(int(port))
                 liblo.send(target, '/record', 0)
 
     def mp3_convert(self):
