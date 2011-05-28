@@ -1,0 +1,28 @@
+{% extends "/telecaster/base.html" %}
+
+{% block content %}
+
+<form enctype="multipart/form-data" id="_editItemForm" method="post" action="" name="formulaire">{% csrf_token %}   
+<div class="main">
+
+<table class="form">
+<TR><TH align="left">Organization</TH><TD> : </TD><TD>{{ station.organization }}</TD></TR>
+<TR><TH align="left">D&eacute;partement</TH><TD> : </TD><TD>{{ station.conference.department }}</TD></TR>
+<TR><TH align="left">Conference</TH><TD> : </TD><TD>{{ station.conference }}</TD></TR>
+<TR><TH align="left">Session</TH><TD> : </TD><TD>{{ station.session }}</TD></TR>
+<TR><TH align="left">Professeur</TH><TD> : </TD><TD>{{ station.professor }}</TD></TR>
+<TR><TH align="left">Commentaire</TH><TD> : </TD><TD>{{ station.comment }}</TD></TR>
+</table>
+</div>
+<div class="tools">
+<div class="buttons">
+<button type="submit"><img src="img/arrow_refresh.png" alt="">Refresh</button>
+<a href="http://"+self.ip+":"+self.port+"/"+self.mount_point+""><img src="img/control_play_blue.png" alt="">Play</a>
+<button type="submit" name="action" value="stop" class="negative"><img src="img/cancel.png" alt="">Stop</button>
+<a href="/archives/"><img src="img/folder_go.png" alt="">Archives</a>
+<a href="/trash/"><img src="img/bin.png" alt="">Trash</a>
+</div>
+</div>
+</form>
+        
+{% endblock content %}

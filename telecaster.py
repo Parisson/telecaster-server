@@ -92,7 +92,7 @@ class TeleCaster:
         if deefuzzer_pid == [] and form.has_key("action") and \
             form.has_key("department") and form.has_key("conference") and \
             form.has_key("session") and form["action"].value == "start":
-	    
+        
             self.conference_dict = {'title': '',
                         'department': '',
                         'conference': '',
@@ -100,17 +100,17 @@ class TeleCaster:
                         'professor': '',
                         'comment': ''}
                         
-	    for data in self.conference_dict:
-		if not form.has_key(data):
-		    self.conference_dict[data] = 'Inconnu'
-		else:
-		    value = form.getfirst(data)
-		    if '....' in value:
-			self.conference_dict[data] = 'Inconnu'
-		    else:
-			self.conference_dict[data] = value
-	    
-	    self.conference_dict['title'] = self.title
+        for data in self.conference_dict:
+            if not form.has_key(data):
+                self.conference_dict[data] = 'Inconnu'
+            else:
+                value = form.getfirst(data)
+                if '....' in value:
+                    self.conference_dict[data] = 'Inconnu'
+                else:
+                    self.conference_dict[data] = value
+            
+        self.conference_dict['title'] = self.title
             s = Station(self.conf_file, self.conference_dict, self.lock_file)
             s.start()
             time.sleep(2)
@@ -123,21 +123,21 @@ class TeleCaster:
             self.logger.write_info('started')
 
         elif deefuzzer_pid and form.has_key("action") and form["action"].value == "stop":
-	    self.logger.write_info('stopping')
+        self.logger.write_info('stopping')
             if os.path.exists(self.lock_file):
                 self.conference_dict = get_conference_from_lock(self.lock_file)
-		s = Station(self.conf_file, self.conference_dict, self.lock_file)
+                s = Station(self.conf_file, self.conference_dict, self.lock_file)
                 s.stop()
-		time.sleep(2)
-		self.main()
+        time.sleep(2)
+        self.main()
 
         elif deefuzzer_pid == []:
             form.start_form(writing, casting)
             self.logger.write_info('stopped')
 
-	elif deefuzzer_pid != []:
-	    os.system('kill -9 '+deefuzzer_pid[0])
-	    self.main()
+    elif deefuzzer_pid != []:
+        os.system('kill -9 '+deefuzzer_pid[0])
+        self.main()
       
 
 conf_file = '/etc/telecaster/telecaster.xml'

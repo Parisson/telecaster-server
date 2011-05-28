@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>TeleCaster - {{ self.title }}</TITLE>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<link href="/telecaster/css/telecaster.css" rel="stylesheet" type="text/css">
+
+{% block javascript %}
+
+<script language="Javascript" type="text/javascript" >
+function choix(formulaire)
+{var j; var i = formulaire.department.selectedIndex;
+if (i == 0)
+for(j = 1; j < {{ departments|len ; j++)
+    formulaire.conference.options[j].text="";
+else{
+switch (i){
+    case '+str(k+1)+' : var text = new Array({{ conferences }});
+    break;
+}
+for(j = 0; j<'+str(self.conference_nb_max)+'; j++)
+formulaire.conference.options[j+1].text=text[j];
+}
+formulaire.conference.selectedIndex=0;}
+</script>
+
+{% endblock javascript %}
+
+</HEAD>
+<BODY>
+<div class="bg">
+<div class="header">"
+<img src="img/logo_telecaster_wh.png" alt="logo_telecaster">
+<div class="title_main">&nbsp;TeleCaster - Audio Web Live Recording</div>
+</div>
+
+{% block hardware %}
+
+{% if acpi.power_state == 0 %}
+
+
+<div class="hardware">
+<div class="title">Status</div>
+<table class="hardware">
+<tr>
+<td>Name</td><TD> : </TD>
+<td>{{ status.url }}</td>
+</tr>
+<tr>
+<td>IP address</td><TD> : </TD>
+<td><span style="{% if status.ip == 'localhost' %}color: red; font-weight: bold;{% else %}color: green;{% endif %}">{{ status.ip }}</span></td>
+</tr>
+<tr><td>Power</td><TD> : </TD>
+<td><span style="{% if status.power_state == 0 %}color: red; font-weight: bold;{% else %}color: green;{% endif %}">{{ status.power }}</span></td>
+</tr>
+<tr><td>Battery charge</td><TD> : </TD>
+<td><span style="{% if status.batt_charge == 0 %}color: red; font-weight: bold;{% else %}color: green;{% endif %}">{{ status.batt_charge }}</span></td>
+</tr>
+<tr><td>Temp core 1</td><TD> : </TD><td>{{ status.temperature }} </td></tr>
+<tr><td>JACK audio server</td><TD> : </TD>
+<td>{{ status.jack_state }}</td></tr>
+<tr><td>Encoder</td><TD> : </TD>
+<td>{{ status.casting }}</td></tr>
+<tr><td><div class="buttons">{{ status.writing }}</div></td>
+<td></td>
+<td><div class="buttons">{{ status.casting }}</div></td>
+</tr>
+</table>
+</div>
+</div>
+
+{% block content %}
+{% endblock content %}
+
+{% block footer %}
+<div class=\"colophon\">TeleCaster "+self.version+" &copy; <span>{% year %}</span>&nbsp;<a href=\"http://parisson.com\">Parisson SARL</a>. Tous droits r&eacute;serv&eacute;s.
+</div>
+
+</div>
+</BODY>
+</HTML>

@@ -231,7 +231,7 @@ class WebView(FieldStorage):
         self.casting = writing
         self.writing = casting
         self.refresh = False
-	self.mount_point = 'telecaster_live.' + self.format
+        self.mount_point = 'telecaster_live.' + self.format
         self.header()
         self.javascript()
         self.sub_header()
