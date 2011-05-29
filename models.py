@@ -56,7 +56,7 @@ app_label = 'telecaster'
 class Organization(Model):
     
     name            = CharField(_('name'), max_length=255)
-    description     = CharField(_('description'), max_length=255)
+    description     = CharField(_('description'), max_length=255, null=True)
     
     def __str__(self):
         return self.name
@@ -67,7 +67,7 @@ class Organization(Model):
 class Department(Model):
     
     name            = CharField(_('name'), max_length=255)
-    description     = CharField(_('description'), max_length=255)
+    description     = CharField(_('description'), max_length=255, null=True)
 
     def __str__(self):
         return self.name
@@ -79,7 +79,7 @@ class Department(Model):
 class Conference(Model):
     
     title           = CharField(_('title'), max_length=255)
-    description     = CharField(_('description'), max_length=255)
+    description     = CharField(_('description'), max_length=255, null=True)
     department      = ForeignKey('Department', related_name='conferences', verbose_name='department')
     
     def __str__(self):
@@ -92,7 +92,7 @@ class Conference(Model):
 class Session(Model):
     
     name            = CharField(_('name'), max_length=255)
-    description     = CharField(_('description'), max_length=255)
+    description     = CharField(_('description'), max_length=255, null=True)
     number          = IntegerField(_('number'))
     
     def __str__(self):
@@ -105,10 +105,10 @@ class Session(Model):
 class Professor(Model):
     
     name            = CharField(_('name'), max_length=255)
-    institution     = CharField(_('institution'), max_length=255)
-    address         = CharField(_('address'), max_length=255)
-    telephone       = CharField(_('telephone'), max_length=255)
-    email           = CharField(_('email'), max_length=255)
+    institution     = CharField(_('institution'), max_length=255, null=True)
+    address         = CharField(_('address'), max_length=255, null=True)
+    telephone       = CharField(_('telephone'), max_length=255, null=True)
+    email           = CharField(_('email'), max_length=255, null=True)
 
     def __str__(self):
         return self.name
@@ -123,10 +123,10 @@ class Station(Model):
     conference        = ForeignKey('Conference', related_name='stations', verbose_name='conference')
     session           = ForeignKey('Session', related_name='stations', verbose_name='session')
     professor         = ForeignKey('Professor', related_name='stations', verbose_name='professor')
-    comment           = TextField(_('comment'))
+    comment           = TextField(_('comment'), null=True)
     started           = BooleanField(_('started'))
-    datetime_start    = DateTimeField(_('time_start'))
-    datetime_stop     = DateTimeField(_('time_stop'))
+    datetime_start    = DateTimeField(_('time_start'), null=True)
+    datetime_stop     = DateTimeField(_('time_stop'), null=True)
 
     class Meta:
         db_table = app_label + '_' + 'station'
