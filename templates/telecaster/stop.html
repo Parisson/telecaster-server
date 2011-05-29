@@ -1,4 +1,4 @@
-{% extends "/telecaster/base.html" %}
+{% extends "telecaster/base.html" %}
 
 {% block content %}
 
@@ -14,15 +14,7 @@
 <TR><TH align="left">Commentaire</TH><TD> : </TD><TD>{{ station.comment }}</TD></TR>
 </table>
 </div>
-<div class="tools">
-<div class="buttons">
-<button type="submit"><img src="img/arrow_refresh.png" alt="">Refresh</button>
-<a href="http://"+self.ip+":"+self.port+"/"+self.mount_point+""><img src="img/control_play_blue.png" alt="">Play</a>
-<button type="submit" name="action" value="stop" class="negative"><img src="img/cancel.png" alt="">Stop</button>
-<a href="/archives/"><img src="img/folder_go.png" alt="">Archives</a>
-<a href="/trash/"><img src="img/bin.png" alt="">Trash</a>
-</div>
-</div>
+
 </form>
         
 {% endblock content %}

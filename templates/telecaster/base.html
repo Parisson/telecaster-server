@@ -1,43 +1,27 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+{% load telecaster_utils %}
+{% load i18n %}
+
 <HTML>
 <HEAD>
 <TITLE>TeleCaster - {{ self.title }}</TITLE>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<link href="/telecaster/css/telecaster.css" rel="stylesheet" type="text/css">
+<link href="{% url telecaster-css "telecaster.css" %}" rel="stylesheet" type="text/css">
 
 {% block javascript %}
 
-<script language="Javascript" type="text/javascript" >
-function choix(formulaire)
-{var j; var i = formulaire.department.selectedIndex;
-if (i == 0)
-for(j = 1; j < {{ departments|len ; j++)
-    formulaire.conference.options[j].text="";
-else{
-switch (i){
-    case '+str(k+1)+' : var text = new Array({{ conferences }});
-    break;
-}
-for(j = 0; j<'+str(self.conference_nb_max)+'; j++)
-formulaire.conference.options[j+1].text=text[j];
-}
-formulaire.conference.selectedIndex=0;}
-</script>
 
 {% endblock javascript %}
 
 </HEAD>
 <BODY>
 <div class="bg">
-<div class="header">"
-<img src="img/logo_telecaster_wh.png" alt="logo_telecaster">
+<div class="header">
+<img src="{% url telecaster-images "logo_telecaster_wh.png"%}" alt="logo_telecaster">
 <div class="title_main">&nbsp;TeleCaster - Audio Web Live Recording</div>
 </div>
 
 {% block hardware %}
-
-{% if acpi.power_state == 0 %}
-
 
 <div class="hardware">
 <div class="title">Status</div>
@@ -51,10 +35,10 @@ formulaire.conference.selectedIndex=0;}
 <td><span style="{% if status.ip == 'localhost' %}color: red; font-weight: bold;{% else %}color: green;{% endif %}">{{ status.ip }}</span></td>
 </tr>
 <tr><td>Power</td><TD> : </TD>
-<td><span style="{% if status.power_state == 0 %}color: red; font-weight: bold;{% else %}color: green;{% endif %}">{{ status.power }}</span></td>
+<td><span style="{% if status.power_state == 0 %}color: red; font-weight: bold;{% else %}color: green;{% endif %}">{{ status.acpi_state }}</span></td>
 </tr>
 <tr><td>Battery charge</td><TD> : </TD>
-<td><span style="{% if status.batt_charge == 0 %}color: red; font-weight: bold;{% else %}color: green;{% endif %}">{{ status.batt_charge }}</span></td>
+<td><span style="{% if status.batt_charge == 0 %}color: red; font-weight: bold;{% else %}color: green;{% endif %}">{{ status.acpi_percent }}</span></td>
 </tr>
 <tr><td>Temp core 1</td><TD> : </TD><td>{{ status.temperature }} </td></tr>
 <tr><td>JACK audio server</td><TD> : </TD>
@@ -68,14 +52,26 @@ formulaire.conference.selectedIndex=0;}
 </table>
 </div>
 </div>
+{% endblock hardware %}
 
 {% block content %}
 {% endblock content %}
 
 {% block footer %}
-<div class=\"colophon\">TeleCaster "+self.version+" &copy; <span>{% year %}</span>&nbsp;<a href=\"http://parisson.com\">Parisson SARL</a>. Tous droits r&eacute;serv&eacute;s.
+<div class="tools">
+    <div class="buttons">
+    <button type="submit" class="positive"><img src="{% url telecaster-images "arrow_refresh.png" %}" alt="">Refresh</button>
+    <button type="submit" name="action" value="start" class="negative"><img src="{% url telecaster-images "stop.png" %}" alt="">Record</button>
+    <a href="http://{{ status.ip }}:{{ station.port }}/{{ station.mount_point }}"><img src="{% url telecaster-images "control_play_blue.png" %}" alt="">Play Live</a>
+    <a href="/archives/"><img src="{% url telecaster-images "folder_go.png" %}" alt="">Archives</a>
+    <a href="/trash/"><img src="{% url telecaster-images "bin.png" %}" alt="">Trash</a>
+    </div>
 </div>
+
+<div class="colophon">TeleCaster 0.6 &copy; <span>2011</span>&nbsp;<a href="http://parisson.com">Parisson SARL</a>. {% trans "All rights reserved" %}</div>
+{% endblock footer %}
 
 </div>
 </BODY>
 </HTML>
+

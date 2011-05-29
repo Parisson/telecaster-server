@@ -1,4 +1,4 @@
-{% extends "/telecaster/base.html" %}
+{% extends "telecaster/base.html" %}
 
 {% block content %}
 
@@ -7,7 +7,7 @@
 
 <table class="form">
     <tr><td colspan="2">{% for error in form.non_field_errors %}<li class="error">{{ error }}</li>{% endfor %}</td></tr>
-    {% for field in form %}
+    {% for field in station %}
     <tr>
         <tr><td class="error">{{ field.errors }}</td></tr>
         <td>{{ field.label_tag }}:</td>
@@ -16,15 +16,6 @@
     {% endfor %}
 </table>
 
-<div class="tools">
-    <div class="buttons">
-    <button type="submit" class="positive"><img src="img/arrow_refresh.png" alt="">Refresh</button>
-    <button type="submit" name="action" value="start" class="negative"><img src="img/stop.png" alt="">Record</button>
-    <a href="http://"+self.ip+":"+self.port+"/"+self.mount_point+""><img src="img/control_play_blue.png" alt="">Play Live</a>
-    <a href="/archives/"><img src="img/folder_go.png" alt="">Archives</a>
-    <a href="/trash/"><img src="img/bin.png" alt="">Trash</a>
-    </div>
-</div>
 
 </div>
 </form>

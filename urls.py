@@ -47,18 +47,18 @@ web_view = WebView(settings.TELECASTER_CONF)
 htdocs = os.path.dirname(__file__) + '/htdocs'
 
 urlpatterns = patterns('',
-    url(r'^', web_view.index, name="telecaster-index"),
+    url(r'^$', web_view.index, name="telecaster-index"),
     
     # CSS+Images (FIXME: for developement only)
     url(r'^css/(?P<path>.*)$', 'django.views.static.serve', 
         {'document_root': htdocs+'/css'},
-        name="telemeta-css"),
+        name="telecaster-css"),
     url(r'images/(?P<path>.*)$', 'django.views.static.serve', 
         {'document_root': htdocs+'/images'},
-        name="telemeta-images"),
+        name="telecaster-images"),
     url(r'^js/(?P<path>.*)$', 'django.views.static.serve', 
         {'document_root': htdocs+'/js'},
-        name="telemeta-js"),
+        name="telecaster-js"),
     
     # JSON RPC
     url(r'^json/$', jsonrpc_site.dispatch, name='jsonrpc_mountpoint'),

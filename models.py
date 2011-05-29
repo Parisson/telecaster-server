@@ -138,35 +138,30 @@ class Station(Model):
         self.date = datetime.datetime.now().strftime("%Y")
         self.time = datetime.datetime.now().strftime("%x-%X")
         self.time_txt = self.time.replace('/','_').replace(':','_').replace(' ','_')
-        self.conf = conf
-
-        self.conf = self.conf['telecaster']
         self.user = pwd.getpwuid(os.getuid())[0]
         self.user_dir = '/home' + os.sep + self.user + os.sep + '.telecaster'
         self.rec_dir = self.conf['media']['rec_dir']
         self.deefuzzer_default_conf_file = self.conf['deefuzzer']['conf']
         self.deefuzzer_user_file = self.user_dir + os.sep + 'deefuzzer.xml'
         self.bitrate = self.conf['media']['bitrate']
-        self.dict['Bitrate'] = str(self.bitrate) + ' kbps'
         self.record = str_to_bool(self.conf['media']['record'])
         self.rec_dir = self.conf['media']['rec_dir']
         self.play_dir = self.conf['media']['play_dir']
         self.ogg_quality = self.conf['media']['ogg_quality']
         self.format = self.conf['media']['format']
         self.channels = int(self.conf['media']['channels'])
-        self.description = [self.title, self.department, self.conference, self.session, self.professor, self.comment]
-        self.server_name = [self.title, self.department, self.conference]
+        self.description = [self.organization.name, self.conference.department.name, self.conference.title, self.session.name, self.professor.name, self.comment]
+        self.server_name = [self.organization.name, self.conference.department.name, self.conference.title]
         self.ServerDescription = clean_string('-'.join(self.description))
         self.ServerName = clean_string('_-_'.join(self.server_name))
-        self.mount_point = self.ServerName
+        self.mount_point = self.ServerName + '.' + self.format
         self.filename = clean_string('_-_'.join(self.description[1:])) + '-' + self.time_txt + '.' + self.format
-        self.output_dir = self.rec_dir + os.sep + self.date + os.sep + self.department
+        self.output_dir = self.rec_dir + os.sep + self.date + os.sep + self.conference.department.name
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
-        self.odd_pid = get_pid('^edcast_jack', self.uid)
         self.deefuzzer_pid = get_pid('/usr/bin/deefuzzer '+self.deefuzzer_user_file, self.uid)
-        self.new_title = clean_string('-'.join(self.server_name)+'-'+self.session+'-'+self.professor+'-'+self.comment)
-        self.short_title = clean_string('-'.join(self.conference)+'-'+self.session+'-'+self.professor+'-'+self.comment)
+        self.new_title = clean_string('-'.join(self.server_name)+'-'+self.session.name+'-'+self.professor.name+'-'+self.comment)
+        self.short_title = clean_string('-'.join(self.conference.title)+'-'+self.session.name+'-'+self.professor.name+'-'+self.comment)
         self.genre = self.conf['infos']['genre']
         self.encoder = 'TeleCaster by Parisson'
 
@@ -244,7 +239,7 @@ class Station(Model):
 
     def mp3_convert(self):
         os.system('oggdec -o - '+ self.file_dir+os.sep+self.filename+' | lame -S -m m -h -b '+ self.bitrate + \
-            ' --add-id3v2 --tt "'+ self.new_title + '" --ta "'+self.professor+'" --tl "'+self.title+'" --ty "'+self.date+ \
+            ' --add-id3v2 --tt "'+ self.new_title + '" --ta "'+self.professor+'" --tl "'+self.organization+'" --ty "'+self.date+ \
             '" --tg "'+self.genre+'" - ' + self.file_dir+os.sep+self.ServerDescription + '.mp3 &')
 
     def write_tags_ogg(self):
@@ -253,10 +248,10 @@ class Station(Model):
             audio = OggVorbis(file)
             audio['TITLE'] = self.new_title.decode('utf8')
             audio['ARTIST'] = self.professor.decode('utf8')
-            audio['ALBUM'] = self.title.decode('utf8')
+            audio['ALBUM'] = self.organization.decode('utf8')
             audio['DATE'] = self.date.decode('utf8')
             audio['GENRE'] = self.genre.decode('utf8')
-            audio['SOURCE'] = self.title.decode('utf8')
+            audio['SOURCE'] = self.organization.decode('utf8')
             audio['ENCODER'] = self.encoder.decode('utf8')
             audio['COMMENT'] = self.comment.decode('utf8')
             audio.save()
@@ -271,7 +266,7 @@ class Station(Model):
             #tag = tags.__dict__['ARTIST']
             audio.add(TP1(encoding=3, text=self.professor.decode('utf8')))
             #tag = tags.__dict__['ALBUM']
-            audio.add(TAL(encoding=3, text=self.title.decode('utf8')))
+            audio.add(TAL(encoding=3, text=self.organization.decode('utf8')))
             #tag = tags.__dict__['DATE']
             audio.add(TDRC(encoding=3, text=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             #tag = tags.__dict__['GENRE']
