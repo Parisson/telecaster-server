@@ -125,11 +125,18 @@ class Station(Model):
     professor         = ForeignKey('Professor', related_name='stations', verbose_name='professor')
     comment           = TextField(_('comment'))
     started           = BooleanField(_('started'))
-    datetime_start    = DateTimeField(_('datetime_start'), auto_now_add=True)
-    datetime_stop     = DateTimeField(_('datetime_stop'))
+    datetime_start    = DateTimeField(_('time_start'))
+    datetime_stop     = DateTimeField(_('time_stop'))
 
     class Meta:
         db_table = app_label + '_' + 'station'
+    
+    def __str__(self):
+        return ' - '.join(self.description) + ' - ' + str(self.datetime_start) + ' > ' + str(self.datetime_stop)
+    
+    @property
+    def description(self):
+        return [self.organization.name, self.conference.department.name, self.conference.title, self.session.name, self.professor.name, self.comment]
     
     def set_conf(self, conf):
         self.conf = conf
@@ -150,7 +157,6 @@ class Station(Model):
         self.ogg_quality = self.conf['media']['ogg_quality']
         self.format = self.conf['media']['format']
         self.channels = int(self.conf['media']['channels'])
-        self.description = [self.organization.name, self.conference.department.name, self.conference.title, self.session.name, self.professor.name, self.comment]
         self.server_name = [self.organization.name, self.conference.department.name, self.conference.title]
         self.ServerDescription = clean_string('-'.join(self.description))
         self.ServerName = clean_string('_-_'.join(self.server_name))

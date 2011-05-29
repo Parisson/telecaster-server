@@ -41,6 +41,7 @@ class WebView(object):
     interfaces = ['eth0', 'eth1', 'eth2', 'eth0-eth2','eth3']
     acpi_states = {0: 'battery', 1: 'AC', 2: 'AC'}
     acpi = acpi.Acpi()
+    hidden_fields = ['started', 'datetime_start', 'datetime_stop']
     
     def __init__(self, conf_file):
         self.uid = os.getuid()
@@ -89,7 +90,8 @@ class WebView(object):
             else:
                 station = StationForm()
                 
-        return render(request, template, {'station': station, 'status': status})
+        return render(request, template, {'station': station, 'status': status, 
+                                'hidden_fields': self.hidden_fields})
             
     def get_hosts(self):
         ip = ''
