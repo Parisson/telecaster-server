@@ -1,0 +1,12 @@
+#!/bin/bash
+
+xrandrout="$(xrandr)"
+
+case $xrandrout in
+ *1024x600+0+0\ inverted\ \(* ) rotate=0; invert=0;;
+ *1024x600+0+0\ \(* ) rotate=2; invert=1;;
+esac
+
+xrandr -o $rotate
+xinput --set-prop 11 "Evdev Axis Inversion" $invert, $invert
+
