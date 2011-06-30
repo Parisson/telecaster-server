@@ -133,16 +133,21 @@ class Status(object):
         self.get_hosts()
     
     def to_dict(self):
-        status = {'acpi_state': self.acpi_states[self.acpi.charging_state()], 
-                  'acpi_percent': str(self.acpi.percent()), 
-                  'temperature': self.temperature, 
-                  'jack_state': self.jacking, 
-                  'url': self.url, 
-                  'ip': self.ip, 
-                  'url': self.url, 
-                  'casting': self.casting, 
-                  'writing': self.writing,    
+        status = {'acpi_state': {'class': 'default', 'value': self.acpi_states[self.acpi.charging_state()]}, 
+                  'acpi_percent': {'class': 'default', 'value': str(self.acpi.percent())}, 
+                  'temperature': {'class': 'default', 'value': self.temperature}, 
+                  'jack_state': {'class': 'default', 'value': self.jacking}, 
+                  'url': {'class': 'default', 'value': self.url}, 
+                  'ip': {'class': 'default', 'value': self.ip}, 
+                  'url': {'class': 'default', 'value': self.url}, 
+                  'casting': {'class': 'default', 'value': self.casting}, 
+                  'writing': {'class': 'default', 'value': self.writing},    
                   }
+                  
+        for key in status.keys():
+            if status[key]['value'] == False:
+                status[key]['class'] = 'warning'
+
         return status
         
     def get_hosts(self):
