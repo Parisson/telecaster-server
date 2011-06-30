@@ -59,7 +59,7 @@ class WebView(object):
         stations = Station.objects.filter(started=True)
         status = self.get_server_status()
         
-        if stations or (status['writing'] or status['casting']):
+        if stations or (status.writing or status.casting):
             template = 'telecaster/stop.html'
             # FIXME: manage multiple stations
             station = stations[0]
@@ -101,7 +101,7 @@ class WebView(object):
     def get_server_status(self):
         status = Status()
         status.update()
-        return status.to_dict()
+        return status
 
     @jsonrpc_method('telecaster.get_station_status')
     def get_station_status_json(request):
