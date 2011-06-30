@@ -38,9 +38,6 @@ def render(request, template, data = None, mimetype = None):
                               
 class WebView(object):
     
-    interfaces = ['eth0', 'eth1', 'eth2', 'eth0-eth2','eth3']
-    acpi_states = {0: 'battery', 1: 'AC', 2: 'AC'}
-    acpi = acpi.Acpi()
     hidden_fields = ['started', 'datetime_start', 'datetime_stop']
     
     def __init__(self, conf_file):
@@ -56,13 +53,14 @@ class WebView(object):
         self.log_file = self.conf['log']
         self.logger = Logger(self.log_file)
         self.url = self.conf['infos']['url']
+        self.status = Status(self.conf)
     
     def index(self, request):
-        self.get_ids()
+        status = self.get_status()
         stations = Station.objects.filter(started=True)
         status = self.get_status()
         
-        if stations or (self.writing or self.casting):
+        if stations or (status['writing'] or status['casting']):
             template = 'telecaster/stop.html'
             # FIXME: manage multiple stations
             station = stations[0]
@@ -90,9 +88,57 @@ class WebView(object):
             else:
                 station = StationForm()
                 
+        
         return render(request, template, {'station': station, 'status': status, 
                                 'hidden_fields': self.hidden_fields})
             
+
+    @jsonrpc_method('telecaster.get_status')
+    def get_status_json(request):
+        status = Status(self.conf)
+        status.update()
+        return status.to_dict()
+        
+    def get_status(self):
+        status = Status(self.conf)
+        status.update()
+        return status.to_dict()
+
+
+class Status(object):
+        
+    interfaces = ['eth0', 'eth1', 'eth2', 'eth0-eth2','eth3']
+    acpi_states = {0: 'battery', 1: 'battery', 2: 'AC'}
+    
+    def __init__(self, conf):
+        self.acpi = acpi.Acpi()
+        self.conf = conf
+        self.uid = os.getuid()
+        self.user = pwd.getpwuid(os.getuid())[0]
+        self.user_dir = '/home' + os.sep + self.user + os.sep + '.telecaster'
+        
+    def update(self):
+        self.acpi.update()
+        try:
+            self.temperature = self.acpi.temperature(0)
+        except:
+            self.temperature = 'N/A'
+        self.get_ids()
+        self.get_hosts()
+    
+    def to_dict(self):
+        status = {'acpi_state': self.acpi_states[self.acpi.charging_state()], 
+                  'acpi_percent': str(self.acpi.percent()), 
+                  'temperature': self.temperature, 
+                  'jack_state': self.jacking, 
+                  'url': self.url, 
+                  'ip': self.ip, 
+                  'url': self.url, 
+                  'casting': self.casting, 
+                  'writing': self.writing,    
+                  }
+        return status
+        
     def get_hosts(self):
         ip = ''
         for interface in self.interfaces:
@@ -107,7 +153,7 @@ class WebView(object):
             self.url = 'http://' + self.conf['infos']['url']
         else:
             self.url = 'http://' + self.ip
-           
+        
     def get_ids(self):  
         edcast_pid = get_pid('edcast_jack', self.uid)
         deefuzzer_pid = get_pid('/usr/bin/deefuzzer '+self.user_dir+os.sep+'deefuzzer.xml', self.uid)
@@ -117,21 +163,3 @@ class WebView(object):
         self.writing = edcast_pid != []
         self.casting = deefuzzer_pid != []
         self.jacking = jackd_pid != []
-    
-    @jsonrpc_method('telecaster.get_status')
-    def get_status(self):
-        self.get_hosts()
-        self.get_ids()
-        self.acpi.update()
-        status = {}
-        status['acpi_state'] = self.acpi_states[self.acpi.charging_state()]
-        status['acpi_percent'] = str(self.acpi.percent())
-        #status['acpi_temperature'] = self.acpi.temperature(0)
-        status['jack_state'] = self.jacking
-        status['url'] = self.url
-        status['ip'] = self.ip
-        status['url'] = self.url
-        status['casting'] = self.casting
-        status['writing'] = self.writing
-        return status
-        
