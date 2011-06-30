@@ -140,7 +140,7 @@ class Status(object):
           {'id': 'jack_state', 'class': 'default', 'value': self.jacking, 'label': 'Jack server'}, 
           {'id': 'url', 'class': 'default', 'value': self.url, 'label': 'Name'}, 
           {'id': 'ip', 'class': 'default', 'value': self.ip, 'label': 'IP address'},  
-          {'id': 'encoder_state','class': 'default', 'value': self.url, 'label': 'Encoder'}, 
+          {'id': 'encoder_state','class': 'default', 'value': self.writing, 'label': 'Encoder'}, 
           {'id': 'casting', 'class': 'default', 'value': self.casting, 'label': 'Broadcasting'},  
           {'id': 'writing', 'class': 'default', 'value': self.writing, 'label': 'Recording'},  
           ]
