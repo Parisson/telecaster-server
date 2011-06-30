@@ -56,9 +56,8 @@ class WebView(object):
         self.status = Status()
     
     def index(self, request):
-        status = self.get_status()
         stations = Station.objects.filter(started=True)
-        status = self.get_status()
+        status = self.get_server_status()
         
         if stations or (status['writing'] or status['casting']):
             template = 'telecaster/stop.html'
@@ -90,21 +89,29 @@ class WebView(object):
                 
         
         return render(request, template, {'station': station, 'status': status, 
-                                'hidden_fields': self.hidden_fields})
+                                'hidden_fields': self.hidden_fields, })
             
 
-    @jsonrpc_method('telecaster.get_status')
-    def get_status_json(request):
+    @jsonrpc_method('telecaster.get_server_status')
+    def get_server_status_json(request):
         status = Status()
         status.update()
         return status.to_dict()
         
-    def get_status(self):
+    def get_server_status(self):
         status = Status()
         status.update()
         return status.to_dict()
 
-
+    @jsonrpc_method('telecaster.get_station_status')
+    def get_station_status_json(request):
+        stations = Station.objects.filter(started=True)
+        if stations:
+            station = stations[0].to_dict()
+        else:
+            station = {}
+        return station
+        
 class Status(object):
         
     interfaces = ['eth0', 'eth1', 'eth2', 'eth0-eth2','eth3']

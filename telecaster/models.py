@@ -135,6 +135,17 @@ class Station(Model):
     def __str__(self):
         return ' - '.join(self.description) + ' - ' + str(self.datetime_start) + ' > ' + str(self.datetime_stop)
     
+    def to_dict(self):
+        dict = {'organization': self.organization.name, 
+                'department': self.department.name, 
+                'conference': self.conference.title, 
+                'professor': self.professor.name, 
+                'session': self.session.name, 
+                'comment': self.comment, 
+                'started': str(self.started), 
+                }
+        return dict
+        
     @property
     def description(self):
         return [self.organization.name, self.conference.department.name, self.conference.title, self.session.name, self.professor.name, self.comment]
