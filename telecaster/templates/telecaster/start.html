@@ -1,0 +1,27 @@
+{% extends "telecaster/base.html" %}
+{% load telecaster_utils %}
+{% load i18n %}
+
+{% block content %}
+
+<form enctype="multipart/form-data" id="_startStationForm" method="post" action="" name="formulaire">{% csrf_token %}   
+<div class="main">
+
+<table class="form">
+    <tr><td colspan="2">{% for error in form.non_field_errors %}<li class="error">{{ error }}</li>{% endfor %}</td></tr>
+    {% for field in station %}
+    <tr>
+        {% if field.errors %}<tr><td class="error">{{ field.errors }}</td></tr>{% endif %}
+        {% if not field.html_name in hidden_fields %}
+         <td>{% trans field.label_tag %}:</td><td>{{ field }}</td>
+        {% else %}
+         <td>{{ field.label_tag.as_hidden }}</td><td>{{ field.as_hidden }}</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+
+</div>
+</form>
+
+{% endblock content %}

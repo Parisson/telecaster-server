@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Rotate Desktop
+Exec=~/bin/rotate_desktop
+Icon=preferences-desktop-rotate
+Type=Application
+Comment=Rotate Desktop for 180 degrees with the touchscreen
+GenericName=Rotate Desktop
+Categories=Utility;Accessibility;
+Terminal=false
+
