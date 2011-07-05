@@ -9,8 +9,30 @@
 <link href="{% url telecaster-css "telecaster.css" %}" rel="stylesheet" type="text/css">
 
 {% block javascript %}
-
-
+<script src="{% url telecaster-js "jquery-1.6.min.js" %}" type="text/javascript"></script>
+<script src="{% url telecaster-js "application.js" %}" type="text/javascript"></script>
+<script type="text/javascript">
+function server_status_callback(){
+    var j = json; //global variable
+    var d = _REFRESH_TIME_INTERVAL; //global variable
+    var refresh = function(){
+        var data = j({},"telecaster.get_server_status", function(data){
+            var res = data.result;
+            var doc = document;
+            var tblwrapper = doc.getElementById('server_status_table_wrapper');
+            var s = "<table class='hardware'><tbody>";
+            for(var i=0; i <res.length; i++){
+                var line = res[i];
+                s+= '<tr id="'+line.id+'"><td>'+line.label+'</td><td><span class="'+line.class+'">'+line.value+'</span></td></tr>';
+            }
+            tblwrapper.innerHTML = s+'</tbody></table>';
+        });
+    };
+    refresh();
+    setInterval(refresh,d);
+};
+server_status_callback();
+</script>
 {% endblock javascript %}
 
 </HEAD>
@@ -25,6 +47,7 @@
 
 <div class="hardware">
 <div class="title">Status</div>
+<div id="server_status_table_wrapper">
 <table class="hardware">
 <tr>
 <td>Name</td><TD> : </TD>
@@ -52,6 +75,7 @@
 </table>
 </div>
 </div>
+</div>
 {% endblock hardware %}
 
 {% block content %}
@@ -60,11 +84,11 @@
 {% block footer %}
 <div class="tools">
     <div class="buttons">
-    <button type="submit" class="positive"><img src="{% url telecaster-images "arrow_refresh.png" %}" alt="">Refresh</button>
-    <button type="submit" name="action" value="start" class="negative"><img src="{% url telecaster-images "stop.png" %}" alt="">Record</button>
-    <a href="http://{{ status.ip }}:{{ station.port }}/{{ station.mount_point }}"><img src="{% url telecaster-images "control_play_blue.png" %}" alt="">Play Live</a>
-    <a href="/archives/"><img src="{% url telecaster-images "folder_go.png" %}" alt="">Archives</a>
-    <a href="/trash/"><img src="{% url telecaster-images "bin.png" %}" alt="">Trash</a>
+    <button type="submit" class="button positive"><img src="{% url telecaster-images "arrow_refresh.png" %}" alt="">Refresh</button>
+    <button type="submit" name="action" value="start" class="button negative"><img src="{% url telecaster-images "stop.png" %}" alt="">Record</button>
+    <a class="button" href="http://{{ status.ip }}:{{ station.port }}/{{ station.mount_point }}"><img src="{% url telecaster-images "control_play_blue.png" %}" alt="">Play Live</a>
+    <a class="button" href="/archives/"><img src="{% url telecaster-images "folder_go.png" %}" alt="">Archives</a>
+    <a class="button" href="/trash/"><img src="{% url telecaster-images "bin.png" %}" alt="">Trash</a>
     </div>
 </div>
 

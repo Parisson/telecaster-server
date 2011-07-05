@@ -108,7 +108,7 @@ def get_pid(proc,uid):
             pid = proc.split(' ')[0]
             command = ' '.join(proc.split(' ')[1:])[:-1]
             pids.append(pid)
-    if len(pids) == 1:
+    if len(pids) < 1:
         return [] 
     else:
         return [pids[0]]

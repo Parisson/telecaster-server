@@ -98,5 +98,5 @@ INSTALLED_APPS = (
     'south',
 )
 
-TELECASTER_CONF = '/etc/telecaster/telecaster.xml'
+TELECASTER_CONF = '../conf/etc/telecaster/telecaster.xml'
 

@@ -2,19 +2,47 @@
 {% load telecaster_utils %}
 {% load i18n %}
 
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript">
+function station_status_callback(){
+    var j = json; //global variable
+    var d = _REFRESH_TIME_INTERVAL; //global variable
+    var refresh = function(){
+        var data = j({},"telecaster.get_station_status", function(data){
+            var res = data.result;
+            var doc = document;
+            var tblwrapper = doc.getElementById('station_status_table_wrapper');
+            var s = "<table class='form'><tbody>";
+            for(var i=0; i <res.length; i++){
+                var line = res[i];
+                s+= '<tr id="'+line.id+'"><td>'+line.label+'</td><td><span class="'+line.class+'">'+line.value+'</span></td></tr>';
+            }
+            tblwrapper.innerHTML = s+'</tbody></table>';
+        });
+    };
+    refresh();
+    setInterval(refresh,d);
+};
+station_status_callback();
+</script>
+{% endblock javascript %}
+
 {% block content %}
 
 <form enctype="multipart/form-data" id="_stopStationForm" method="post" action="" name="formulaire">{% csrf_token %}   
 <div class="main">
 
-<table class="form">
+    <div id="station_status_table_wrapper">
+        <!--<table class="form">
 <TR><TH align="left">{% trans "Organization" %}</TH><TD> : </TD><TD>{{ station.organization }}</TD></TR>
 <TR><TH align="left">{% trans "Department" %}</TH><TD> : </TD><TD>{{ station.conference.department }}</TD></TR>
 <TR><TH align="left">{% trans "Conference" %}</TH><TD> : </TD><TD>{{ station.conference }}</TD></TR>
 <TR><TH align="left">{% trans "Session" %}</TH><TD> : </TD><TD>{{ station.session }}</TD></TR>
 <TR><TH align="left">{% trans "Professor" %}</TH><TD> : </TD><TD>{{ station.professor }}</TD></TR>
 <TR><TH align="left">{% trans "Comment" %}</TH><TD> : </TD><TD>{{ station.comment }}</TD></TR>
-</table>
+        </table>-->
+    </div>
 </div>
 
 </form>

@@ -136,14 +136,14 @@ class Station(Model):
         return ' - '.join(self.description) + ' - ' + str(self.datetime_start) + ' > ' + str(self.datetime_stop)
     
     def to_dict(self):
-        dict = {'organization': self.organization.name, 
-                'department': self.department.name, 
-                'conference': self.conference.title, 
-                'professor': self.professor.name, 
-                'session': self.session.name, 
-                'comment': self.comment, 
-                'started': str(self.started), 
-                }
+        dict = [ {'id':'organization','value': self.organization.name, 'class':'', 'label':'Organization'},
+                {'id': 'department', 'value': self.department.name , 'class':'', 'label':'Departement'},
+                {'id' : 'conference', 'value': self.conference.title, 'class':'' , 'label': 'Conference'},
+                {'id': 'professor', 'value': self.professor.name, 'class':'' , 'label': 'Professor'},
+                {'id': 'session', 'value': self.session.name, 'class':'' , 'label': 'Session'},
+                {'id': 'comment', 'value': self.comment, 'class':'' , 'label': 'Comment'},
+                {'id': 'started', 'value': str(self.started), 'class':'' , 'label': 'Started'},
+                ]
         return dict
         
     @property
