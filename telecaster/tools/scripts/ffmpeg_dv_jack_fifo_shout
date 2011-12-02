@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+ start)
+   fifo=/tmp/video_fifo
+   if [ ! -e $fifo ]; then
+   mkfifo $fifo
+   fi
+
+   dir=/mnt/data1/video_tests
+   now=`date -R`
+
+   dvgrab -buffers 1 - | ffmpeg -f dv -i - -f jack -i ffmpeg -vcodec libtheora -s 480x320 -aspect 16:9 -acodec libvorbis -b 300k -f ogg -y $fifo -map 0.0 -map 1.0 &
+
+   sleep 5
+   jack_connect jack_rack:out_1 ffmpeg:input_1
+   jack_connect jack_rack:out_2 ffmpeg:input_2
+   #jack_connect jack_rack:out_1 ffmpeg:input_1
+   #jack_connect jack_rack:out_2 ffmpeg:input_2
+
+   sleep 1
+   cat $fifo | tee "$dir/Pre-Barreau_-_Augustins_-_Video_Live_-_$now.ogg" | oggfwd -d "pb_video_live" -g "Teaching"  -n "pb_video_live" localhost 8000 source2parisson /pb_video_live.ogg &
+   ;;
+ 
+ stop)
+   jack_disconnect jack_rack:out_1 ffmpeg:input_1
+   jack_disconnect jack_rack:out_2 ffmpeg:input_2
+   pkill ffmpeg
+   ;;
+esac
+
+
+
+
+

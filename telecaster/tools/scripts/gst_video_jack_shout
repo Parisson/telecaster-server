@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+ start)
+   dir=/home/$USER/trash
+   dat=`date '+%y-%m-%d-%H:%M:%S'`
+   file=$dir/video_test_$dat.ogg
+
+#   gst-launch-0.10 v4l2src device=/dev/video0 ! queue ! videorate ! video/x-raw-yuv,width=320 ! queue  ! theoraenc quality=60 ! queue ! muxout. jackaudiosrc connect=1 ! audioconvert ! audio/x-raw-int,rate=44100,channels=1,width=16 ! queue ! audioconvert ! vorbisenc ! queue ! muxout. oggmux name=muxout ! filesink location=$file sync=true &
+   
+    gst-launch-0.10 v4l2src ! queue ! videorate ! video/x-raw-yuv,fps=30,width=320 ! queue  ! theoraenc quality=60 ! queue ! muxout. jackaudiosrc connect=1 ! audioconvert ! audio/x-raw-int,rate=44100,channels=1,width=16 ! queue ! audioconvert ! vorbisenc ! queue ! muxout. oggmux name=muxout ! shout2send mount=/telecaster_live_video.ogg port=8000 password=source2parisson ip=127.0.0.1 &
+   
+#    
+#    sleep 10
+#    cat $file | oggfwd -d "TeleCaster Live Video Services" -g "Vocal"  -n "TeleCaster Live Video" localhost 8000 source2parisson /telecaster_live_video.ogg &
+   ;;
+ 
+ stop)
+   pkill -9 oggfwd
+   pkill -9 gst-launch-0.10
+   ;;
+esac
