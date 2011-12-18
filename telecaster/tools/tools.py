@@ -75,6 +75,9 @@ def get_ip_address(ifname):
         struct.pack('256s', ifname[:15])
     )[20:24])
 
+def get_hostname():
+    return socket.gethostname()
+
 def get_lines(file):
     """Get lines from a file"""
     fic = open(file,'r')
@@ -108,11 +111,11 @@ def get_pid(proc,uid):
             pid = proc.split(' ')[0]
             command = ' '.join(proc.split(' ')[1:])[:-1]
             pids.append(pid)
-    if len(pids) < 1:
-        return [] 
+    if len(pids) <= 1:
+        return []
     else:
         return [pids[0]]
-        
+
 def get_params_from_lock(lock_file):
     lockfile = open(lock_file,'r')
     params = lockfile.readline()

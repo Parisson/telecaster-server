@@ -28,8 +28,13 @@ function server_status_callback(){
             tblwrapper.innerHTML = s+'</tbody></table>';
         });
     };
-    refresh();
-    setInterval(refresh,d);
+    try{
+		refresh();
+		setInterval(refresh,d);
+	}
+	catch(err){
+		setInterval(refresh,d);
+    }
 };
 server_status_callback();
 </script>
@@ -84,8 +89,8 @@ server_status_callback();
 {% block footer %}
 <div class="tools">
     <div class="buttons">
-    <button type="submit" class="button positive"><img src="{% url telecaster-images "arrow_refresh.png" %}" alt="">Refresh</button>
-    <button type="submit" name="action" value="start" class="button negative"><img src="{% url telecaster-images "stop.png" %}" alt="">Record</button>
+    <button type="submit" class="button"><img src="{% url telecaster-images "arrow_refresh.png" %}" alt="">Refresh</button>
+    <button type="submit" name="action" value="start" class="button"><img src="{% url telecaster-images "stop.png" %}" alt="">Record</button>
     <a class="button" href="http://{{ status.ip }}:{{ station.port }}/{{ station.mount_point }}"><img src="{% url telecaster-images "control_play_blue.png" %}" alt="">Play Live</a>
     <a class="button" href="/archives/"><img src="{% url telecaster-images "folder_go.png" %}" alt="">Archives</a>
     <a class="button" href="/trash/"><img src="{% url telecaster-images "bin.png" %}" alt="">Trash</a>

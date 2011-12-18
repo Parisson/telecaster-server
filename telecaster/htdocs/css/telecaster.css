@@ -105,7 +105,7 @@ table.hardware {
 
 .buttons a, .buttons button{
     display:inline-block;
-    height: 20px;
+    height: 33px;
     float:left;
     margin:0 7px 0 0;
     background-color:#f5f5f5;
@@ -124,6 +124,7 @@ table.hardware {
 }
 .buttons button{
     width:auto;
+    height: 33px;
     overflow:visible;
     padding:4px 10px 3px 7px; /* IE6 */
 }

@@ -35,11 +35,11 @@ from django.core.exceptions import ObjectDoesNotExist
 def render(request, template, data = None, mimetype = None):
     return render_to_response(template, data, context_instance=RequestContext(request),
                               mimetype=mimetype)
-                              
+
 class WebView(object):
-    
+
     hidden_fields = ['started', 'datetime_start', 'datetime_stop']
-    
+
     def __init__(self, conf_file):
         self.uid = os.getuid()
         self.user = pwd.getpwuid(os.getuid())[0]
@@ -54,11 +54,11 @@ class WebView(object):
         self.logger = Logger(self.log_file)
         self.url = self.conf['infos']['url']
         self.status = Status()
-    
+
     def index(self, request):
         stations = Station.objects.filter(started=True)
         status = self.get_server_status()
-        
+
         if stations or (status.writing or status.casting):
             template = 'telecaster/stop.html'
             # FIXME: manage multiple stations
@@ -70,7 +70,7 @@ class WebView(object):
                 time.sleep(2)
                 self.logger.write_info('stop')
                 return HttpResponseRedirect('/')
-            
+
         else:
             template = 'telecaster/start.html'
             if request.method == 'POST':
@@ -86,18 +86,18 @@ class WebView(object):
                     return HttpResponseRedirect('/')
             else:
                 station = StationForm()
-                
-        
-        return render(request, template, {'station': station, 'status': status, 
+
+
+        return render(request, template, {'station': station, 'status': status,
                                 'hidden_fields': self.hidden_fields, })
-            
+
 
     @jsonrpc_method('telecaster.get_server_status')
     def get_server_status_json(request):
         status = Status()
         status.update()
         return status.to_dict()
-        
+
     def get_server_status(self):
         status = Status()
         status.update()
@@ -111,18 +111,18 @@ class WebView(object):
         else:
             station = {}
         return station
-        
+
 class Status(object):
-        
+
     interfaces = ['eth0', 'eth1', 'eth2', 'eth0-eth2','eth3']
     acpi_states = {0: 'battery', 1: 'battery', 2: 'AC'}
-    
+
     def __init__(self):
         self.acpi = acpi.Acpi()
         self.uid = os.getuid()
         self.user = pwd.getpwuid(os.getuid())[0]
         self.user_dir = '/home' + os.sep + self.user + os.sep + '.telecaster'
-        
+
     def update(self):
         self.acpi.update()
         try:
@@ -131,26 +131,26 @@ class Status(object):
             self.temperature = 'N/A'
         self.get_ids()
         self.get_hosts()
-    
+
     def to_dict(self):
         status = [
-          {'id': 'acpi_state','class': 'default', 'value': self.acpi_states[self.acpi.charging_state()], 'label': 'Power'},  
-          {'id': 'acpi_percent', 'class': 'default', 'value': str(self.acpi.percent()), 'label': 'Battery Charge'}, 
-          {'id': 'temperature', 'class': 'default', 'value': self.temperature, 'label': 'Temperature'}, 
-          {'id': 'jack_state', 'class': 'default', 'value': self.jacking, 'label': 'Jack server'}, 
-          {'id': 'url', 'class': 'default', 'value': self.url, 'label': 'Name'}, 
-          {'id': 'ip', 'class': 'default', 'value': self.ip, 'label': 'IP address'},  
-          {'id': 'encoder_state','class': 'default', 'value': self.writing, 'label': 'Encoder'}, 
-          {'id': 'casting', 'class': 'default', 'value': self.casting, 'label': 'Broadcasting'},  
-          {'id': 'writing', 'class': 'default', 'value': self.writing, 'label': 'Recording'},  
+          {'id': 'acpi_state','class': 'default', 'value': self.acpi_states[self.acpi.charging_state()], 'label': 'Power'},
+          {'id': 'acpi_percent', 'class': 'default', 'value': str(self.acpi.percent()), 'label': 'Battery Charge'},
+          {'id': 'temperature', 'class': 'default', 'value': self.temperature, 'label': 'Temperature'},
+          {'id': 'jack_state', 'class': 'default', 'value': self.jacking, 'label': 'Jack server'},
+          {'id': 'name', 'class': 'default', 'value': self.name, 'label': 'Name'},
+          {'id': 'ip', 'class': 'default', 'value': self.ip, 'label': 'IP address'},
+          {'id': 'encoder_state','class': 'default', 'value': self.writing, 'label': 'Encoder'},
+          {'id': 'casting', 'class': 'default', 'value': self.casting, 'label': 'Broadcasting'},
+          {'id': 'writing', 'class': 'default', 'value': self.writing, 'label': 'Recording'},
           ]
-                  
+
         for stat in status:
             if stat['value'] == False:
                 stat['class'] = 'warning'
 
         return status
-        
+
     def get_hosts(self):
         ip = ''
         for interface in self.interfaces:
@@ -160,10 +160,11 @@ class Status(object):
                     self.ip = ip
                 break
             except:
-                self.ip = 'localhost'
+                self.ip = '127.0.0.1'
         self.url = 'http://' + self.ip
-        
-    def get_ids(self):  
+        self.name = get_hostname()
+
+    def get_ids(self):
         edcast_pid = get_pid('edcast_jack', self.uid)
         deefuzzer_pid = get_pid('/usr/bin/deefuzzer '+self.user_dir+os.sep+'deefuzzer.xml', self.uid)
         jackd_pid = get_pid('jackd', self.uid)
