@@ -85,8 +85,8 @@
         </rss>
         <twitter>
             <mode>0</mode>
-            <user>my_twitter_user</user>
-            <pass>my_twitter_password</pass>
+            <key>my_twitter_user</key>
+            <secret>my_twitter_password</secret>
             <tags>bla bla</tags>
         </twitter>
         <jingles>

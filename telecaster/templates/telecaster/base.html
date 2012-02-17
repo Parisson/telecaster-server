@@ -32,8 +32,8 @@ function server_status_callback(){
 		refresh();
 		setInterval(refresh,d);
 	}
-	catch(err){
-		setInterval(refresh,d);
+	finally{
+
     }
 };
 server_status_callback();

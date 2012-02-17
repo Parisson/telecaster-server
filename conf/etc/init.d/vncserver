@@ -49,8 +49,10 @@ case "$1" in
 	        log_begin_msg "Stopping vncserver audio server:" "vncserver"
                 pid=`cat $PIDFILE | sed -e 's/\s.*//'|head -n1` 
 		if [ ! pid = '' ]; then
-			su -c "pkill -9 -f \"deefuzzer /etc/telecaster/deefuzzer_safe.xml\" "
-			su -c "pkill -9 edcast_jack" $USER
+			su -c "pkill -9 -f \"deefuzzer /etc/telecaster/deefuzzer_audio_safe.xml\" "
+			su -c "pkill -9 -f \"deefuzzer /etc/telecaster/deefuzzer_video_safe.xml\" "
+                	su -c "pkill -9 edcast_jack" $USER
+                        su -c "pkill -9 gst-launch-0.10" $USER
 			sleep 1
                         su -c "vncserver -kill :$PORT" $USER
         		log_end_msg 0

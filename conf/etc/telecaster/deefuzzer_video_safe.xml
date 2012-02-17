@@ -1,0 +1,62 @@
+<deefuzzer>
+    <log>/var/log/deefuzzer/telecaster_video_safe.log</log>
+    <m3u>/var/www/m3u/telecaster_video_safe.m3u</m3u>
+
+    <station>
+        <control>
+            <mode>0</mode>
+            <port>1235</port>
+        </control>
+        <relay>
+            <url>http://127.0.0.1:9000/</url>
+            <mode>1</mode>
+            <author>TeleCaster</author>
+        </relay>
+        <media>
+            <shuffle>0</shuffle>
+            <format>webm</format>
+            <voices>1</voices>
+            <ogg_quality>4</ogg_quality>
+            <samplerate>48000</samplerate>
+            <bitrate>64</bitrate>
+            <dir>/home/telecaster/media/webm</dir>
+        </media>
+        <twitter>
+            <secret>4egZs1dSM37XVY8zXa016Yueku2fleXF2bx8k25V4</secret>
+            <mode>0</mode>
+            <key>76728330-OjKgbHtn4II86Ad7pNUGEzfNAkGTW5Wvw38qUmLE</key>
+            <tags>bla bla</tags>
+        </twitter>
+        <server>
+            <type>stream-m</type>
+            <host>127.0.0.1</host>
+            <port>8080</port>
+            <sourcepassword>source2parisson</sourcepassword>
+            <public>0</public>
+        </server>
+        <record>
+            <mode>1</mode>
+            <dir>/home/telecaster/trash/webm</dir>
+        </record>
+        <jingles>
+            <shuffle>1</shuffle>
+            <mode>0</mode>
+            <dir>/path/to/jingles</dir>
+        </jingles>
+        <infos>
+            <url>http://parisson.com.com</url>
+            <genre>Vocal</genre>
+            <name>safe</name>
+            <short_name>safe</short_name>
+            <description>TeleCaster safe video stream</description>
+        </infos>
+        <rss>
+            <enclosure>0</enclosure>
+            <dir>/var/www/rss</dir>
+            <media_url>http://my.domain.com/rss/</media_url>
+        </rss>
+    </station>
+
+</deefuzzer>
+
+

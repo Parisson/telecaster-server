@@ -1,29 +1,30 @@
 <deefuzzer>
-    <log>/var/log/deefuzzer/telecaster.log</log>
-    <m3u>/var/www/m3u/telecaster.m3u</m3u>
+    <log>/var/log/deefuzzer/telecaster_safe.log</log>
+    <m3u>/var/www/m3u/telecaster_safe.m3u</m3u>
 
     <station>
         <infos>
-            <short_name>telecaster_local</short_name>
-            <name>TeleCaster Localhost</name>
-            <description>TeleCaster local audio streaming</description>
+            <short_name>telecaster_live_safe</short_name>
+            <name>TeleCaster Localhost Live Safe Recorder</name>
+            <description>TeleCaster safe local live audio record</description>
             <url>http://parisson.com</url>
             <genre>Vocal</genre>
         </infos>
         <server>
+            <type>icecast</type>
             <host>127.0.0.1</host>
             <port>8000</port>
             <sourcepassword>source2parisson</sourcepassword>
             <public>0</public>
         </server>
         <media>
-            <dir>/path/to/ogg</dir>
-            <format>ogg</format>
-            <bitrate>64</bitrate>
-            <ogg_quality>4</ogg_quality>
+            <dir>/home/telecaster/media/mp3</dir>
+            <format>mp3</format>
+            <bitrate>96</bitrate>
+            <ogg_quality>7</ogg_quality>
             <samplerate>44100</samplerate>
-            <voices>1</voices>
-            <shuffle>0</shuffle>
+            <voices>2</voices>
+            <shuffle>1</shuffle>
         </media>
         <rss>
             <dir>/var/www/rss</dir>
@@ -46,38 +47,38 @@
         </control>
         <relay>
             <mode>1</mode>
-            <url>http://127.0.0.1:8000/telecaster_live.ogg</url>
+            <url>http://127.0.0.1:8000/telecaster_live.mp3</url>
             <author>Parisson</author>
         </relay>
         <record>
             <mode>1</mode>
-            <dir>/path/to/archives</dir>
+            <dir>/home/telecaster/trash</dir>
         </record>
     </station>
 
-
     <station>
         <infos>
-            <short_name>telecaster</short_name>
-            <name>TeleCaster Remote</name>
-            <description>TeleCaster Remote</description>
+            <short_name>telecaster_live_safe</short_name>
+            <name>TeleCaster Localhost Live Safe Recorder</name>
+            <description>TeleCaster safe local live audio record</description>
             <url>http://parisson.com</url>
-            <genre>School</genre>
+            <genre>Vocal</genre>
         </infos>
         <server>
-            <host>stream.parisson.com</host>
+            <type>icecast</type>
+            <host>parisson.com</host>
             <port>8000</port>
             <sourcepassword>source2parisson</sourcepassword>
             <public>0</public>
         </server>
         <media>
-            <dir>/path/to/ogg</dir>
-            <format>ogg</format>
+            <dir>/home/telecaster/media/mp3</dir>
+            <format>mp3</format>
             <bitrate>96</bitrate>
-            <ogg_quality>4</ogg_quality>
+            <ogg_quality>7</ogg_quality>
             <samplerate>44100</samplerate>
-            <voices>1</voices>
-            <shuffle>0</shuffle>
+            <voices>2</voices>
+            <shuffle>1</shuffle>
         </media>
         <rss>
             <dir>/var/www/rss</dir>
@@ -95,19 +96,20 @@
             <shuffle>1</shuffle>
         </jingles>
         <control>
-            <mode>0</mode>
+            <mode>1</mode>
             <port>1235</port>
         </control>
         <relay>
             <mode>1</mode>
-            <url>http://127.0.0.1:8000/telecaster_live.ogg</url>
+            <url>http://127.0.0.1:8000/telecaster_live.mp3</url>
             <author>Parisson</author>
         </relay>
         <record>
             <mode>0</mode>
-            <dir>/path/to/archives</dir>
+            <dir>/home/telecaster/trash</dir>
         </record>
     </station>
+
 
 </deefuzzer>
 

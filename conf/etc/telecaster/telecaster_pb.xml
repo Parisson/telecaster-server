@@ -3,22 +3,22 @@
         <short_name>Pre-Barreau</short_name>
         <name>Pre-Barreau</name>
         <description>La preparation au Barreau de Paris</description>
-        <url>telecaster-04.parisson.com</url>
+        <url>augustins.pre-barreau.com</url>
         <genre>Vocal</genre>
     </infos>
-    <log>/tmp/telecaster.log</log>
+    <log>/var/log/telecaster/telecaster.log</log>
     <deefuzzer>
 	<conf>/etc/telecaster/deefuzzer.xml</conf>
     </deefuzzer>
     <media>
         <record>true</record>
-        <play_dir>/home/prebarreau/media</play_dir>
-        <rec_dir>/home/prebarreau/archives</rec_dir>
+        <play_dir>/home/pre-barreau/media/mp3</play_dir>
+        <rec_dir>/home/pre-barreau/archives</rec_dir>
         <format>mp3</format>
         <bitrate>96</bitrate>
         <channels>1</channels>
         <ogg_quality>3</ogg_quality>
-        <samplerate>44100</samplerate>
+        <samplerate>48000</samplerate>
     </media>
     <jack>
         <input>
@@ -26,7 +26,7 @@
         </input>
     </jack>
 
-<department>
+    <department>
         <name>CRFPA</name>
         <conferences>
           <conference>
@@ -128,7 +128,7 @@
           <conference>
             <name>Oral-Procedures_communautaires</name>
           </conference>
-	 <conference>
+         <conference>
             <name>Oral-Voies_d_ex</name>
           </conference>
           <conference>
@@ -136,6 +136,9 @@
           </conference>
           <conference>
             <name>Oral-Finances_publiques</name>
+          </conference>
+          <conference>
+            <name>Conference-actualisation-septembre</name>
           </conference>
           <conference>
             <name>TEST</name>
@@ -327,6 +330,7 @@
         <comment><text>13e_sem</text></comment>
         <comment><text>14e_sem</text></comment>
         <comment><text>15e_sem</text></comment>
-        <comment><text>16e_sem</text></comment>       
+        <comment><text>16e_sem</text></comment>
+       
     
 </telecaster>

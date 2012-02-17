@@ -1,0 +1,329 @@
+<deefuzzer>
+    <log>/var/log/deefuzzer/telecaster.log</log>
+    <m3u>/var/www/m3u/telecaster.m3u</m3u>
+
+    <station>
+        <infos>
+            <short_name>telecaster_local</short_name>
+            <name>TeleCaster Localhost</name>
+            <description>TeleCaster local audio streaming</description>
+            <url>http://parisson.com</url>
+            <genre>Vocal</genre>
+        </infos>
+        <server>
+            <host>127.0.0.1</host>
+            <port>8000</port>
+            <sourcepassword>source2parisson</sourcepassword>
+            <public>0</public>
+        </server>
+        <media>
+            <dir>/path/to/ogg</dir>
+            <format>ogg</format>
+            <bitrate>64</bitrate>
+            <ogg_quality>4</ogg_quality>
+            <samplerate>44100</samplerate>
+            <voices>1</voices>
+            <shuffle>0</shuffle>
+        </media>
+        <rss>
+            <dir>/var/www/rss</dir>
+            <enclosure>0</enclosure>
+        </rss>
+        <twitter>
+            <mode>0</mode>
+            <key>76728330-OjKgbHtn4II86Ad7pNUGEzfNAkGTW5Wvw38qUmLE</key>
+            <secret>4egZs1dSM37XVY8zXa016Yueku2fleXF2bx8k25V4</secret>
+            <tags>bla bla</tags>
+        </twitter>
+        <jingles>
+            <mode>0</mode>
+            <dir>/path/to/jingles</dir>
+            <shuffle>1</shuffle>
+        </jingles>
+        <control>
+            <mode>1</mode>
+            <port>1234</port>
+        </control>
+        <relay>
+            <mode>1</mode>
+            <url>http://127.0.0.1:8000/telecaster_live.ogg</url>
+            <author>Parisson</author>
+        </relay>
+        <record>
+            <mode>1</mode>
+            <dir>/path/to/archives</dir>
+        </record>
+    </station>
+
+
+    <station>
+        <infos>
+            <short_name>telecaster</short_name>
+            <name>TeleCaster Remote</name>
+            <description>TeleCaster Remote</description>
+            <url>http://parisson.com</url>
+            <genre>School</genre>
+        </infos>
+        <server>
+            <host>stream.parisson.com</host>
+            <port>8000</port>
+            <sourcepassword>source2parisson</sourcepassword>
+            <public>0</public>
+        </server>
+        <media>
+            <dir>/path/to/ogg</dir>
+            <format>ogg</format>
+            <bitrate>96</bitrate>
+            <ogg_quality>4</ogg_quality>
+            <samplerate>44100</samplerate>
+            <voices>1</voices>
+            <shuffle>0</shuffle>
+        </media>
+        <rss>
+            <dir>/var/www/rss</dir>
+            <enclosure>0</enclosure>
+        </rss>
+        <twitter>
+            <mode>0</mode>
+            <key>76728330-OjKgbHtn4II86Ad7pNUGEzfNAkGTW5Wvw38qUmLE</key>
+            <secret>4egZs1dSM37XVY8zXa016Yueku2fleXF2bx8k25V4</secret>
+            <tags>bla bla</tags>
+        </twitter>
+        <jingles>
+            <mode>0</mode>
+            <dir>/path/to/jingles</dir>
+            <shuffle>1</shuffle>
+        </jingles>
+        <control>
+            <mode>0</mode>
+            <port>1235</port>
+        </control>
+        <relay>
+            <mode>1</mode>
+            <url>http://127.0.0.1:8000/telecaster_live.ogg</url>
+            <author>Parisson</author>
+        </relay>
+        <record>
+            <mode>0</mode>
+            <dir>/path/to/archives</dir>
+        </record>
+    </station>
+
+
+    <station>
+        <infos>
+            <short_name>telecaster</short_name>
+            <name>TeleCaster Remote</name>
+            <description>TeleCaster Remote</description>
+            <url>http://parisson.com</url>
+            <genre>School</genre>
+        </infos>
+        <server>
+            <host>stream.parisson.com</host>
+            <port>8000</port>
+            <sourcepassword>source2parisson</sourcepassword>
+            <public>0</public>
+        </server>
+        <media>
+            <dir>/path/to/ogg</dir>
+            <format>ogg</format>
+            <bitrate>96</bitrate>
+            <ogg_quality>4</ogg_quality>
+            <samplerate>44100</samplerate>
+            <voices>1</voices>
+            <shuffle>0</shuffle>
+        </media>
+        <rss>
+            <dir>/var/www/rss</dir>
+            <enclosure>0</enclosure>
+        </rss>
+        <twitter>
+            <mode>0</mode>
+            <key>76728330-OjKgbHtn4II86Ad7pNUGEzfNAkGTW5Wvw38qUmLE</key>
+            <secret>4egZs1dSM37XVY8zXa016Yueku2fleXF2bx8k25V4</secret>
+            <tags>bla bla</tags>
+        </twitter>
+        <jingles>
+            <mode>0</mode>
+            <dir>/path/to/jingles</dir>
+            <shuffle>1</shuffle>
+        </jingles>
+        <control>
+            <mode>0</mode>
+            <port>1235</port>
+        </control>
+        <relay>
+            <mode>1</mode>
+            <url>http://127.0.0.1:8000/telecaster_live.ogg</url>
+            <author>Parisson</author>
+        </relay>
+        <record>
+            <mode>0</mode>
+            <dir>/path/to/archives</dir>
+        </record>
+    </station>
+
+    <station>
+        <infos>
+            <short_name>telecaster_video</short_name>
+            <name>TeleCaster Video Localhost</name>
+            <description>TeleCaster local video streaming</description>
+            <url>http://parisson.com</url>
+            <genre>Vocal</genre>
+        </infos>
+        <server>
+            <host>127.0.0.1</host>
+            <port>8000</port>
+            <sourcepassword>source2parisson</sourcepassword>
+            <public>0</public>
+        </server>
+        <media>
+            <dir>/path/to/ogg</dir>
+            <format>ogg</format>
+            <bitrate>64</bitrate>
+            <ogg_quality>4</ogg_quality>
+            <samplerate>44100</samplerate>
+            <voices>1</voices>
+            <shuffle>0</shuffle>
+        </media>
+        <rss>
+            <dir>/var/www/rss</dir>
+            <enclosure>0</enclosure>
+        </rss>
+        <twitter>
+            <mode>0</mode>
+            <key>76728330-OjKgbHtn4II86Ad7pNUGEzfNAkGTW5Wvw38qUmLE</key>
+            <secret>4egZs1dSM37XVY8zXa016Yueku2fleXF2bx8k25V4</secret>
+            <tags>bla bla</tags>
+        </twitter>
+        <jingles>
+            <mode>0</mode>
+            <dir>/path/to/jingles</dir>
+            <shuffle>1</shuffle>
+        </jingles>
+        <control>
+            <mode>1</mode>
+            <port>1235</port>
+        </control>
+        <relay>
+            <mode>1</mode>
+            <url>http://127.0.0.1:8000/telecaster_live_video.ogg</url>
+            <author>Parisson</author>
+        </relay>
+        <record>
+            <mode>1</mode>
+            <dir>/path/to/archives</dir>
+        </record>
+    </station>
+
+
+    <station>
+        <infos>
+            <short_name>telecaster_video</short_name>
+            <name>TeleCaster Video Remote</name>
+            <description>TeleCaster Video Remote</description>
+            <url>http://parisson.com</url>
+            <genre>School</genre>
+        </infos>
+        <server>
+            <host>stream.parisson.com</host>
+            <port>8000</port>
+            <sourcepassword>source2parisson</sourcepassword>
+            <public>0</public>
+        </server>
+        <media>
+            <dir>/path/to/ogg</dir>
+            <format>ogg</format>
+            <bitrate>96</bitrate>
+            <ogg_quality>4</ogg_quality>
+            <samplerate>44100</samplerate>
+            <voices>1</voices>
+            <shuffle>0</shuffle>
+        </media>
+        <rss>
+            <dir>/var/www/rss</dir>
+            <enclosure>0</enclosure>
+        </rss>
+        <twitter>
+            <mode>0</mode>
+            <key>76728330-OjKgbHtn4II86Ad7pNUGEzfNAkGTW5Wvw38qUmLE</key>
+            <secret>4egZs1dSM37XVY8zXa016Yueku2fleXF2bx8k25V4</secret>
+            <tags>bla bla</tags>
+        </twitter>
+        <jingles>
+            <mode>0</mode>
+            <dir>/path/to/jingles</dir>
+            <shuffle>1</shuffle>
+        </jingles>
+        <control>
+            <mode>0</mode>
+            <port>1235</port>
+        </control>
+        <relay>
+            <mode>1</mode>
+            <url>http://127.0.0.1:8000/telecaster_live_video.ogg</url>
+            <author>Parisson</author>
+        </relay>
+        <record>
+            <mode>0</mode>
+            <dir>/path/to/archives</dir>
+        </record>
+    </station>
+
+
+    <station>
+        <infos>
+            <short_name>telecaster</short_name>
+            <name>TeleCaster Remote</name>
+            <description>TeleCaster Remote</description>
+            <url>http://parisson.com</url>
+            <genre>School</genre>
+        </infos>
+        <server>
+            <host>stream.parisson.com</host>
+            <port>8000</port>
+            <sourcepassword>source2parisson</sourcepassword>
+            <public>0</public>
+        </server>
+        <media>
+            <dir>/path/to/ogg</dir>
+            <format>ogg</format>
+            <bitrate>96</bitrate>
+            <ogg_quality>4</ogg_quality>
+            <samplerate>44100</samplerate>
+            <voices>1</voices>
+            <shuffle>0</shuffle>
+        </media>
+        <rss>
+            <dir>/var/www/rss</dir>
+            <enclosure>0</enclosure>
+        </rss>
+        <twitter>
+            <mode>0</mode>
+            <key>76728330-OjKgbHtn4II86Ad7pNUGEzfNAkGTW5Wvw38qUmLE</key>
+            <secret>4egZs1dSM37XVY8zXa016Yueku2fleXF2bx8k25V4</secret>
+            <tags>bla bla</tags>
+        </twitter>
+        <jingles>
+            <mode>0</mode>
+            <dir>/path/to/jingles</dir>
+            <shuffle>1</shuffle>
+        </jingles>
+        <control>
+            <mode>0</mode>
+            <port>1235</port>
+        </control>
+        <relay>
+            <mode>1</mode>
+            <url>http://127.0.0.1:8000/telecaster_live_video.ogg</url>
+            <author>Parisson</author>
+        </relay>
+        <record>
+            <mode>0</mode>
+            <dir>/path/to/archives</dir>
+        </record>
+    </station>
+    
+</deefuzzer>
+
+

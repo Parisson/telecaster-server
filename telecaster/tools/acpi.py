@@ -6,7 +6,7 @@
 ##                         Luc Sorgue  <luc.sorgue@laposte.net> and
 ##                         Rds <rds@rdsarts.com> and
 ##                         Guillaume Pellerin <yomguy@parisson.com>
-## All rights reserved. 
+## All rights reserved.
 ##
 ## Redistribution and use in source and binary forms, with or without
 ## modification, are permitted provided that the following conditions
@@ -18,7 +18,7 @@
 ##    notice, this list of conditions and the following disclaimer in the
 ##    documentation and/or other materials provided with the distribution.
 ## 3. The name of the author may not be used to endorse or promote products
-##    derived from this software without specific prior written permission. 
+##    derived from this software without specific prior written permission.
 ##
 ## THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 ## IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -86,7 +86,7 @@ class AcpiError(Exception):
 
 class Acpi:
     """Interface class for ACPI"""
-    
+
     def __init__(self):
         res = sys.platform
         if res.find("freebsd4") > -1:
@@ -96,28 +96,28 @@ class Acpi:
         elif res.find("netbsd1") > -1:
             self.acpi = None #throw exception
             raise AcpiError, ERR_NOT_IMPLEMENTED
-        
+
         elif res.find("linux2") > -1:
             self.acpi = AcpiLinux()
-            
+
         elif res.find("linux") > -1:
             #some systems return linux instead of linux2. We should
             #show a warning or check by ourselves for Linux2
             self.acpi = AcpiLinux()
-            
+
         else:
             self.acpi = None #throw exception (os unknown)
             raise AcpiError, ERR_NOT_IMPLEMENTED
-        
+
 
     def identity(self):
         """Returns the identity of this module"""
         return "acpi.py"
-        
+
     def version(self):
         """Returns the version of this module"""
         return VERSION
-        
+
     def update(self):
         """Updates the ACPI state"""
         self.acpi.update()
@@ -137,7 +137,7 @@ class Acpi:
     def charging_state(self):
         """Returns ac state (off-/online/charging)"""
         return self.acpi.charging_state()
-    
+
     def estimated_lifetime(self):
         """Returns Estimated Lifetime as real number"""
         return self.acpi.estimated_lifetime()
@@ -173,14 +173,17 @@ class AcpiLinux:
         """init ACPI class and check for any ACPI features in /proc/acpi/"""
 
         #we read all acpi stuff from here
-        self.proc_acpi_dir = "/proc/acpi"
-        #self.proc_acpi_dir = "/home/riemer/main/ACPI/proc/acpi"
-        
+        dirs = ['/proc/acpi/ibm']
+        for dir in dirs:
+            if os.path.exists(dir):
+                self.proc_acpi_dir = dir
+                break
+
         self.init_batteries()
         self.init_fans()
         #self.init_processors()
         self.init_temperatures()
-        
+
         self.update()
 
 
@@ -211,7 +214,7 @@ class AcpiLinux:
         except OSError:
             self.ac_line_state = ONLINE  # no batteries: we assume that a cable is plugged in ;-)
             return   #nothing more to do
-            
+
 
         try:
             for i in battery_dir_entries:
@@ -224,7 +227,7 @@ class AcpiLinux:
             # the batteries which we could stat
             # because the appended dirs should be okay we do not return here
             pass
-        
+
         self.ac_line_state = OFFLINE
 
 #later: the newer acpi versions seems to generate always two BAT dirs...
@@ -234,7 +237,7 @@ class AcpiLinux:
                 #print self.proc_battery_dir + "/" + i + "/info"
                 info_file = open(self.proc_battery_dir + "/" + i + "/info")
                 line = info_file.readline()
-            
+
                 while len(line) != 0:
                     if line.find("last full capacity:") == 0:
                         cap = line.split(":")[1].strip()
@@ -243,7 +246,7 @@ class AcpiLinux:
                         except ValueError:
                             #no value --> conversion to int failed
                             self.design_capacity[i] = 0
-                            
+
                     line = info_file.readline()
                 info_file.close()
         except IOError:
@@ -291,21 +294,21 @@ class AcpiLinux:
                         else:
                             self.ac_line_state = ONLINE
 
-                    # Read the present energy consumption to 
-                    # estimate life time 
+                    # Read the present energy consumption to
+                    # estimate life time
 
                     if line.find("present rate:") == 0:
                         try:
                             pr_rate = float(line.split(":")[1].strip().split("m")[0].strip())
                         except ValueError:
                             pr_rate = 0
-                            
+
                         self.present_rate[i] = pr_rate
 
                     line = state_file.readline()
                 state_file.close()
         except IOError:
-            raise AcpiError, ERR_CONFIGURATION_CHANGED 
+            raise AcpiError, ERR_CONFIGURATION_CHANGED
 
             # maybe we should restart init_batteries instead of generating an error ?
             # the user may have unplugged the battery.
@@ -313,12 +316,12 @@ class AcpiLinux:
             # I prefer raising an exception because we would run into a recursion of
             # member funcs what is not a good idea.
             # the case that this error occurs should be very rare
-            
+
 
     def init_temperatures(self):
         """Initializes temperature stuff"""
 
-        self.proc_thermal_dir = self.proc_acpi_dir + "/thermal_zone"
+        self.proc_thermal_dir = self.proc_acpi_dir
 
         # empty list implies no thermal feature supported
         self.temperatures = {}
@@ -334,8 +337,7 @@ class AcpiLinux:
 
         try:
             for i in thermal_dir_entries:
-                mode = os.stat(self.proc_thermal_dir + "/" + i)[stat.ST_MODE]
-                if stat.S_ISDIR(mode):
+                if i == 'thermal':
                     self.thermal_dir_entries.append(i)
         except OSError:
             # the thermal module is not correctly loaded, or is broken.
@@ -348,17 +350,17 @@ class AcpiLinux:
 
         try:
             for i in self.thermal_dir_entries:
-                file = open(self.proc_thermal_dir + "/" + i + "/temperature")
+                file = open(self.proc_thermal_dir + "/" + i)
                 line = file.readline()
                 while len(line) != 0:
                     if line.find("temperature") == 0:
-                        self.temperatures[i] = line.split(":")[1].strip()
+                        self.temperatures[i] = line.split(":")[1].strip().split(' ')[0]
                     line = file.readline()
                 file.close()
         except IOError:
             raise AcpiError,ERR_CONFIGURATION_CHANGED
 
-            
+
     def init_fans(self):
         """Initialize fans"""
 
@@ -383,11 +385,11 @@ class AcpiLinux:
             # the fan module is not correctly loaded, or is broken.
             # because the appended dirs should be okay we do not return here
             pass
-        
+
 
     def update_fans(self):
         """Read current state of fans"""
-        
+
         try:
             for i in self.fan_dir_entries:
                 file = open(self.proc_fan_dir + "/" + i + "/state")
@@ -445,7 +447,7 @@ class AcpiLinux:
             self.processor_dir_entries = []
             self.perf_states = {}   #reset list --> should we throw an exception? No!
             return
-            
+
 
     def update_processors(self):
         """Read current state of processors"""
@@ -475,7 +477,7 @@ class AcpiLinux:
 
         if design_capacity == 0:
             return 0
-        
+
         # should we use try catch instead of the check above?
         return (life_capacity * 100) / design_capacity
 
@@ -490,11 +492,11 @@ class AcpiLinux:
 
     def nb_of_batteries(self):
         #returns the number of batteries
-        #if it returns 0, maybe ACPI is not available or 
+        #if it returns 0, maybe ACPI is not available or
         #battery driver is not loaded
         return len(self.battery_dir_entries)
 
-        
+
     def charging_state(self):
         return self.ac_line_state
 
@@ -536,7 +538,7 @@ class AcpiLinux:
 # TODO: adapt it for multiple CPUs
     def set_frequency(self, f):
     #I think we should throw exceptions if someone goes wrong here
-    
+
         if self.perf_states.has_key(f):
             state = self.perf_states[f]
             try:
@@ -544,11 +546,11 @@ class AcpiLinux:
             except OSError:
                 raise AcpiError, ERR_NOT_ALLOWED
 
-            try:                
+            try:
                 f = open("/proc/acpi/processor/"+pr+"/performance","w")
             except IOError:
                 raise AcpiError, ERR_NOT_ALLOWED
-                
+
             f.write(state)
             f.close()
         else:
