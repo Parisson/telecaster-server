@@ -146,7 +146,7 @@ class Status(object):
           ]
 
         for stat in status:
-            if stat['value'] == False:
+            if stat['value'] == False or stat['value'] == 'localhost' or stat['value'] == 'battery':
                 stat['class'] = 'warning'
 
         return status

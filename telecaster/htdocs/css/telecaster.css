@@ -101,6 +101,15 @@ table.hardware {
     border-spacing: 2px
 }
 
+.warning {
+    color: red;
+    font-weight: bold;
+}
+.default {
+    color: green;
+    }
+    
+
 /* BUTTONS */
 
 .buttons a, .buttons button{

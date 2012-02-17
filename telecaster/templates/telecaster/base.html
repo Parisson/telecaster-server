@@ -16,26 +16,24 @@ function server_status_callback(){
     var j = json; //global variable
     var d = _REFRESH_TIME_INTERVAL; //global variable
     var refresh = function(){
-        var data = j({},"telecaster.get_server_status", function(data){
-            var res = data.result;
-            var doc = document;
-            var tblwrapper = doc.getElementById('server_status_table_wrapper');
-            var s = "<table class='hardware'><tbody>";
-            for(var i=0; i <res.length; i++){
-                var line = res[i];
-                s+= '<tr id="'+line.id+'"><td>'+line.label+'</td><td><span class="'+line.class+'">'+line.value+'</span></td></tr>';
-            }
-            tblwrapper.innerHTML = s+'</tbody></table>';
-        });
+        var data = j({},"telecaster.get_server_status",
+            function(data){
+                var res = data.result;
+                var doc = document;
+                for(var i=0; i <res.length; i++){
+                    var line = res[i];
+                    var wrapper = doc.getElementById('status_'+line.id);
+                    s = '<td><span class="'+line.class+'">'+line.value+'</span></td>';
+                    wrapper.innerHTML = s
+                }
+            },
+            function(){return false;}
+            );
     };
-    try{
-		refresh();
-		setInterval(refresh,d);
-	}
-	finally{
-
-    }
+	refresh();
+	setInterval(refresh,d);
 };
+
 server_status_callback();
 </script>
 {% endblock javascript %}
@@ -54,29 +52,15 @@ server_status_callback();
 <div class="title">Status</div>
 <div id="server_status_table_wrapper">
 <table class="hardware">
-<tr>
-<td>Name</td><TD> : </TD>
-<td>{{ status.url }}</td>
-</tr>
-<tr>
-<td>IP address</td><TD> : </TD>
-<td><span style="{% if status.ip == 'localhost' %}color: red; font-weight: bold;{% else %}color: green;{% endif %}">{{ status.ip }}</span></td>
-</tr>
-<tr><td>Power</td><TD> : </TD>
-<td><span style="{% if status.power_state == 0 %}color: red; font-weight: bold;{% else %}color: green;{% endif %}">{{ status.acpi_state }}</span></td>
-</tr>
-<tr><td>Battery charge</td><TD> : </TD>
-<td><span style="{% if status.batt_charge == 0 %}color: red; font-weight: bold;{% else %}color: green;{% endif %}">{{ status.acpi_percent }}</span></td>
-</tr>
-<tr><td>Temp core 1</td><TD> : </TD><td>{{ status.temperature }} </td></tr>
-<tr><td>JACK audio server</td><TD> : </TD>
-<td>{{ status.jack_state }}</td></tr>
-<tr><td>Encoder</td><TD> : </TD>
-<td>{{ status.casting }}</td></tr>
-<tr><td><div class="buttons">{{ status.writing }}</div></td>
-<td></td>
-<td><div class="buttons">{{ status.casting }}</div></td>
-</tr>
+<tr><td>Name</td><td id="status_name"></td></tr>
+<tr><td>IP address</td><td id="status_ip"></td></tr>
+<tr><td>Power</td><td id="status_acpi_state"></td></tr>
+<tr><td>Charge (%)</td><td id="status_acpi_percent"></td></tr>
+<tr><td>Temperature</td><td id="status_temperature"></td></tr>
+<tr><td>JACK server</td><td id="status_jack_state"></td></tr>
+<tr><td>Encoder</td><td id="status_encoder_state"></td></tr>
+<tr><td>Recorder</td><td id="status_writing"></td></tr>
+<tr><td>Broadcaster</td><td id="status_casting"></td></tr>
 </table>
 </div>
 </div>
