@@ -46,6 +46,7 @@ from tools import *
 from mutagen.oggvorbis import OggVorbis
 from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TDAT, TDRC, TCO, COM
 
+import django.db.models as models
 from django.db.models import *
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
@@ -54,56 +55,56 @@ app_label = 'telecaster'
 
 
 class Organization(Model):
-    
+
     name            = CharField(_('name'), max_length=255)
     description     = CharField(_('description'), max_length=255, blank=True)
-    
+
     def __str__(self):
         return self.name
-    
+
     class Meta:
         db_table = app_label + '_' + 'organization'
 
 class Department(Model):
-    
+
     name            = CharField(_('name'), max_length=255)
     description     = CharField(_('description'), max_length=255, blank=True)
 
     def __str__(self):
         return self.name
-    
+
     class Meta:
         db_table = app_label + '_' + 'department'
 
 
 class Conference(Model):
-    
+
     title           = CharField(_('title'), max_length=255)
     description     = CharField(_('description'), max_length=255, blank=True)
     department      = ForeignKey('Department', related_name='conferences', verbose_name='department')
-    
+
     def __str__(self):
         return self.title
-    
+
     class Meta:
         db_table = app_label + '_' + 'conference'
 
 
 class Session(Model):
-    
+
     name            = CharField(_('name'), max_length=255)
     description     = CharField(_('description'), max_length=255, blank=True)
     number          = IntegerField(_('number'))
-    
+
     def __str__(self):
         return self.name
-    
+
     class Meta:
         db_table = app_label + '_' + 'session'
 
 
 class Professor(Model):
-    
+
     name            = CharField(_('name'), max_length=255)
     institution     = CharField(_('institution'), max_length=255, blank=True)
     address         = CharField(_('address'), max_length=255, blank=True)
@@ -112,29 +113,29 @@ class Professor(Model):
 
     def __str__(self):
         return self.name
-    
+
     class Meta:
         db_table = app_label + '_' + 'professor'
-    
-    
+
+
 class Station(Model):
-    
-    organization      = ForeignKey('Organization', related_name='stations', verbose_name='organization')
-    department        = ForeignKey('Department', related_name='stations', verbose_name='department')
-    conference        = ForeignKey('Conference', related_name='stations', verbose_name='conference')
-    session           = ForeignKey('Session', related_name='stations', verbose_name='session')
-    professor         = ForeignKey('Professor', related_name='stations', verbose_name='professor')
+
+    organization      = ForeignKey(Organization, related_name='stations', verbose_name='organization')
+    department        = ForeignKey(Department, related_name='stations', verbose_name='department')
+    conference        = ForeignKey(Conference, related_name='stations', verbose_name='conference')
+    session           = ForeignKey(Session, related_name='stations', verbose_name='session')
+    professor         = ForeignKey(Professor, related_name='stations', verbose_name='professor')
     comment           = TextField(_('comment'), blank=True)
     started           = BooleanField(_('started'))
-    datetime_start    = DateTimeField(_('time_start'), blank=True)
-    datetime_stop     = DateTimeField(_('time_stop'), blank=True)
+    datetime_start    = DateTimeField(_('time_start'), blank=True, null=True)
+    datetime_stop     = DateTimeField(_('time_stop'), blank=True, null=True)
 
     class Meta:
         db_table = app_label + '_' + 'station'
-    
+
     def __str__(self):
         return ' - '.join(self.description) + ' - ' + str(self.datetime_start) + ' > ' + str(self.datetime_stop)
-    
+
     def to_dict(self):
         dict = [ {'id':'organization','value': self.organization.name, 'class':'', 'label':'Organization'},
                 {'id': 'department', 'value': self.department.name , 'class':'', 'label':'Departement'},
@@ -145,14 +146,14 @@ class Station(Model):
                 {'id': 'started', 'value': str(self.started), 'class':'' , 'label': 'Started'},
                 ]
         return dict
-        
+
     @property
     def description(self):
         return [self.organization.name, self.conference.department.name, self.conference.title, self.session.name, self.professor.name, self.comment]
-    
+
     def set_conf(self, conf):
         self.conf = conf
-    
+
     def setup(self):
         self.date = datetime.datetime.now().strftime("%Y")
         self.time = datetime.datetime.now().strftime("%x-%X")
@@ -198,7 +199,7 @@ class Station(Model):
         self.deefuzzer_dict = xml2dict(self.deefuzzer_default_conf_file)
         self.deefuzzer_osc_ports =  []
         self.server_ports = []
-        
+
         for station in self.deefuzzer_dict['deefuzzer']['station']:
             if station['control']['mode'] == '1':
                 self.deefuzzer_osc_ports.append(station['control']['port'])
@@ -222,7 +223,7 @@ class Station(Model):
             station['relay']['mode'] = '1'
             station['relay']['author'] = self.professor
             self.deefuzzer_dict['deefuzzer']['station'][i] = station
-            i += 1        
+            i += 1
         self.deefuzzer_xml = dicttoxml(self.deefuzzer_dict)
 
     def deefuzzer_write_conf(self):
@@ -304,4 +305,12 @@ class Station(Model):
         time.sleep(2)
         self.deefuzzer_stop()
         self.del_lock()
+
+
+class Record(Model):
+
+    station = ForeignKey(Station, related_name='records', verbose_name='station',
+                         blank=True, null=True, on_delete=models.SET_NULL)
+    datetime = DateTimeField(_('record_date'), auto_now=True)
+    file = FileField(_('file'), upload_to='items/%Y/%m/%d')
 
