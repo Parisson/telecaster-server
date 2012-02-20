@@ -25,3 +25,14 @@
 </form>
 
 {% endblock content %}
+
+{% block buttons %}
+<div class="tools">
+<a class="component_icon button icon_refresh" href="#" >Refresh</a>
+<a class="component_icon button icon_record" href="#">Record</a>
+<a class="component_icon button icon_play" href="http://{{ status.ip }}:{{ station.port }}/{{ station.mount_point }}">Play Live</a>
+<a class="component_icon button icon_archives" href="/archives/">Archives</a>
+<a class="component_icon button icon_trash" href="/trash/">Trash</a>
+
+</div>
+{% endblock buttons %}

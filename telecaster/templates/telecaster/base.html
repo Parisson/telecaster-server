@@ -2,8 +2,8 @@
 {% load telecaster_utils %}
 {% load i18n %}
 
-<HTML>
-<HEAD>
+<html>
+<head>
 <TITLE>TeleCaster - {{ self.title }}</TITLE>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <link href="{% url telecaster-css "telecaster.css" %}" rel="stylesheet" type="text/css">
@@ -12,38 +12,16 @@
 <script src="{% url telecaster-js "jquery-1.6.min.js" %}" type="text/javascript"></script>
 <script src="{% url telecaster-js "application.js" %}" type="text/javascript"></script>
 <script type="text/javascript">
-function server_status_callback(){
-    var j = json; //global variable
-    var d = _REFRESH_TIME_INTERVAL; //global variable
-    var refresh = function(){
-        var data = j({},"telecaster.get_server_status",
-            function(data){
-                var res = data.result;
-                var doc = document;
-                for(var i=0; i <res.length; i++){
-                    var line = res[i];
-                    var wrapper = doc.getElementById('status_'+line.id);
-                    s = '<td><span class="'+line.class+'">'+line.value+'</span></td>';
-                    wrapper.innerHTML = s
-                }
-            },
-            function(){return false;}
-            );
-    };
-	refresh();
-	setInterval(refresh,d);
-};
-
 server_status_callback();
 </script>
 {% endblock javascript %}
 
-</HEAD>
-<BODY>
+</head>
+<body>
 <div class="bg">
 <div class="header">
 <img src="{% url telecaster-images "logo_telecaster_wh.png"%}" alt="logo_telecaster">
-<div class="title_main">&nbsp;TeleCaster - Audio Web Live Recording</div>
+<div class="title_main">&nbsp;TeleCaster</div>
 </div>
 
 {% block hardware %}
@@ -70,21 +48,13 @@ server_status_callback();
 {% block content %}
 {% endblock content %}
 
-{% block footer %}
-<div class="tools">
-    <div class="buttons">
-    <button type="submit" class="button"><img src="{% url telecaster-images "arrow_refresh.png" %}" alt="">Refresh</button>
-    <button type="submit" name="action" value="start" class="button"><img src="{% url telecaster-images "stop.png" %}" alt="">Record</button>
-    <a class="button" href="http://{{ status.ip }}:{{ station.port }}/{{ station.mount_point }}"><img src="{% url telecaster-images "control_play_blue.png" %}" alt="">Play Live</a>
-    <a class="button" href="/archives/"><img src="{% url telecaster-images "folder_go.png" %}" alt="">Archives</a>
-    <a class="button" href="/trash/"><img src="{% url telecaster-images "bin.png" %}" alt="">Trash</a>
-    </div>
-</div>
+{% block buttons %}
+
+{% endblock buttons %}
 
 <div class="colophon">TeleCaster 0.6 &copy; <span>2011</span>&nbsp;<a href="http://parisson.com">Parisson SARL</a>. {% trans "All rights reserved" %}</div>
-{% endblock footer %}
 
 </div>
-</BODY>
-</HTML>
+</body>
+</html>
 

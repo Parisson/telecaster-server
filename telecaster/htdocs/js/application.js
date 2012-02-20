@@ -141,3 +141,26 @@ function consolelog(text){
         }
     }
 }
+
+
+function server_status_callback(){
+    var j = json; //global variable
+    var d = _REFRESH_TIME_INTERVAL; //global variable
+    var refresh = function(){
+        var data = j({},"telecaster.get_server_status",
+                     function(data){
+                         var res = data.result;
+                         var doc = document;
+                         for(var i=0; i <res.length; i++){
+                             var line = res[i];
+                             var wrapper = doc.getElementById('status_'+line.id);
+                             s = '<td><span class="'+line.class+'">'+line.value+'</span></td>';
+                             wrapper.innerHTML = s
+                         }
+                     },
+                     function(){return false;}
+                     );
+    };
+    refresh();
+    setInterval(refresh,d);
+};
