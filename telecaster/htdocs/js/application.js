@@ -159,6 +159,7 @@ function server_status_callback(){
                          }
                      },
                      function(){
+                         var doc = document;
                          var wrapper = doc.getElementById('server_status_table_wrapper');
                          s = '<span class="warning">NOT connected</span>';
                          wrapper.innerHTML = s;

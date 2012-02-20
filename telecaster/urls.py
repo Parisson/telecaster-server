@@ -53,18 +53,16 @@ urlpatterns = patterns('',
 
     # CSS+Images (FIXME: for developement only)
     url(r'^css/(?P<path>.*)$', 'django.views.static.serve',
-        {'document_root': htdocs+'/css'},
-        name="telecaster-css"),
+        {'document_root': htdocs+'/css'}, name="telecaster-css"),
     url(r'images/(?P<path>.*)$', 'django.views.static.serve',
-        {'document_root': htdocs+'/images'},
-        name="telecaster-images"),
+        {'document_root': htdocs+'/images'}, name="telecaster-images"),
     url(r'^js/(?P<path>.*)$', 'django.views.static.serve',
-        {'document_root': htdocs+'/js'},
-        name="telecaster-js"),
+        {'document_root': htdocs+'/js'}, name="telecaster-js"),
 
     # JSON RPC
     url(r'json/$', jsonrpc_site.dispatch, name='jsonrpc_mountpoint'),
+#    url(r'^items/json/$', jsonrpc_site.dispatch, name='jsonrpc_mountpoint2'),
     # for the graphical browser/web console only, omissible
-    url(r'json/browse/', 'jsonrpc.views.browse', name="jsonrpc_browser"),
+#    url(r'json/browse/', 'jsonrpc.views.browse', name="jsonrpc_browser"),
 
 )

@@ -65,13 +65,12 @@ class WebView(object):
                 station = stations[0]
             if request.method == 'POST':
                 station.stop()
-                time.sleep(2)
+#                time.sleep(2)
                 station.save()
                 self.logger.write_info('stop')
                 return HttpResponseRedirect('/telecaster/record')
             else:
-                return render(request, template, {'station': station, 'status': self.status.update(),
-                                'hidden_fields': self.hidden_fields, })
+                return render(request, template, {'station': station, 'hidden_fields': self.hidden_fields, })
         else:
             return HttpResponseRedirect('/telecaster/record')
 
@@ -87,13 +86,12 @@ class WebView(object):
                 station.start()
                 station.save()
                 self.logger.write_info('start')
-                time.sleep(2)
-                return HttpResponseRedirect('/telecaster/items/'+str(station.id))
+#                time.sleep(2)
+                return HttpResponseRedirect('/telecaster/')
         else:
             form = StationForm()
 
-        return render(request, template, {'station': form, 'status': self.status.update(),
-                                'hidden_fields': self.hidden_fields, })
+        return render(request, template, {'station': form, 'hidden_fields': self.hidden_fields, })
 
 
     @jsonrpc_method('telecaster.get_server_status')
@@ -103,9 +101,8 @@ class WebView(object):
         return status.to_dict()
 
     def get_server_status(self):
-        status = Status()
-        status.update()
-        return status
+        self.status.update()
+        return self.status
 
     @jsonrpc_method('telecaster.get_station_status')
     def get_station_status_json(request):

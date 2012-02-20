@@ -20,7 +20,7 @@ jQuery(window).ready(function(){
     <tr><td colspan="2">{% for error in form.non_field_errors %}<li class="error">{{ error }}</li>{% endfor %}</td></tr>
     {% for field in station %}
     <tr>
-        {% if field.errors %}<tr><td class="error">{{ field.errors }}</td></tr>{% endif %}
+        {% if field.errors %}<tr><td class="warning">{{ field.errors }}</td></tr>{% endif %}
         {% if not field.html_name in hidden_fields %}
          <td>{% trans field.label_tag %}:</td><td>{{ field }}</td>
         {% else %}

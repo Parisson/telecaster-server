@@ -120,11 +120,16 @@ class Professor(Model):
 
 class Station(Model):
 
-    organization      = ForeignKey(Organization, related_name='stations', verbose_name='organization')
-    department        = ForeignKey(Department, related_name='stations', verbose_name='department')
-    conference        = ForeignKey(Conference, related_name='stations', verbose_name='conference')
-    session           = ForeignKey(Session, related_name='stations', verbose_name='session')
-    professor         = ForeignKey(Professor, related_name='stations', verbose_name='professor')
+    organization      = ForeignKey(Organization, related_name='stations', verbose_name='organization',
+                                   null=True, on_delete=models.SET_NULL)
+    department        = ForeignKey(Department, related_name='stations', verbose_name='department',
+                                   null=True, on_delete=models.SET_NULL)
+    conference        = ForeignKey(Conference, related_name='stations', verbose_name='conference',
+                                   null=True, on_delete=models.SET_NULL)
+    session           = ForeignKey(Session, related_name='stations', verbose_name='session',
+                                   null=True, on_delete=models.SET_NULL)
+    professor         = ForeignKey(Professor, related_name='stations', verbose_name='professor',
+                                   null=True, on_delete=models.SET_NULL)
     comment           = TextField(_('comment'), blank=True)
     started           = BooleanField(_('started'))
     datetime_start    = DateTimeField(_('time_start'), blank=True, null=True)
