@@ -2,9 +2,18 @@
 {% load telecaster_utils %}
 {% load i18n %}
 
+{% block extrajavascript %}
+jQuery(window).ready(function(){
+    var a = jQuery('#_record');
+    var f = jQuery('#_StationForm');
+    a.unbind('click').click(function(){f.submit();return false;});
+    });
+{% endblock extrajavascript %}
+
+
 {% block content %}
 
-<form enctype="multipart/form-data" id="_startStationForm" method="post" action="" name="formulaire">{% csrf_token %}   
+<form enctype="multipart/form-data" id="_StationForm" method="post" action="" name="formulaire">{% csrf_token %}
 <div class="main">
 
 <table class="form">
@@ -28,8 +37,7 @@
 
 {% block buttons %}
 <div class="tools">
-<a class="component_icon button icon_refresh" href="#" >Refresh</a>
-<a class="component_icon button icon_record" href="#">Record</a>
+<a class="component_icon button icon_record" href="#" id="_record">Record</a>
 <a class="component_icon button icon_play" href="http://{{ status.ip }}:{{ station.port }}/{{ station.mount_point }}">Play Live</a>
 <a class="component_icon button icon_archives" href="/archives/">Archives</a>
 <a class="component_icon button icon_trash" href="/trash/">Trash</a>

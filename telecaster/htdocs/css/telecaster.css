@@ -230,3 +230,6 @@ table.hardware {
 .icon_trash{
     background-image: url('../images/bin.png');
 }
+.icon_stop{
+    background-image: url('../images/control_stop.png');
+    }

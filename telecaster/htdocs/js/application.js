@@ -155,10 +155,14 @@ function server_status_callback(){
                              var line = res[i];
                              var wrapper = doc.getElementById('status_'+line.id);
                              s = '<td><span class="'+line.class+'">'+line.value+'</span></td>';
-                             wrapper.innerHTML = s
+                             wrapper.innerHTML = s;
                          }
                      },
-                     function(){return false;}
+                     function(){
+                         var wrapper = doc.getElementById('server_status_table_wrapper');
+                         s = '<span class="warning">NOT connected</span>';
+                         wrapper.innerHTML = s;
+                     }
                      );
     };
     refresh();

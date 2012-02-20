@@ -295,16 +295,18 @@ class Station(Model):
             audio.save()
 
     def start(self):
-        self.set_lock()
-        self.deefuzzer_setup()
-        self.deefuzzer_write_conf()
-        self.deefuzzer_start()
+        self.started = True
+#        self.set_lock()
+#        self.deefuzzer_setup()
+#        self.deefuzzer_write_conf()
+#        self.deefuzzer_start()
 
     def stop(self):
-        self.rec_stop()
-        time.sleep(2)
-        self.deefuzzer_stop()
-        self.del_lock()
+        self.started = False
+#        self.rec_stop()
+#        time.sleep(2)
+#        self.deefuzzer_stop()
+#        self.del_lock()
 
 
 class Record(Model):

@@ -48,21 +48,23 @@ htdocs = os.path.dirname(__file__) + '/htdocs'
 
 urlpatterns = patterns('',
     url(r'^$', web_view.index, name="telecaster-index"),
-    
+    url(r'^record/$', web_view.record, name="telecaster-record"),
+    url(r'^items/(?P<id>.*)$', web_view.index, name="telecaster-item"),
+
     # CSS+Images (FIXME: for developement only)
-    url(r'^css/(?P<path>.*)$', 'django.views.static.serve', 
+    url(r'^css/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': htdocs+'/css'},
         name="telecaster-css"),
-    url(r'images/(?P<path>.*)$', 'django.views.static.serve', 
+    url(r'images/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': htdocs+'/images'},
         name="telecaster-images"),
-    url(r'^js/(?P<path>.*)$', 'django.views.static.serve', 
+    url(r'^js/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': htdocs+'/js'},
         name="telecaster-js"),
-    
+
     # JSON RPC
-    url(r'^json/$', jsonrpc_site.dispatch, name='jsonrpc_mountpoint'),
+    url(r'json/$', jsonrpc_site.dispatch, name='jsonrpc_mountpoint'),
     # for the graphical browser/web console only, omissible
-    url(r'^json/browse/', 'jsonrpc.views.browse', name="jsonrpc_browser"), 
-    
+    url(r'json/browse/', 'jsonrpc.views.browse', name="jsonrpc_browser"),
+
 )
