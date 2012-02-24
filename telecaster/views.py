@@ -70,7 +70,7 @@ class WebView(object):
                 self.logger.write_info('stop')
                 return HttpResponseRedirect('/telecaster/record')
             else:
-                return render(request, template, {'station': station, 'hidden_fields': self.hidden_fields, })
+                return render(request, template, {'station': station, 'hidden_fields': self.hidden_fields, 'host': self.get_host(request) })
         else:
             return HttpResponseRedirect('/telecaster/record')
 
@@ -91,12 +91,13 @@ class WebView(object):
         else:
             form = StationForm()
 
+        return render(request, template, {'station': form, 'hidden_fields': self.hidden_fields, 'host': self.get_host(request) })
+
+    def get_host(self, request):
         host = request.META['HTTP_HOST']
         if ':' in host:
             host = host.split(':')[0]
-
-        return render(request, template, {'station': form, 'hidden_fields': self.hidden_fields, 'host': host })
-
+        return host
 
     @jsonrpc_method('telecaster.get_server_status')
     def get_server_status_json(request):
