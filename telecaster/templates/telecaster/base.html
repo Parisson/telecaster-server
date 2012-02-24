@@ -37,7 +37,7 @@ server_status_callback();
 {% block video %}
 <div class="video">
 <video id="my_video_1" class="video-js vjs-default-skin" controls preload="auto" width="360" height="240" data-setup="{}">
-<source src="http://192.168.0.15:8080/consume/safe" type="video/webm"></video>
+<source src="{{ host }}:8080/consume/safe" type="video/webm"></video>
 </div>
 {% endblock video %}
 

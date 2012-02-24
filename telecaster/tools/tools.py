@@ -167,7 +167,7 @@ def norm_string(string):
 
 class Status(object):
 
-    interfaces = ['eth0', 'eth1', 'eth2', 'eth0-eth2','eth3']
+    interfaces = ['eth0', 'eth1', 'eth2', 'eth0-eth2', 'eth3', 'wlan0', 'wlan1']
     acpi_states = {0: 'battery', 1: 'battery', 2: 'AC'}
 
     def __init__(self):

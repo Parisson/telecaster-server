@@ -173,7 +173,7 @@ class AcpiLinux:
         """init ACPI class and check for any ACPI features in /proc/acpi/"""
 
         #we read all acpi stuff from here
-        dirs = ['/proc/acpi/ibm']
+        dirs = ['/proc/acpi/ibm', '/proc/acpi']
         for dir in dirs:
             if os.path.exists(dir):
                 self.proc_acpi_dir = dir
