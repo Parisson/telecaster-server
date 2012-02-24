@@ -241,16 +241,6 @@ class Station(Model):
         os.system(command)
         self.set_lock()
 
-    def set_lock(self):
-        lock = open(self.lock_file,'w')
-        lock_text = clean_string('_*_'.join(self.description))
-        lock_text = lock_text.replace('\n','')
-        lock.write(lock_text)
-        lock.close()
-
-    def del_lock(self):
-        os.remove(self.lock_file)
-
     def deefuzzer_stop(self):
         if len(self.deefuzzer_pid) != 0:
             os.system('kill -9 '+self.deefuzzer_pid[0])
@@ -302,7 +292,6 @@ class Station(Model):
     def start(self):
         self.started = True
         self.datetime_start = datetime.datetime.now()
-#        self.set_lock()
 #        self.deefuzzer_setup()
 #        self.deefuzzer_write_conf()
 #        self.deefuzzer_start()
@@ -313,7 +302,6 @@ class Station(Model):
 #        self.rec_stop()
 #        time.sleep(2)
 #        self.deefuzzer_stop()
-#        self.del_lock()
 
 
 class Record(Model):
