@@ -233,3 +233,11 @@ table.hardware {
 .icon_stop{
     background-image: url('../images/control_stop.png');
     }
+
+.video {
+    float: left;
+}
+
+.status {
+    float: right;
+    }

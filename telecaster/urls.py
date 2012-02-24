@@ -58,6 +58,8 @@ urlpatterns = patterns('',
         {'document_root': htdocs+'/images'}, name="telecaster-images"),
     url(r'^js/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': htdocs+'/js'}, name="telecaster-js"),
+    url(r'^video-js/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': htdocs+'/video-js'}, name="telecaster-video-js"),
 
     # JSON RPC
     url(r'json/$', jsonrpc_site.dispatch, name='jsonrpc_mountpoint'),
