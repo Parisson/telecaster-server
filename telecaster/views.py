@@ -82,6 +82,7 @@ class WebView(object):
             station = Station()
             form = StationForm(data=request.POST, instance=station)
             if form.is_valid():
+                station.datetime_start = datetime.datetime.now()
                 station.set_conf(self.conf)
                 station.setup()
                 station.start()
