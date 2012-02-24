@@ -188,14 +188,14 @@ class Status(object):
     def to_dict(self):
         status = [
           {'id': 'acpi_state','class': 'default', 'value': self.acpi_states[self.acpi.charging_state()], 'label': 'Power'},
-          {'id': 'acpi_percent', 'class': 'default', 'value': str(self.acpi.percent()), 'label': 'Battery Charge'},
+          {'id': 'acpi_percent', 'class': 'default', 'value': str(self.acpi.percent()), 'label': 'Charge (%)'},
           {'id': 'temperature', 'class': 'default', 'value': self.temperature, 'label': 'Temperature'},
           {'id': 'jack_state', 'class': 'default', 'value': self.jacking, 'label': 'Jack server'},
           {'id': 'name', 'class': 'default', 'value': self.name, 'label': 'Name'},
           {'id': 'ip', 'class': 'default', 'value': self.ip, 'label': 'IP address'},
           {'id': 'encoder_state','class': 'default', 'value': self.writing, 'label': 'Encoder'},
-          {'id': 'casting', 'class': 'default', 'value': self.casting, 'label': 'Broadcasting'},
-          {'id': 'writing', 'class': 'default', 'value': self.writing, 'label': 'Recording'},
+          {'id': 'casting', 'class': 'default', 'value': self.casting, 'label': 'Broadcaster'},
+          {'id': 'writing', 'class': 'default', 'value': self.writing, 'label': 'Recorder'},
           ]
 
         for stat in status:

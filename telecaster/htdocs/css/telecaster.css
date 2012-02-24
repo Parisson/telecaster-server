@@ -240,4 +240,5 @@ table.hardware {
 
 .status {
     float: right;
+    padding: 5px;
     }

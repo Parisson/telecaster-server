@@ -151,12 +151,14 @@ function server_status_callback(){
                      function(data){
                          var res = data.result;
                          var doc = document;
+                         s = '<table class="hardware">'
                          for(var i=0; i <res.length; i++){
                              var line = res[i];
-                             var wrapper = doc.getElementById('status_'+line.id);
-                             s = '<td><span class="'+line.class+'">'+line.value+'</span></td>';
-                             wrapper.innerHTML = s;
+                             s += '<tr><td>'+line.label+'</td><td>:</td><td><span class="'+line.class+'">'+line.value+'</span></td></tr>\n';
                          }
+                         s += '</table>'
+                         var wrapper = doc.getElementById('server_status_table_wrapper');
+                         wrapper.innerHTML = s;
                      },
                      function(){
                          var doc = document;
