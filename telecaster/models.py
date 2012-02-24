@@ -130,7 +130,7 @@ class Station(Model):
                                    null=True, on_delete=models.SET_NULL)
     professor         = ForeignKey(Professor, related_name='stations', verbose_name='professor',
                                    null=True, on_delete=models.SET_NULL)
-    professor_free    = CharField(_(professor), max_length=255, blank=True)
+    professor_free    = CharField(_('professor'), max_length=255, blank=True)
     comment           = TextField(_('comment'), blank=True)
     started           = BooleanField(_('started'))
     datetime_start    = DateTimeField(_('time_start'), blank=True, null=True)
