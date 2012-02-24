@@ -90,11 +90,12 @@ class WebView(object):
                 return HttpResponseRedirect('/telecaster/')
         else:
             form = StationForm()
-        
-        status = Status()
-        status.get_hosts()
 
-        return render(request, template, {'station': form, 'hidden_fields': self.hidden_fields, 'host': status.ip })
+        host = request.META['HTTP_HOST']
+        if ':' in host:
+            host = host.split(':')[0]
+
+        return render(request, template, {'station': form, 'hidden_fields': self.hidden_fields, 'host': host })
 
 
     @jsonrpc_method('telecaster.get_server_status')
