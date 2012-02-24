@@ -127,9 +127,9 @@ class Station(Model):
     conference        = ForeignKey(Conference, related_name='stations', verbose_name='conference',
                                    null=True, on_delete=models.SET_NULL)
     session           = ForeignKey(Session, related_name='stations', verbose_name='session',
-                                   null=True, on_delete=models.SET_NULL)
+                                   null=True, blank=True, on_delete=models.SET_NULL)
     professor         = ForeignKey(Professor, related_name='stations', verbose_name='professor',
-                                   null=True, on_delete=models.SET_NULL)
+                                   null=True, blank=True, on_delete=models.SET_NULL)
     professor_free    = CharField(_('professor'), max_length=255, blank=True)
     comment           = TextField(_('comment'), blank=True)
     started           = BooleanField(_('started'))
@@ -155,7 +155,13 @@ class Station(Model):
 
     @property
     def description(self):
-        return [self.organization.name, self.conference.department.name, self.conference.title, self.session.name, self.professor.name, self.comment]
+        description = [self.organization.name, self.conference.department.name, self.conference.title]
+        if self.session:
+            description.append(self.session.name)
+        if self.professor:
+            description.append(self.professor.name)
+        description.append(self.comment)
+        return description
 
     def set_conf(self, conf):
         self.conf = conf
@@ -185,8 +191,8 @@ class Station(Model):
         self.file_dir = self.output_dir + os.sep + self.ServerName
         self.uid = os.getuid()
         self.deefuzzer_pid = get_pid('/usr/bin/deefuzzer '+self.deefuzzer_user_file, self.uid)
-        self.new_title = clean_string('-'.join(self.server_name)+'-'+self.session.name+'-'+self.professor.name+'-'+self.comment)
-        self.short_title = clean_string('-'.join(self.conference.title)+'-'+self.session.name+'-'+self.professor.name+'-'+self.comment)
+        self.new_title = clean_string('-'.join(self.description))
+        self.short_title = self.new_title
         self.genre = self.conf['infos']['genre']
         self.encoder = 'TeleCaster by Parisson'
 
