@@ -132,7 +132,7 @@ class Station(Model):
                                    null=True, on_delete=models.SET_NULL)
     comment           = TextField(_('comment'), blank=True)
     started           = BooleanField(_('started'))
-    datetime_start    = DateTimeField(_('time_start'), blank=True, null=True)
+    datetime_start    = DateTimeField(_('time_start'), auto_now_add=True, blank=True, null=True)
     datetime_stop     = DateTimeField(_('time_stop'), blank=True, null=True)
 
     class Meta:

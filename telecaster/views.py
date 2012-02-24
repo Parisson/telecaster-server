@@ -65,6 +65,7 @@ class WebView(object):
                 station = stations[0]
             if request.method == 'POST':
                 station.stop()
+                station.datetime_stop = datetime.datetime.now()
 #                time.sleep(2)
                 station.save()
                 self.logger.write_info('stop')
