@@ -91,7 +91,7 @@ class WebView(object):
         else:
             form = StationForm()
 
-        return render(request, template, {'station': form, 'hidden_fields': self.hidden_fields, })
+        return render(request, template, {'station': form, 'hidden_fields': self.hidden_fields, 'host': request.HTTP_HOST })
 
 
     @jsonrpc_method('telecaster.get_server_status')
