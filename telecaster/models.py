@@ -301,6 +301,7 @@ class Station(Model):
 
     def start(self):
         self.started = True
+        self.datetime_start = datetime.datetime.now()
 #        self.set_lock()
 #        self.deefuzzer_setup()
 #        self.deefuzzer_write_conf()
@@ -308,6 +309,7 @@ class Station(Model):
 
     def stop(self):
         self.started = False
+        self.datetime_stop = datetime.datetime.now()
 #        self.rec_stop()
 #        time.sleep(2)
 #        self.deefuzzer_stop()

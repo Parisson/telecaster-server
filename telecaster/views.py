@@ -65,7 +65,6 @@ class WebView(object):
                 station = stations[0]
             if request.method == 'POST':
                 station.stop()
-                station.datetime_stop = datetime.datetime.now()
 #                time.sleep(2)
                 station.save()
                 self.logger.write_info('stop')
@@ -82,7 +81,6 @@ class WebView(object):
             station = Station()
             form = StationForm(data=request.POST, instance=station)
             if form.is_valid():
-                station.datetime_start = datetime.datetime.now()
                 station.set_conf(self.conf)
                 station.setup()
                 station.start()
