@@ -32,9 +32,10 @@ div.main {
        display: block;
        background-color: transparent;
        color: #000033;
-	   padding: 1em;
+	     padding: 1em;
        position: relative;
        font: 1em/1em Verdana, sans-serif;
+       font-weight: bold;
 }
 
 
@@ -93,6 +94,10 @@ table.form {
     border: 0px;
     border-collapse: separate;
     border-spacing: 8px;
+}
+
+table.form select,input,textarea {
+    font: 0.9em Verdana, sans-serif;
 }
 
 table.hardware {
