@@ -48,8 +48,10 @@ from mutagen.id3 import ID3, TIT2, TP1, TAL, TDA, TDAT, TDRC, TCO, COM
 
 import django.db.models as models
 from django.db.models import *
-from django.forms import ModelForm
+from django.forms import ModelForm, TextInput, Textarea
 from django.utils.translation import ugettext_lazy as _
+
+from south.modelsinspector import add_introspection_rules
 
 app_label = 'telecaster'
 
@@ -118,6 +120,16 @@ class Professor(Model):
         db_table = app_label + '_' + 'professor'
 
 
+class ShortTextField(models.TextField):
+
+    def formfield(self, **kwargs):
+         kwargs.update(
+            {"widget": Textarea(attrs={'rows':3, 'cols':30})}
+         )
+         return super(ShortTextField, self).formfield(**kwargs)
+
+add_introspection_rules([], ["^telecaster\.models\.ShortTextField"])
+
 class Station(Model):
 
     organization      = ForeignKey(Organization, related_name='stations', verbose_name='organization',
@@ -131,7 +143,7 @@ class Station(Model):
     professor         = ForeignKey(Professor, related_name='stations', verbose_name='professor',
                                    null=True, blank=True, on_delete=models.SET_NULL)
     professor_free    = CharField(_('professor'), max_length=255, blank=True)
-    comment           = TextField(_('comment'), blank=True)
+    comment           = ShortTextField(_('comments'), blank=True)
     started           = BooleanField(_('started'))
     datetime_start    = DateTimeField(_('time_start'), blank=True, null=True)
     datetime_stop     = DateTimeField(_('time_stop'), blank=True, null=True)
