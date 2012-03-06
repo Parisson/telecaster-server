@@ -15,6 +15,14 @@
 <script src="{% url telecaster-video-js "video.js" %}" type="text/javascript"></script>
 <script type="text/javascript">
 server_status_callback();
+
+_V_("my_video_1").ready(function(){
+
+    var myPlayer = this;
+    myPlayer.volume(0);
+    // myPlayer.currentTime(120);
+    });
+
 {% endblock javascript %}
 
 {% block extrajavascript %}
