@@ -100,7 +100,7 @@ class WebView(object):
         return host
 
     @jsonrpc_method('telecaster.get_server_status')
-    def get_server_status_json(request):
+    def get_server_status(request):
         status = Status()
         status.update()
         return status.to_dict()
@@ -110,12 +110,10 @@ class WebView(object):
         return self.status
 
     @jsonrpc_method('telecaster.get_station_status')
-    def get_station_status_json(request):
+    def get_station_status(request):
         stations = Station.objects.filter(started=True)
         if stations:
             station = stations[0].to_dict()
         else:
             station = {}
         return station
-
-
