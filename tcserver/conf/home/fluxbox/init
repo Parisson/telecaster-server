@@ -1,0 +1,3 @@
+session.menuFile:	~/.fluxbox/menu
+session.keyFile:	~/.fluxbox/keys
+session.configVersion:	13
