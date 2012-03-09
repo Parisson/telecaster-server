@@ -1,9 +1,0 @@
-# Set to "yes" to start stream-m at boot
-START_DAEMON=yes
-
-# The jackd process will run under this user
-USER=telecaster
-
-# Options to pass to jackd
-OPTIONS="/etc/stream-m/server.conf"
-

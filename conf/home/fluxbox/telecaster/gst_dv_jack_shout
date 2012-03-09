@@ -1,7 +1,0 @@
-#!/bin/bash
-
-gst-launch-0.10 dv1394src ! queue ! dvdemux name=d ! queue ! dvdec  \
-	! queue ! videoscale ! video/x-raw-yuv, width=480, height=368 \
-	! queue ! ffmpegcolorspace ! theoraenc bitrate=500 ! muxout. \
-        oggmux name=muxout \
-	! queue ! shout2send mount=/telecaster_live_video.ogg port=8000 password=source2parisson ip=127.0.0.1 \
