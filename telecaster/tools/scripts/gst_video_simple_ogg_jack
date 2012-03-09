@@ -1,9 +1,0 @@
-#!/bin/bash
-
-gst-launch v4l2src device=/dev/video0 ! video/x-raw-yuv,width=640, height=480 \
-	! queue ! ffmpegcolorspace \
-	! queue ! theoraenc quality=25 ! mux. \
-	jackaudiosrc connect=1 ! queue ! audioconvert ! queue ! vorbisenc ! mux. \
-	oggmux name=mux ! filesink location=/var/www/test/test.ogg \
-
-# ! queue ! videorate ! video/x-raw-yuv, framerate=25/1 \
