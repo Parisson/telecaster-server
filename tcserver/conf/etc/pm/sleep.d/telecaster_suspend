@@ -14,12 +14,12 @@
 
 case $1 in
      suspend|suspend_hybrid|hibernate)
-	/etc/init.d/vncserver stop
+	/etc/init.d/telecaster stop
         sleep 1
         /etc/init.d/jackd stop
         ;;
      resume|thaw)
 	/etc/init.d/jackd start
-        /etc/init.d/vncserver start
+        /etc/init.d/telecaster start
         ;;
 esac

@@ -57,8 +57,8 @@ class Install(object):
         self.app_dir = os.getcwd()
         self.user = 'telecaster'
         self.home = '/home/' + self.user
+        self.app_dir = os.path.dirname(__file__)
 
-        self.install_dir = '/var/www/telecaster'
         self.rss_dir = '/var/www/rss'
         self.m3u_dir = '/var/www/m3u'
         self.log_dir = '/var/log/telecaster'
@@ -66,7 +66,7 @@ class Install(object):
         self.conf_dir = '/etc/telecaster'
         self.stream_m_conf_dir = '/etc/stream-m'
         self.init_dirs = ['/etc/init.d/', '/etc/default/']
-        self.daemons = ['jackd', 'vncserver', 'stream-m']
+        self.daemons = ['jackd', 'telecaster', 'stream-m']
         self.apache_conf = '/etc/apache2/sites-available/telecaster.conf'
 
     def create_user(self):
@@ -80,28 +80,15 @@ class Install(object):
 
     def install_deps(self):
         # compiling edcast-jack
-        os.chdir(self.app_dir + '/vendor/edcast-jack')
+        os.chdir(self.app_dir + '/lib/edcast-jack')
         os.system('./configure; make; make install')
-
-        # Install DeeFuzzer
-        os.system('pip install deefuzzer')
 
         # Install Stream-m
         os.chdir(self.app_dir)
-        os.system('cp -ra vendor/stream-m /usr/local/lib/')
+        os.system('cp -ra lib/stream-m /usr/local/lib/')
         init_link = '/usr/local/bin/stream-m'
         if not os.path.islink(init_link):
             os.system('ln -s /usr/local/lib/stream-m/bin/stream-m '+init_link)
-
-    def install_app(self):
-        os.chdir(self.app_dir)
-
-        if os.path.exists(self.install_dir):
-            shutil.rmtree(self.install_dir)
-
-        shutil.copytree(self.app_dir, self.install_dir,ignore=shutil.ignore_patterns('edcast-jack*', 'deefuzzer*', '*.svn*', '*.bzr*', '*.git'))
-        os.system('chown -R ' + self.user + ':' + self.user + ' ' + self.install_dir)
-        os.system('chmod 755 ' + self.install_dir + '/telecaster.py')
 
     def install_conf(self):
         os.chdir(self.app_dir)
@@ -147,9 +134,9 @@ class Install(object):
         if not os.path.islink(init_link):
             os.system('ln -s /etc/init.d/jackd '+init_link)
 
-        init_link = '/etc/rc2.d/S99vncserver'
+        init_link = '/etc/rc2.d/S99telecaster'
         if not os.path.islink(init_link):
-            os.system('ln -s /etc/init.d/vncserver '+init_link)
+            os.system('ln -s /etc/init.d/telecaster '+init_link)
 
         init_link = '/etc/rc2.d/S98stream-m'
         if not os.path.islink(init_link):
@@ -167,8 +154,9 @@ class Install(object):
         if self.options['keepconf'] == False:
             print 'Installing config files...'
             self.install_conf()
-        print 'Installing application...'
-        self.install_app()
+
+        print 'Please now user telecaster-client to control your streams...'
+
 
 
 def run():
@@ -194,11 +182,7 @@ def run():
 
         - configure your apache VirtualHost editing /etc/apache2/sites-available/telecaster.conf
 
-        - REBOOT to setup audio and video servers !
-
-        - use the TeleCaster system browsing http://127.0.0.1/telecaster/telecaster.py
+        - tune your audio and video servers and REBOOT!
 
         See README for more infos.
        """
-
-
