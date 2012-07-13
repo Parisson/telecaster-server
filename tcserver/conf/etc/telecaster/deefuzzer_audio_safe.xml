@@ -15,10 +15,10 @@
         <media>
             <shuffle>0</shuffle>
             <format>mp3</format>
-            <voices>1</voices>
+            <voices>2</voices>
             <ogg_quality>4</ogg_quality>
             <samplerate>48000</samplerate>
-            <bitrate>64</bitrate>
+            <bitrate>96</bitrate>
             <dir>/home/telecaster/media/mp3</dir>
         </media>
         <twitter>

@@ -2,8 +2,8 @@
     <infos>
         <short_name>Parisson</short_name>
         <name>Parisson</name>
-        <description>TeleCaster</description>
-        <url>telecaster.parisson.com</url>
+        <description>TeleCaster Services</description>
+        <url>telecaster6.parisson.com</url>
         <genre>Various</genre>
     </infos>
     <log>/var/log/telecaster/telecaster.log</log>
@@ -18,7 +18,7 @@
         <bitrate>64</bitrate>
         <channels>1</channels>
         <ogg_quality>4</ogg_quality>
-        <samplerate>48000</samplerate>
+        <samplerate>44100</samplerate>
     </media>
     <jack>
         <input>
@@ -166,7 +166,7 @@
                 <name>Deontologie_Cours</name>
             </conference>
             <conference>
-                <name>Civil_Cours</name>
+                <name>Droit civil - Cours</name>
             </conference>
             <conference>
                 <name>Methodo_Oraux</name>
