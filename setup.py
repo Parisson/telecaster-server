@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
-import os
-import tcserver
 
 CLASSIFIERS = ['Environment :: Web Environment', 'Framework :: Django', 'Intended Audience :: Science/Research', 'Intended Audience :: Education', 'Programming Language :: Python', 'Programming Language :: JavaScript', 'Topic :: Internet :: WWW/HTTP :: Dynamic Content', 'Topic :: Internet :: WWW/HTTP :: WSGI :: Application', 'Topic :: Multimedia :: Sound/Audio', 'Topic :: Multimedia :: Sound/Audio :: Analysis', 'Topic :: Multimedia :: Sound/Audio :: Players', 'Topic :: Scientific/Engineering :: Information Analysis', 'Topic :: System :: Archiving',  ]
 
 setup(
   name = "telecaster-server",
-  url = "http://parisson.com",
-  description = "open web audio CMS",
+  url = "https://github.com/yomguy/telecaster-server",
+  description = "Live audio and video recording and streaming system based on Gstreamer, JACK, Vncserver and Fluxbox",
   long_description = open('README.rst').read(),
   author = "Guillaume Pellerin",
   author_email = "yomguy@parisson.com",
-  version = tcserver.__version__,
+  version = '0.8',
   install_requires = [
         'deefuzzer',
   ],
