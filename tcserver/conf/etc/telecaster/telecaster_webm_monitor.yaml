@@ -1,0 +1,17 @@
+deefuzzer:
+  log: /var/log/deefuzzer/telecaster_video_safe.log
+  m3u: /var/www/m3u/telecaster_video_safe.m3u
+  station:
+    control: {mode: '0', port: '16002'}
+    infos: {description: TeleCaster safe video stream, genre: Vocal, name: safe, short_name: safe,
+      url: 'http://parisson.com.com'}
+    jingles: {dir: /path/to/jingles, mode: '0', shuffle: '1'}
+    media: {bitrate: '64', dir: /home/telecaster/media/webm, format: webm, ogg_quality: '4',
+      samplerate: '48000', shuffle: '0', voices: '1'}
+    record: {dir: /home/telecaster/trash/webm, mode: '1'}
+    relay: {author: TeleCaster, mode: '1', url: 'http://127.0.0.1:9000/'}
+    rss: {dir: /var/www/rss, enclosure: '0', media_url: 'http://my.domain.com/rss/'}
+    server: {host: 127.0.0.1, port: '8080', public: '0', sourcepassword: source2parisson,
+      type: stream-m}
+    twitter: {key: 76728330-OjKgbHtn4II86Ad7pNUGEzfNAkGTW5Wvw38qUmLE, mode: '0', secret: 4egZs1dSM37XVY8zXa016Yueku2fleXF2bx8k25V4,
+      tags: bla bla}

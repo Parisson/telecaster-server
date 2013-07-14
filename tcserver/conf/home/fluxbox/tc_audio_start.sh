@@ -15,7 +15,7 @@ fi
 
 qjackctl &
 
-telecaster/tc_audio_mp3.sh &
+/usr/local/share/telecaster/scripts/tc_audio_mp3_icecast.sh &
 #edcast_jack -c /etc/telecaster/edcast_jack_local.cfg -n lamemp3enc -p jack_rack > /dev/null &
 
 sleep 3
@@ -34,4 +34,4 @@ jack_connect    jack_rack:out_1 lamemp3enc:in_2
 #jack_connect jack_rack:out_2  system:playback_2
 
 # Start safe DeeFuzzer
-deefuzzer /etc/telecaster/deefuzzer_audio_safe.xml > /dev/null &
+deefuzzer /etc/telecaster/telecaster_mp3_monitor.yaml > /dev/null &
