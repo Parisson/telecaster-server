@@ -75,13 +75,10 @@ class GSTWebmStreamer(object):
                     ! queue ! tcpserversink host=%s port=%s protocol=none blocksize=%s sync-method=1
                     """ % (self.host, str(self.port), str(self.blocksize))
 
-
-
     def video_setup(self, threads=4, quality=10):
         self.video = """! queue ! ffmpegcolorspace ! queue ! vp8enc speed=2 threads=%s quality=%s \
                         max-latency=25 max-keyframe-distance=96 auto-alt-ref-frames=true  \
-                        ! queue ! muxer.
-                        """ % (str(threads), str(quality))
+                        ! queue ! muxer.""" % (str(threads), str(quality))
 
     def audio_setup(self, quality=0.3):
         self.audio = "! queue ! audioconvert ! queue ! vorbisenc quality=%s ! queue ! muxer." % str(self.quality)
