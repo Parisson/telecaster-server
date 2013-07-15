@@ -14,15 +14,15 @@ USER=
 OPTIONS=""
 LOG=/var/log/vncserver.log
 PIDFILE=/var/run/vncserver.pid
-PORT=1
+PORT=2
 
-test -f /etc/default/vncserver || exit 0
-. /etc/default/vncserver
+test -f /etc/default/telecaster || exit 0
+. /etc/default/telecaster
 
 VNCHOME=/home/$USER
 
 if [ ! "x$START_DAEMON" = "xyes" -a ! "$1" = "stop" ]; then
-	echo "Edit /etc/default/vncserver to start vncserver"
+	echo "Edit /etc/default/telecaster to start telecaster vncserver"
 	exit 0
 fi
 
@@ -31,28 +31,27 @@ test -f $DAEMON || exit 0
 . /lib/lsb/init-functions
 
 case "$1" in
-	start)	
-	    log_begin_msg "Starting vncserver audio server:" "vncserver"
-            echo $DAEMON $OPTIONS :$PORT' &' > $VNCHOME/.vncserverinit
-            chmod +x $VNCHOME/.vncserverinit
-            su -c $VNCHOME/.vncserverinit $USER > ${LOG}
-	    sleep 2
-            pid=`pgrep -u ${USER} vncserver` 
+	start)
+	    log_begin_msg "Starting telecaster streaming vncserver:" "telecaster"
+            su -c "$DAEMON $OPTIONS :$PORT > $LOG &" $USER
+            sleep 20
+            deefuzzer /etc/telecaster/deefuzzer/telecaster_mp3_monitor.yaml > /dev/null &
+            deefuzzer /etc/telecaster/deefuzzer/telecaster_webm_monitor.yaml > /dev/null &
+            pid=`pgrep -u ${USER} vncserver`
 	    if [ pid = '' ]; then
- 		        log_failure_msg "Vncserver daemon can't be started! Check logfile: ${LOG}"
+ 		        log_failure_msg "TeleCaster daemon can't be started! Check logfile: $LOG"
             else
                 echo $pid > $PIDFILE
  	        fi
- 	        
+
 		;;
 	stop)
-	        log_begin_msg "Stopping vncserver audio server:" "vncserver"
-                pid=`cat $PIDFILE | sed -e 's/\s.*//'|head -n1` 
+	        log_begin_msg "Stopping telecaster streaming vncserver:" "telecaster"
+                pid=`cat $PIDFILE | sed -e 's/\s.*//'|head -n1`
 		if [ ! pid = '' ]; then
-			su -c "pkill -9 -f \"deefuzzer /etc/telecaster/deefuzzer_audio_safe.xml\" "
-			su -c "pkill -9 -f \"deefuzzer /etc/telecaster/deefuzzer_video_safe.xml\" "
-                	su -c "pkill -9 edcast_jack" $USER
-                        su -c "pkill -9 gst-launch-0.10" $USER
+			su -c "pkill -9 -f \"deefuzzer /etc/telecaster/deefuzzer_mp3_monitor.yaml\" "
+			su -c "pkill -9 -f \"deefuzzer /etc/telecaster/deefuzzer_webm_monitor.yaml\" "
+                    su -c "pkill -9 gst-launch-0.10" $USER
 			sleep 1
                         su -c "vncserver -kill :$PORT" $USER
         		log_end_msg 0
@@ -75,7 +74,7 @@ case "$1" in
 		;;
 
 	*)
-		log_warning_msg "Usage: /etc/init.d/vncserver {start|stop|restart|force-reload|awaken|debug-run}"
+		log_warning_msg "Usage: /etc/init.d/telecaster {start|stop|restart|force-reload|awaken|debug-run}"
 		log_warning_msg "  start - starts system-wide vncserver service"
 		log_warning_msg "  stop  - stops system-wide vncserver service"
 		log_warning_msg "  restart, force-reload - starts a new system-wide vncserver service"

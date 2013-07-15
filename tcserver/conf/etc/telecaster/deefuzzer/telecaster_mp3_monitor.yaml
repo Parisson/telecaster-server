@@ -1,8 +1,8 @@
 deefuzzer:
-  log: /var/log/telecaster/telecaster_audio_monitor.log
-  m3u: /var/www/m3u/telecaster_audio_monitor.m3u
+  log: /var/log/telecaster/telecaster_mp3_monitor.log
+  m3u: /var/www/m3u/telecaster_mp3_monitor.m3u
   station:
-    control: {mode: 0, port: 16001}
+    control: {mode: 1, port: 16001}
     infos: {description: TeleCaster MP3 monitor,
             genre: Vocal,
             name: telecaster_mp3_monitor,
@@ -17,7 +17,7 @@ deefuzzer:
             url: 'http://127.0.0.1:8000/telecaster_live.mp3'}
     rss: {dir: /var/www/rss, enclosure: 0,
           media_url: 'http://localhost/rss/'}
-    server: {host: 127.0.0.1, mountpoint: telecaster_mp3_monitor,
+    server: {host: 127.0.0.1, mountpoint: monitor,
              port: 8000, public: 0,
              sourcepassword: source2parisson, type: icecast}
     twitter: {key: 76728330-OjKgbHtn4II86Ad7pNUGEzfNAkGTW5Wvw38qUmLE,
