@@ -90,10 +90,7 @@ class Install(object):
 
         for conf_dir in [self.conf_dir, self.stream_m_conf_dir]:
             in_files = os.listdir('conf'+conf_dir)
-            if not os.path.exists(conf_dir):
-                os.makedirs(conf_dir)
-            for file in in_files:
-                shutil.copy('conf'+conf_dir+os.sep+file, conf_dir+os.sep+file)
+            os.system('cp -ra conf'+ conf_dir + '/*' + ' ' + conf_dir)
             self.chown(conf_dir)
 
         for dir in os.listdir('conf/home'):
