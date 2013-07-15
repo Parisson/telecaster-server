@@ -17,7 +17,7 @@
             <ogg_quality>7</ogg_quality>
             <samplerate>48000</samplerate>
             <bitrate>600</bitrate>
-            <dir>/home/telecaster/media/webm/</dir>
+            <dir>/usr/local/share/telecaster/media/webm</dir>
         </media>
         <twitter>
             <secret>4egZs1dSM37XVY8zXa016Yueku2fleXF2bx8k25V4</secret>

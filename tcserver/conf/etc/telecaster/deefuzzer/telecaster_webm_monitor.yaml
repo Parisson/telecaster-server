@@ -6,7 +6,7 @@ deefuzzer:
     infos: {description: TeleCaster WebM monitor stream, genre: Vocal, name: monitor, short_name: monitor,
       url: 'http://parisson.com.com'}
     jingles: {dir: /path/to/jingles, mode: '0', shuffle: '0'}
-    media: {bitrate: '512', dir: /home/telecaster/media/webm, format: webm, ogg_quality: '4',
+    media: {bitrate: '512', dir: /usr/local/share/telecaster/media/webm, format: webm, ogg_quality: '4',
       samplerate: '48000', shuffle: '0', voices: '1'}
     record: {dir: /home/telecaster/trash/webm, mode: 1}
     relay: {author: TeleCaster, mode: '1', url: 'http://127.0.0.1:9000/'}

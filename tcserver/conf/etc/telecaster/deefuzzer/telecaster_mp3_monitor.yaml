@@ -9,7 +9,7 @@ deefuzzer:
             url: 'http://parisson.com.com'}
     jingles: {dir: /path/to/jingles, mode: 0, shuffle: 1}
     media: {bitrate: 96,
-            dir: /home/telecaster/media/mp3,
+            dir: /usr/local/share/telecaster/media/mp3,
             format: mp3, ogg_quality: 4,
             samplerate: 48000, shuffle: 0, voices: '2'}
     record: {dir: /home/telecaster/trash/mp3, mode: 1}
