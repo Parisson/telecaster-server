@@ -7,7 +7,7 @@ HEIGHT=360
 #WIDTH=1280
 #HEIGHT=720
 
-v4l2-ctl -d 1 -c power_line_frequency=1
+v4l2-ctl -d 0 -c power_line_frequency=1
 
 gst-launch v4l2src device=/dev/video0 ! video/x-raw-yuv, width=$WIDTH, height=$HEIGHT, framerate={30/1}  \
 	! queue ! ffmpegcolorspace \

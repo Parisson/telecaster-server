@@ -122,19 +122,13 @@ class Install(object):
                 shutil.copy('conf'+path, path)
                 os.system('sudo chmod 755 '+path)
 
-        init_link = '/etc/rc2.d/S97jackd'
-        if not os.path.islink(init_link):
-            os.system('ln -s /etc/init.d/jackd '+init_link)
-
-        init_link = '/etc/rc2.d/S99telecaster'
-        if not os.path.islink(init_link):
-            os.system('ln -s /etc/init.d/telecaster '+init_link)
-
-        init_link = '/etc/rc2.d/S98stream-m'
-        if not os.path.islink(init_link):
-            os.system('ln -s /etc/init.d/stream-m '+init_link)
-
         os.system('cp -ra conf/usr/* /usr/')
+
+        os.system('update-rc.d jackd defaults 30 30')
+        os.system('update-rc.d stream-m defaults 20 20')
+        os.system('update-rc.d telecaster-vnc defaults 80 15')
+        os.system('update-rc.d telecaster-video defaults 81 14')
+        os.system('update-rc.d telecaster-audio defaults 82 13')
 
     def run(self):
         if self.options['keepinit'] == False:
