@@ -22,7 +22,6 @@ case "$1" in
 	    log_begin_msg "Starting telecaster video streaming relay:" "telecaster"
             su -c "$DAEMON $CONFFILE &" $USERNAME
             pid=`pgrep -u ${USERNAME} -f "$DAEMON $CONFFILE"`
-            echo $pid
 	    if [ pid = '' ]; then
  		log_failure_msg "TeleCaster video daemon can't be started! Check logfile: $LOG"
             else

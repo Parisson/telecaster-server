@@ -24,10 +24,6 @@ Needed::
 
 Warning: on Debian Squeeze or recent Ubuntu, change libjack-dev to libjack-jackd2-dev
 
-Optional::
-
-    sudo aptitude install libfaac-dev libmp3lame-dev libflac-dev
-
 Note that obtaining and installing a preempt RT kernel is STRONGLY advised to get a good audio (JACK) stability.
 Moreover, edit the pam conf file to get RT "su" pam limits at boot::
 
