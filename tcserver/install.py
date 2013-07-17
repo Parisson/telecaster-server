@@ -124,6 +124,10 @@ class Install(object):
 
         os.system('cp -ra conf/usr/* /usr/')
         os.system('cp -ra conf/etc/init.d/* /etc/init.d/')
+        
+        os.system('sudo update-rc.d -f jackd remove')
+        os.system('sudo update-rc.d -f stream-m remove')
+        os.system('sudo update-rc.d -f vncserver remove')
 
         os.system('update-rc.d jackd defaults 30 30')
         os.system('update-rc.d stream-m defaults 20 20')
