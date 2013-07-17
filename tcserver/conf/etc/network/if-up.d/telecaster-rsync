@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/usr/local/lib/telecaster/instance/manage.py teleforma-import-conferences Pre-Barreau /var/log/telecaster/import.log
+
