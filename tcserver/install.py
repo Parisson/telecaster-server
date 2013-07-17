@@ -65,7 +65,7 @@ class Install(object):
         self.conf_dir = '/etc/telecaster'
         self.stream_m_conf_dir = '/etc/stream-m'
         self.init_dirs = ['/etc/init.d/', '/etc/default/']
-        self.daemons = ['jackd', 'telecaster', 'stream-m']
+        self.daemons = ['jackd', 'telecaster-vnc', 'telecaster-audio', 'telecaster-video', 'stream-m']
         self.apache_conf = '/etc/apache2/sites-available/telecaster.conf'
 
     def create_user(self):
