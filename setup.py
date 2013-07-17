@@ -22,6 +22,7 @@ setup(
   zip_safe = False,
 )
 
+import tcserver
 tcserver.install.run()
 
 

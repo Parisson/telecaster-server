@@ -62,7 +62,6 @@ class Install(object):
         self.rss_dir = '/var/www/rss'
         self.m3u_dir = '/var/www/m3u'
         self.log_dir = '/var/log/telecaster'
-        self.deefuzzer_log_dir = '/var/log/deefuzzer'
         self.conf_dir = '/etc/telecaster'
         self.stream_m_conf_dir = '/etc/stream-m'
         self.init_dirs = ['/etc/init.d/', '/etc/default/']
@@ -79,10 +78,6 @@ class Install(object):
         os.system('chown -R ' + self.user + ':' + self.user + ' ' + dir)
 
     def install_deps(self):
-        # compiling edcast-jack
-        os.chdir(self.app_dir + '/lib/edcast-jack')
-        os.system('./configure; make; make install')
-
         # Install Stream-m
         os.chdir(self.app_dir)
         os.system('cp -ra lib/stream-m /usr/local/lib/')
@@ -95,10 +90,7 @@ class Install(object):
 
         for conf_dir in [self.conf_dir, self.stream_m_conf_dir]:
             in_files = os.listdir('conf'+conf_dir)
-            if not os.path.exists(conf_dir):
-                os.makedirs(conf_dir)
-            for file in in_files:
-                shutil.copy('conf'+conf_dir+os.sep+file, conf_dir+os.sep+file)
+            os.system('cp -ra conf'+ conf_dir + '/*' + ' ' + conf_dir)
             self.chown(conf_dir)
 
         for dir in os.listdir('conf/home'):
@@ -118,7 +110,7 @@ class Install(object):
     def install_init(self):
         os.chdir(self.app_dir)
 
-        dirs = [self.rss_dir, self.m3u_dir, self.log_dir, self.deefuzzer_log_dir, self.conf_dir,  self.stream_m_conf_dir]
+        dirs = [self.rss_dir, self.m3u_dir, self.log_dir, self.conf_dir,  self.stream_m_conf_dir]
         for dir in dirs:
             if not os.path.exists(dir):
                 os.makedirs(dir)
@@ -130,19 +122,13 @@ class Install(object):
                 shutil.copy('conf'+path, path)
                 os.system('sudo chmod 755 '+path)
 
-        init_link = '/etc/rc2.d/S97jackd'
-        if not os.path.islink(init_link):
-            os.system('ln -s /etc/init.d/jackd '+init_link)
+        os.system('cp -ra conf/usr/* /usr/')
 
-        init_link = '/etc/rc2.d/S99telecaster'
-        if not os.path.islink(init_link):
-            os.system('ln -s /etc/init.d/telecaster '+init_link)
-
-        init_link = '/etc/rc2.d/S98stream-m'
-        if not os.path.islink(init_link):
-            os.system('ln -s /etc/init.d/stream-m '+init_link)
-
-        os.system('cp -r conf/usr/* /usr/')
+        os.system('update-rc.d jackd defaults 30 30')
+        os.system('update-rc.d stream-m defaults 20 20')
+        os.system('update-rc.d telecaster-vnc defaults 80 15')
+        os.system('update-rc.d telecaster-video defaults 81 14')
+        os.system('update-rc.d telecaster-audio defaults 82 13')
 
     def run(self):
         if self.options['keepinit'] == False:
