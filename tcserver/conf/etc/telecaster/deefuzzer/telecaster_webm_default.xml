@@ -2,11 +2,11 @@
     <m3u>/var/www/m3u/telecaster_webm.m3u</m3u>
     <station>
         <control>
-            <mode>1</mode>
-            <port>1236</port>
+            <mode>0</mode>
+            <port>16005</port>
         </control>
         <relay>
-            <url>http://127.0.0.1:8080/consume/safe</url>
+            <url>http://127.0.0.1:8080/consume/monitor</url>
             <mode>1</mode>
             <author>Parisson</author>
         </relay>
@@ -56,10 +56,10 @@
     <station>
         <control>
             <mode>1</mode>
-            <port>1237</port>
+            <port>16006</port>
         </control>
         <relay>
-            <url>http://127.0.0.1:8080/consume/safe</url>
+            <url>http://127.0.0.1:8080/consume/monitor</url>
             <mode>1</mode>
             <author>Parisson</author>
         </relay>

@@ -1,5 +1,5 @@
 <deefuzzer>
-    <log>/var/log/telecaster/deefuzzer_mp3_safe.log</log>
+    <log>/var/log/telecaster/deefuzzer_mp3_station.log</log>
     <m3u>/var/www/m3u/telecaster_mp3.m3u</m3u>
 
     <station>
@@ -43,7 +43,7 @@
         </jingles>
         <control>
             <mode>1</mode>
-            <port>1234</port>
+            <port>16003</port>
         </control>
         <relay>
             <mode>1</mode>
@@ -96,8 +96,8 @@
             <shuffle>1</shuffle>
         </jingles>
         <control>
-            <mode>1</mode>
-            <port>1235</port>
+            <mode>0</mode>
+            <port>16004</port>
         </control>
         <relay>
             <mode>1</mode>
