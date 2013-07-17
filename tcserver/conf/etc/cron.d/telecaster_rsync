@@ -1,0 +1,1 @@
+0 */4 * * * telecaster /usr/local/lib/telecaster/instance/manage.py telecaster-rsync-archives
