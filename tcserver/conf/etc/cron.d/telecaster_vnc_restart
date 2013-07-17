@@ -1,0 +1,2 @@
+#22 0 * * 0 root /etc/init.d/vncserver stop; sleep 6; sudo /etc/init.d/jackd stop; sleep 2; sudo /etc/init.d/jackd start; sleep 2; /etc/init.d/vncserver start
+

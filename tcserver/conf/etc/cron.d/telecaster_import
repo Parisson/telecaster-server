@@ -1,0 +1,1 @@
+*/10 * * * * telecaster /usr/local/lib/telecaster/instance/manage.py teleforma-import-conferences Pre-Barreau ~/logs/import.log
