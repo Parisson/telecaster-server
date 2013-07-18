@@ -12,5 +12,5 @@ vncconfig -iconic &
 #x-terminal-emulator -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop" &
 #x-window-manager &
 #jackd -R -dalsa -r44100 -p2048 -n4 -D -Chw:0,1 -Phw:0,1 -S &
-fluxbox &
+startfluxbox &
 
