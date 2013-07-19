@@ -59,5 +59,5 @@ jack_disconnect system:capture_1 gst-launch-0.10-01:in_jackaudiosrc0_1
 jack_disconnect system:capture_2 gst-launch-0.10-01:in_jackaudiosrc0_2
 
 jack_connect jack_rack:out_1 gst-launch-0.10-01:in_jackaudiosrc0_1
-jack_connect jack_rack:out_2 gst-launch-0.10-01:in_jackaudiosrc0_2
+jack_connect jack_rack:out_1 gst-launch-0.10-01:in_jackaudiosrc0_2
 
