@@ -1,4 +1,4 @@
 #!/bin/sh
 
-#/usr/local/lib/telecaster/instance/manage.py teleforma-import-conferences Pre-Barreau /var/log/telecaster/import.log
+su -c "/usr/local/lib/telecaster/instance/manage.py telecaster-rsync-archives" telecaster
 
