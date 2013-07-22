@@ -136,6 +136,11 @@ class Install(object):
         os.system('update-rc.d telecaster-video defaults 81 14')
         os.system('update-rc.d telecaster-audio defaults 82 13')
 
+        os.system('chmod 777 ' + self.m3u_dir)
+        os.system('chmod 666 ' + self.m3u_dir + '/*')
+        os.system('chmod 777 ' + self.rss_dir)
+        os.system('chmod 666 ' + self.rss_dir + '/*')
+
     def run(self):
         if self.options['keepinit'] == False:
             print 'Installing init files...'
