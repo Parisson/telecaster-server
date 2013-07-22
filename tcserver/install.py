@@ -141,6 +141,9 @@ class Install(object):
         os.system('chmod 777 ' + self.rss_dir)
         os.system('chmod 666 ' + self.rss_dir + '/*')
 
+        os.system('chmod 775 ' + self.log_dir)
+        os.system('sudo adduser www-data telecaster')
+        
     def run(self):
         if self.options['keepinit'] == False:
             print 'Installing init files...'
