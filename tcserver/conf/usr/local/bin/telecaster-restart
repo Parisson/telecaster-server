@@ -3,7 +3,11 @@
 sudo /etc/init.d/telecaster-audio stop
 sudo /etc/init.d/telecaster-video stop
 sudo /etc/init.d/telecaster-vnc stop
+sudo /etc/init.d/stream-m stop
 
+sleep 3
+
+sudo /etc/init.d/stream-m start
 sudo /etc/init.d/telecaster-vnc start
 sudo /etc/init.d/telecaster-audio start
 sudo /etc/init.d/telecaster-video start
