@@ -1,1 +1,3 @@
-0 */4 * * * telecaster /usr/local/lib/telecaster/instance/manage.py telecaster-rsync-archives
+15 12 * * * telecaster /usr/local/lib/telecaster/instance/manage.py telecaster-rsync-archives
+15 15 * * * telecaster /usr/local/lib/telecaster/instance/manage.py telecaster-rsync-archives
+0  21 * * * telecaster /usr/local/lib/telecaster/instance/manage.py telecaster-rsync-archives

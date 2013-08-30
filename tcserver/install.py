@@ -123,6 +123,12 @@ class Install(object):
                 os.system('sudo chmod 755 '+path)
 
         os.system('cp -ra conf/usr/* /usr/')
+        os.system('cp -ra conf/etc/init.d/* /etc/init.d/')
+        
+        os.system('sudo update-rc.d -f jackd remove')
+        os.system('sudo update-rc.d -f stream-m remove')
+        os.system('sudo update-rc.d -f vncserver remove')
+        os.system('sudo update-rc.d -f telecaster remove')
 
         os.system('update-rc.d jackd defaults 30 30')
         os.system('update-rc.d stream-m defaults 20 20')
@@ -130,6 +136,14 @@ class Install(object):
         os.system('update-rc.d telecaster-video defaults 81 14')
         os.system('update-rc.d telecaster-audio defaults 82 13')
 
+        os.system('chmod 777 ' + self.m3u_dir)
+        os.system('chmod 666 ' + self.m3u_dir + '/*')
+        os.system('chmod 777 ' + self.rss_dir)
+        os.system('chmod 666 ' + self.rss_dir + '/*')
+
+        os.system('chmod 775 ' + self.log_dir)
+        os.system('sudo adduser www-data telecaster')
+        
     def run(self):
         if self.options['keepinit'] == False:
             print 'Installing init files...'

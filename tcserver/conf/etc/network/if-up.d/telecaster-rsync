@@ -1,0 +1,4 @@
+#!/bin/sh
+
+su -c "/usr/local/lib/telecaster/instance/manage.py telecaster-rsync-archives" telecaster
+

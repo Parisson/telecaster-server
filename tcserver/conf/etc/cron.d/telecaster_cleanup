@@ -1,1 +1,1 @@
-0 12 * * * telecaster python /home/telecaster/apps/tools/cleanup/rm_date_days.py 8 /home/telecaster/trash/ >> /home/telecaster/logs/cleanup.log
+0 12 * * * telecaster python /home/telecaster/apps/tools/cleanup/rm_date_days.py 10 /home/telecaster/trash/ >> /var/log/telecaster/cleanup.log
