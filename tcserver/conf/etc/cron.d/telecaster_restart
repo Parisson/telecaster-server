@@ -1,2 +1,2 @@
-0 8 * * * root /usr/local/bin/telecaster-restart
+0 0 * * * root /usr/local/bin/telecaster-restart
 
