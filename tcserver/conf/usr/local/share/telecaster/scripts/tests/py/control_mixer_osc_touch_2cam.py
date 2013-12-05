@@ -39,23 +39,31 @@ class GSTSrcVideo(object):
         self.pipe = pipe + ' ! video/x-raw-yuv, framerate=%s, width=%s, height=%s' \
                         % (self.framerate, str(self.width), str(self.height))
 
-class GSTWebmHttpStreamer(object):
+class GSTWebmHttpEncoder(object):
 
-    def __init__(self, protocol='tcp', port=9000):
+    def __init__(self, protocol='none', host='127.0.0.1', port=9000):
         self.protocol = protocol
         self.port = port
+        self.pipe = '! queue ! vp8enc speed=2 threads=4 quality=10.0 max-latency=25 max-keyframe-distance=30 auto-alt-ref-frames=true  ! queue ! muxout. \
+                    jackaudiosrc connect=2 ! audio/x-raw-float, channels=2 \
+                    ! queue ! audioconvert ! queue ! vorbisenc quality=0.3 ! queue ! muxout.  \
+                    webmmux streamable=true name=muxout \
+                    ! queue ! tcpserversink protocol=%s host=%s port=%s blocksize=65536 sync-method=1' \
+                    % (self.protocol, self.host, self.port)
 
 
 class GSTMixer(object):
 
-    def __init__(self, osc_port=8338):
+    def __init__(self, osc_port=8338, stream_port=9000):
         self.name = 'mixer'
         self.pipe = ['videomixer name=mixer ! queue ! ffmpegcolorspace ! xvimagesink sync=false']
         self.srcs = []
         self.i= 0
 
         self.osc_port = osc_port
+        self.stream_port = stream_port
         self.osc = OSCController(self.osc_port)
+        self.encoder = GSTWebmHttpEncoder(port=self.stream_port)
 
     def osc_callback(self, path, value):
         paths = path.split('/')
@@ -97,6 +105,8 @@ class GSTMixer(object):
                 queue += ' ' + src['src'].queue_option
             self.pipe.append(' '.join([src['src'].pipe, '! ' + queue +  ' ! ' + self.name + '.' + src['sink']]))
 
+        pipe += self.encoder.pipe
+
         print ' '.join(self.pipe)
         self.process = gst.parse_launch(' '.join(self.pipe))
         mixer = self.process.get_by_name("mixer")
@@ -128,7 +138,8 @@ if __name__ == '__main__':
     src1 = GSTSrcVideo(width=640, height=480, pipe='videotestsrc pattern="black"')
     src4 = GSTSrcVideo(width=640, height=480, pipe='videotestsrc ')
     src3 = GSTSrcVideo(width=640, height=480, xpos=0, ypos=0, pipe='v4l2src device=/dev/video0 do-timestamp=true', queue_option='leaky=upstream min-threshold-time=10000000000')
-    src2 = GSTSrcVideo(width=640, height=480, xpos=0, ypos=0, pipe='souphttpsrc location=http://192.168.0.15:8080/videofeed do-timestamp=true ! jpegdec ! queue ! ffmpegcolorspace ! videorate')
+    src3 = GSTSrcVideo(width=640, height=480, xpos=0, ypos=0, pipe='v4l2src device=/dev/video1 do-timestamp=true', queue_option='leaky=upstream min-threshold-time=10000000000')
+#    src2 = GSTSrcVideo(width=640, height=480, xpos=0, ypos=0, pipe='souphttpsrc location=http://192.168.0.15:8080/videofeed do-timestamp=true ! jpegdec ! queue ! ffmpegcolorspace ! videorate')
     mixer = GSTMixer()
     mixer.add_src(src1)
     mixer.add_src(src2)
