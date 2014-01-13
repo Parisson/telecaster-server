@@ -9,6 +9,7 @@ from watchdog.events import *
 IGNORE_PATTERNS = ['*.git/*', '*.swp', '*.swpx', '*~', '*.tmp',]
 HOSTNAME = socket.gethostname()
 
+
 class EmailLogger(object):
     """An email logging class"""
 
@@ -37,7 +38,7 @@ class ActivityCheck(Thread):
         self.period = int(period)
         self.path = path
         self.activity = False
-        self.subject = HOSTNAME + ' : ' + 'telecaster monitor activity'
+        self.subject = 'WARNING : ' + HOSTNAME + ' : ' + 'telecaster monitor activity'
         self.logger = EmailLogger(mailhost, fromaddr, toaddrs, self.subject)
         self.event_handler = ActivityEventHandler(ignore_patterns=IGNORE_PATTERNS)
         self.observer = Observer()
@@ -54,6 +55,7 @@ class ActivityCheck(Thread):
 
     def stop(self):
         self.observer.stop()
+
 
 if __name__ == "__main__":
     period = sys.argv[1]
