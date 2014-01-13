@@ -51,11 +51,12 @@ case "$1" in
 		if [ ! pid = '' ]; then
 			#su -c "pkill -9 -f \"/usr/local/bin/deefuzzer /etc/telecaster/deefuzzer/telecaster_mp3_monitor.yaml\" " $USER
 			#su -c "pkill -9 -f \"/usr/local/bin/deefuzzer /etc/telecaster/deefuzzer/telecaster_webm_monitor.yaml\" " $USER
-                    su -c "pkill -9 gst-launch-0.10" $USER
+			su -c "pkill -9 -f \"python /usr/local/share/telecaster/scripts/monitor_check.py\" "
+                    	su -c "pkill -9 gst-launch-0.10" $USER
 			sleep 1
                         su -c "vncserver -kill :$PORT" $USER
         		log_end_msg 0
-    		else
+	    	else
 	    		log_end_msg 1
 	    		exit 1
 	    	fi
