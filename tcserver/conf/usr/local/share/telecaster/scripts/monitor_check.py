@@ -48,7 +48,7 @@ class ActivityCheck(Thread):
     def run(self):        
         while True:
             if not self.event_handler.activity:
-                self.logger.logger.error('The monitor is NOT recording anymore!')
+                self.logger.logger.error('The monitor is NOT recording anymore in ' + self.path + ' ! ')
             else:
                 self.event_handler.activity = False
             time.sleep(self.period)
