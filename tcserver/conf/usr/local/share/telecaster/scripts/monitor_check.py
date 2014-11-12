@@ -1,4 +1,4 @@
-import sys, time, logging, socket
+import sys, time, logging, socket, datetime
 from threading import Thread
 from logging.handlers import SMTPHandler
 
@@ -8,7 +8,7 @@ from watchdog.events import *
 
 IGNORE_PATTERNS = ['*.git/*', '*.swp', '*.swpx', '*~', '*.tmp',]
 HOSTNAME = socket.gethostname()
-
+LOG_MAX_PERIOD = 300
 
 class EmailLogger(object):
     """An email logging class"""
@@ -38,6 +38,8 @@ class ActivityCheck(Thread):
         self.period = int(period)
         self.path = path
         self.activity = False
+        self.last_time = datetime.datetime.now()
+        self.message_sent = False
         self.subject = 'WARNING : ' + HOSTNAME + ' : ' + 'telecaster monitor activity'
         self.logger = EmailLogger(mailhost, fromaddr, toaddrs, self.subject)
         self.event_handler = ActivityEventHandler(ignore_patterns=IGNORE_PATTERNS)
@@ -48,7 +50,12 @@ class ActivityCheck(Thread):
     def run(self):        
         while True:
             if not self.event_handler.activity:
-                self.logger.logger.error('The monitor is NOT recording anymore in ' + self.path + ' ! ')
+                now = datetime.datetime.now()
+                delta = now - self.last_time
+                if delta.total_seconds() > LOG_MAX_PERIOD or not self.message_sent:
+                    self.logger.logger.error('The monitor is NOT recording anymore in ' + self.path + ' ! ')
+                    self.last_time = now
+                    self.message_sent = True
             else:
                 self.event_handler.activity = False
             time.sleep(self.period)
