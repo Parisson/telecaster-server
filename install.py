@@ -51,6 +51,8 @@ def cleanup(path):
                 shutil.rmtree(root + os.sep + dir)
 
 class Install(object):
+    """Live audio and video recording and streaming system based on Gstreamer,
+    JACK, Vncserver and Fluxbox"""
 
     def __init__(self, options):
         self.options = options
@@ -78,6 +80,15 @@ class Install(object):
         os.system('chown -R ' + self.user + ':' + self.user + ' ' + dir)
 
     def install_deps(self):
+        os.system("""sudo aptitude install python python-dev python-xml python-libxml2 python-pip \
+                    python-setuptools python-twitter python-liblo python-mutagen \
+                    icecast2 apache2 apache2-suexec jackd libjack-dev vorbis-tools procps meterbridge fluxbox \
+                    vnc4server vncviewer swh-plugins jack-rack libshout3 libshout3-dev libmad0-dev libogg-dev \
+                     g++ python-yaml swatch""")
+
+        # Install DeeFuzzer
+        os.system("pip install deefuzzer")
+
         # Install Stream-m
         os.chdir(self.app_dir)
         os.system('cp -ra lib/stream-m /usr/local/lib/')
@@ -94,7 +105,7 @@ class Install(object):
             self.chown(conf_dir)
 
         for dir in os.listdir('conf/home'):
-            home_dir = self.home + '/.' + dir
+            home_dir = self.home + dir
             if not os.path.exists(home_dir):
                 os.makedirs(home_dir)
             os.system('cp -r conf/home/'+dir + '/* ' + home_dir)
@@ -124,7 +135,7 @@ class Install(object):
 
         os.system('cp -ra conf/usr/* /usr/')
         os.system('cp -ra conf/etc/init.d/* /etc/init.d/')
-        
+
         os.system('sudo update-rc.d -f jackd remove')
         os.system('sudo update-rc.d -f stream-m remove')
         os.system('sudo update-rc.d -f vncserver remove')
@@ -133,8 +144,6 @@ class Install(object):
         os.system('update-rc.d jackd defaults 30 30')
         os.system('update-rc.d stream-m defaults 20 20')
         os.system('update-rc.d telecaster-vnc defaults 80 15')
-        os.system('update-rc.d telecaster-video defaults 81 14')
-        os.system('update-rc.d telecaster-audio defaults 82 13')
 
         os.system('chmod 777 ' + self.m3u_dir)
         os.system('chmod 666 ' + self.m3u_dir + '/*')
@@ -143,7 +152,7 @@ class Install(object):
 
         os.system('chmod 775 ' + self.log_dir)
         os.system('sudo adduser www-data telecaster')
-        
+
     def run(self):
         if self.options['keepinit'] == False:
             print 'Installing init files...'
@@ -176,12 +185,7 @@ def run():
        Installation successfull !
 
        Now, please :
-        - configure your telecaster editing:
-            /etc/telecaster/telecaster.xml
-            /etc/telecaster/deefuzzer.xml
-
         - configure your apache VirtualHost editing /etc/apache2/sites-available/telecaster.conf
-
         - tune your audio and video servers and REBOOT!
 
         See README for more infos.
