@@ -11,8 +11,10 @@ HEIGHT=480
 
 v4l2-ctl -d 0 -c power_line_frequency=1 -c zoom_absolute=140
 
+# ! queue ! videoflip method=rotate-180 \
+
 gst-launch v4l2src device=/dev/video0 ! video/x-raw-rgb, width=$WIDTH, height=$HEIGHT, framerate={30/1}  \
-        ! queue ! videoflip method=rotate-180 \
+
 	! queue ! ffmpegcolorspace \
 	! queue ! vp8enc speed=2 threads=4 quality=10.0 max-latency=25 max-keyframe-distance=30 auto-alt-ref-frames=true  ! queue ! muxout. \
 	jackaudiosrc connect=2 ! audio/x-raw-float, channels=2 \

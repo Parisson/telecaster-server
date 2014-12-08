@@ -19,7 +19,7 @@ jack_connect system:capture_2 jack_rack:in_2
 
 qjackctl &
 
-scripts/tc_audio_mp3_icecast.sh &
+/home/telecaster/.fluxbox/scripts/tc_audio_mp3_icecast.sh &
 #edcast_jack -c /etc/telecaster/edcast_jack_local.cfg -n lamemp3enc -p jack_rack > /dev/null &
 
 sleep 2
@@ -51,7 +51,7 @@ jack_connect jack_rack:out_2 gst-launch-0.10:in_jackaudiosrc0_2
 # Video channel
 # ---------------------
 
-scripts/tc_video_simple_webm_stream.sh &
+/home/telecaster/.fluxbox/scripts/tc_video_simple_webm_stream.sh &
 
 sleep 2
 
@@ -72,5 +72,5 @@ deefuzzer /etc/telecaster/deefuzzer/telecaster_webm_monitor.yaml &
 sleep 3
 
 #Wathdog for trash
-scripts/monitor_check.py 10 /home/telecaster/trash/webm/ smtp.icp.fr informatique@icp.fr alerts@parisson.com &
+/home/telecaster/.fluxbox/scripts/monitor_check.py 10 /home/telecaster/trash/webm/ smtp.icp.fr informatique@icp.fr alerts@parisson.com &
 
