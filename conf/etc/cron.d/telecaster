@@ -9,7 +9,7 @@
 0 0 * * * root /etc/init.d/telecaster stop
 
 # Start
-0 0 * * * root /etc/init.d/telecaster start
+0 8 * * * root /etc/init.d/telecaster start
 
 # Sync
 15 12,15 * * * telecaster /usr/local/lib/telecaster/instance/manage.py telecaster-rsync-archives
