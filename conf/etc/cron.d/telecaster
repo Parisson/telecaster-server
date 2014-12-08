@@ -1,0 +1,16 @@
+# Cleanup
+0 */3 * * * telecaster python /home/telecaster/apps/tools/cleanup/rm_date_days.py 10 /home/telecaster/trash/ >> /var/log/telecaster/cleanup.log
+30 */3 * * * telecaster python /home/telecaster/apps/tools/cleanup/rm_date_days.py 10 /home/telecaster/archives/ >> /var/log/telecaster/cleanup.log
+
+# Local import
+0,30 * * * * telecaster /usr/local/lib/telecaster/instance/manage.py teleforma-import-conferences Pre-Barreau /var/log/telecaster/import.log
+
+# Stop
+0 0 * * * root /etc/init.d/telecaster stop
+
+# Start
+0 0 * * * root /etc/init.d/telecaster start
+
+# Sync
+15 12,15 * * * telecaster /usr/local/lib/telecaster/instance/manage.py telecaster-rsync-archives
+0  21 * * * telecaster /usr/local/lib/telecaster/instance/manage.py telecaster-rsync-archives
