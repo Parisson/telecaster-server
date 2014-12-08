@@ -61,7 +61,7 @@ jack_disconnect system:capture_2 gst-launch-0.10-01:in_jackaudiosrc0_2
 jack_connect jack_rack:out_1 gst-launch-0.10-01:in_jackaudiosrc0_1
 jack_connect jack_rack:out_2 gst-launch-0.10-01:in_jackaudiosrc0_2
 
-sleep 1
+sleep 8
 
 #Audio monitor
 deefuzzer /etc/telecaster/deefuzzer/telecaster_mp3_monitor.yaml &

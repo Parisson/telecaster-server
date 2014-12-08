@@ -143,7 +143,7 @@ class Install(object):
 
         os.system('update-rc.d jackd defaults 30 30')
         os.system('update-rc.d stream-m defaults 20 20')
-        os.system('update-rc.d telecaster-vnc defaults 80 15')
+        os.system('update-rc.d telecaster defaults 99 15')
 
         os.system('chmod 777 ' + self.m3u_dir)
         os.system('chmod 666 ' + self.m3u_dir + '/*')
