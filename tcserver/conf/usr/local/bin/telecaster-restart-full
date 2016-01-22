@@ -1,0 +1,19 @@
+#!/bin/sh
+
+sudo /etc/init.d/telecaster-audio stop
+sudo /etc/init.d/telecaster-video stop
+sudo pkill -9 -f deefuzzer
+sudo /etc/init.d/telecaster-vnc stop
+sudo /etc/init.d/stream-m stop
+sudo /etc/init.d/jackd stop
+
+sleep 3
+
+sudo /etc/init.d/jackd start
+sudo /etc/init.d/stream-m start
+sudo /etc/init.d/telecaster-vnc start
+
+sleep 10
+
+sudo /etc/init.d/telecaster-audio start
+sudo /etc/init.d/telecaster-video start
