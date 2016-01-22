@@ -1,0 +1,12 @@
+#!/bin/sh
+
+sudo /etc/init.d/telecaster stop
+sudo /etc/init.d/stream-m stop
+sudo /etc/init.d/jackd stop
+
+sleep 3
+
+sudo /etc/init.d/jackd start
+sudo /etc/init.d/stream-m start
+sudo /etc/init.d/telecaster start
+

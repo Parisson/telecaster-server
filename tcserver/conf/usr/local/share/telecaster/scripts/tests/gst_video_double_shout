@@ -1,3 +1,0 @@
-#!/bin/bash
-
-gst-launch v4l2src device=/dev/video0 ! videoscale ! video/x-raw-yuv, width=160, height=120 ! videomixer name=mix sink_1::xpos=20 sink_1::ypos=20 sink_1::alpha=0.9  ! queue ! ffmpegcolorspace ! theoraenc quality=40 ! muxout. jackaudiosrc connect=1 ! audioconvert ! audio/x-raw-int,rate=44100,channels=1,width=16 ! queue ! audioconvert ! vorbisenc ! queue ! muxout. oggmux name=muxout ! tee name=t ! queue ! filesink location="video_test.ogg" t. ! queue ! shout2send mount=/telecaster_live_video.ogg port=8000 password=source2parisson ip=127.0.0.1 v4l2src device=/dev/video1 ! videoscale ! video/x-raw-yuv, width=480, height=270 ! mix.
