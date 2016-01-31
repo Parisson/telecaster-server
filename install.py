@@ -100,23 +100,23 @@ class Install(object):
         os.chdir(self.app_dir)
 
         for conf_dir in [self.conf_dir, self.stream_m_conf_dir]:
-            in_files = os.listdir('conf'+conf_dir)
-            os.system('cp -ra conf'+ conf_dir + '/*' + ' ' + conf_dir)
+            in_files = os.listdir('src'+conf_dir)
+            os.system('cp -ra src'+ conf_dir + '/*' + ' ' + conf_dir)
             self.chown(conf_dir)
 
-        for dir in os.listdir('conf/home'):
+        for dir in os.listdir('src/home'):
             home_dir = self.home + dir
             if not os.path.exists(home_dir):
                 os.makedirs(home_dir)
-            os.system('cp -r conf/home/'+dir + '/* ' + home_dir)
+            os.system('cp -r src/home/'+dir + '/* ' + home_dir)
             self.chown(home_dir)
 
-        shutil.copy('conf'+self.apache_conf, self.apache_conf)
+        shutil.copy('src'+self.apache_conf, self.apache_conf)
         os.system('a2ensite telecaster.conf')
         os.system('/etc/init.d/apache2 reload')
 
         dir = '/etc/pm/'
-        os.system('cp -r conf' + dir + '* ' + dir)
+        os.system('cp -r src' + dir + '* ' + dir)
 
     def install_init(self):
         os.chdir(self.app_dir)
@@ -130,11 +130,11 @@ class Install(object):
         for init_dir in self.init_dirs:
             for daemon in self.daemons:
                 path = init_dir + daemon
-                shutil.copy('conf'+path, path)
+                shutil.copy('src'+path, path)
                 os.system('sudo chmod 755 '+path)
 
-        os.system('cp -ra conf/usr/* /usr/')
-        os.system('cp -ra conf/etc/init.d/* /etc/init.d/')
+        os.system('cp -ra src/usr/* /usr/')
+        os.system('cp -ra src/etc/init.d/* /etc/init.d/')
 
         os.system('sudo update-rc.d -f jackd remove')
         os.system('sudo update-rc.d -f stream-m remove')
