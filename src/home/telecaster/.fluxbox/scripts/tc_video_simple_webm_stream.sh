@@ -22,5 +22,5 @@ gst-launch v4l2src device=/dev/video0 ! video/x-raw-rgb, width=$WIDTH, height=$H
 	jackaudiosrc connect=2 ! audio/x-raw-float, channels=2 \
 	! queue ! audioconvert ! queue ! vorbisenc quality=0.4 ! queue ! muxout.  \
 	webmmux streamable=true name=muxout \
-	! tcpserversink host=127.0.0.1 port=9000 protocol=none blocksize=65536 sync-method=1 \
+	! queue ! tcpserversink host=127.0.0.1 port=9000 protocol=none blocksize=65536 sync-method=1 \
 	> /dev/null
