@@ -19,14 +19,16 @@ v4l2-ctl -d 0 -c focus_absolute=1
 
 gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw, format=YUY2, width=$WIDTH, height=$HEIGHT, framerate=$FRAMERATE/1  \
 	! queue ! videoconvert \
-	! queue ! vp8enc threads=4 deadline=2 ! queue ! muxout. \
+	! queue ! vp8enc threads=4 deadline=2 \
+	! queue ! muxout. \
 	jackaudiosrc connect=1 ! audio/x-raw, format=F32LE, channels=1 \
-	! queue ! audioconvert \
 	! queue ! audiocheblimit mode=high-pass cutoff=120 poles=4 \
 	! queue ! audiodynamic characteristics=soft-knee mode=compressor threshold=0.16 ratio=0.15 \
         ! queue ! rgvolume pre-amp=6.0 headroom=1.0 \
 	! queue ! rglimiter \
-	! queue ! vorbisenc quality=0.4 ! queue ! muxout.  \
+	! queue ! audioconvert \
+	! queue ! opusenc bitrate=96000 \
+	! queue ! muxout. \
 	webmmux streamable=true name=muxout \
 	! queue ! tcpserversink host=127.0.0.1 port=9000 blocksize=65536 sync-method=1 \
 	> /dev/null
