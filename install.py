@@ -59,7 +59,7 @@ class Install(object):
         self.app_dir = os.getcwd()
         self.user = 'telecaster'
         self.home = '/home/' + self.user
-        self.app_dir = os.path.dirname(__file__)
+        #self.app_dir = os.path.dirname(__file__)
 
         self.rss_dir = '/var/www/rss'
         self.m3u_dir = '/var/www/m3u'
@@ -68,7 +68,7 @@ class Install(object):
         self.stream_m_conf_dir = '/etc/stream-m'
         self.init_dirs = ['/etc/init.d/', '/etc/default/']
         self.daemons = ['jackd', 'telecaster', 'stream-m']
-        self.apache_conf = '/etc/apache2/sites-available/telecaster.conf'
+        #self.apache_conf = '/etc/apache2/sites-available/telecaster.conf'
 
     def create_user(self):
         if not os.path.exists(self.home):
@@ -82,7 +82,7 @@ class Install(object):
     def install_deps(self):
         os.system("""sudo aptitude install python python-dev python-xml python-libxml2 python-pip \
                     python-setuptools python-twitter python-liblo python-mutagen \
-                    icecast2 apache2 apache2-suexec jackd libjack-dev vorbis-tools procps meterbridge fluxbox \
+                    icecast2 nginx uwsgi jackd libjack-dev vorbis-tools procps meterbridge fluxbox \
                     vnc4server vncviewer swh-plugins jack-rack libshout3 libshout3-dev libmad0-dev libogg-dev \
                      g++ python-yaml swatch""")
 
@@ -111,9 +111,9 @@ class Install(object):
             os.system('cp -r src/home/'+dir + '/* ' + home_dir)
             self.chown(home_dir)
 
-        shutil.copy('src'+self.apache_conf, self.apache_conf)
+        #shutil.copy('src'+self.apache_conf, self.apache_conf)
         os.system('a2ensite telecaster.conf')
-        os.system('/etc/init.d/apache2 reload')
+        #os.system('/etc/init.d/apache2 reload')
 
         dir = '/etc/pm/'
         os.system('cp -r src' + dir + '* ' + dir)
@@ -168,7 +168,7 @@ class Install(object):
 
 
 
-def run():
+if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-c", "--keepconf", dest="keepconf", default=False, action="store_true",
                       help="do NOT overwrite config files")

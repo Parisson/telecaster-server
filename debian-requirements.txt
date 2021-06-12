@@ -1,0 +1,1 @@
+libmariadb-dev libcurl4-gnutls-dev liblo-dev cython python-pip libshout-dev
