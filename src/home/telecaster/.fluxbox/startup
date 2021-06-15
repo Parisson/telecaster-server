@@ -25,6 +25,8 @@ fi
 
 # telecaster
 
+konsole &
+
 qjackctl &
 
 /home/telecaster/.fluxbox/scripts/tc_audio_mp3_icecast-gst1.sh &
