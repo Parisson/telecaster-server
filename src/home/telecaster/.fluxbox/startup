@@ -29,11 +29,9 @@ qjackctl &
 
 /home/telecaster/.fluxbox/scripts/tc_audio_mp3_icecast-gst1.sh &
 
-sleep 3
-
 /home/telecaster/.fluxbox/scripts/tc_video_simple_webm_stream-gst1.sh &
 
-sleep 8
+sleep 3
 
 #Audio monitor
 deefuzzer /etc/telecaster/deefuzzer/telecaster_mp3_monitor.yaml &
