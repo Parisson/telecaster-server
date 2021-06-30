@@ -2,8 +2,8 @@
     <m3u>/var/www/m3u/telecaster_webm.m3u</m3u>
     <station>
         <control>
-            <mode>0</mode>
-            <port>16005</port>
+            <mode>1</mode>
+            <port>16006</port>
         </control>
         <relay>
             <url>http://127.0.0.1:8080/consume/monitor</url>
@@ -17,7 +17,7 @@
             <ogg_quality>7</ogg_quality>
             <samplerate>48000</samplerate>
             <bitrate>600</bitrate>
-            <dir>/usr/local/share/telecaster/media/webm</dir>
+            <dir>/home/telecaster/media/webm/</dir>
         </media>
         <twitter>
             <secret>4egZs1dSM37XVY8zXa016Yueku2fleXF2bx8k25V4</secret>
@@ -26,14 +26,14 @@
             <tags>bla bla</tags>
         </twitter>
         <server>
-            <host>stream2.parisson.com</host>
+            <host>127.0.0.1</host>
             <type>stream-m</type>
             <port>8080</port>
             <sourcepassword>source2parisson</sourcepassword>
             <public>0</public>
         </server>
         <record>
-            <mode>0</mode>
+            <mode>1</mode>
             <dir>/home/telecaster/archives</dir>
         </record>
         <jingles>
@@ -53,6 +53,7 @@
             <dir>/var/www/rss</dir>
         </rss>
     </station>
+
 
 <log>/var/log/telecaster/deefuzzer_mp3_safe.log</log>
 </deefuzzer>

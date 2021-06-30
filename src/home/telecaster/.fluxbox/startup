@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# fluxbox startup-script:
+#
+# Lines starting with a '#' are ignored.
+
+# Change your keymap:
+xmodmap "/home/telecaster/.Xmodmap"
+
+# Applications you want to run with fluxbox.
+# MAKE SURE THAT APPS THAT KEEP RUNNING HAVE AN ''&'' AT THE END.
+#
+# unclutter -idle 2 &
+# wmnd &
+# wmsmixer -w &
+# idesk &
+#
+# Debian-local change:
+#   - fbautostart has been added with a quick hack to check to see if it
+#     exists. If it does, we'll start it up by default.
+which fbautostart > /dev/null
+if [ $? -eq 0 ]; then
+    fbautostart
+fi
+
+# telecaster
+
+konsole &
+
+qjackctl &
+
+/home/telecaster/.fluxbox/scripts/tc_audio_mp3_icecast-gst1.sh &
+
+/home/telecaster/.fluxbox/scripts/tc_video_simple_webm_stream-gst1.sh &
+
+sleep 3
+
+#Audio monitor
+deefuzzer /etc/telecaster/deefuzzer/telecaster_mp3_monitor.yaml &
+
+#Video monitor
+deefuzzer /etc/telecaster/deefuzzer/telecaster_webm_monitor.yaml &
+
+
+# And last but not least we start fluxbox.
+# Because it is the last app you have to run it with ''exec'' before it.
+
+exec fluxbox
+# or if you want to keep a log:
+# exec fluxbox -log "/home/telecaster/.fluxbox/log"
