@@ -108,5 +108,5 @@
     </station>
 
 
-<log>/var/log/telecaster/deefuzzer_mp3_safe.log</log>
+<log>/var/log/telecaster/deefuzzer_webm_safe.log</log>
 </deefuzzer>
