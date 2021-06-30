@@ -2,7 +2,7 @@
     <m3u>/var/www/m3u/telecaster_webm.m3u</m3u>
     <station>
         <control>
-            <mode>0</mode>
+            <mode>1</mode>
             <port>16005</port>
         </control>
         <relay>
@@ -26,7 +26,7 @@
             <tags>bla bla</tags>
         </twitter>
         <server>
-            <host>stream2.parisson.com</host>
+            <host>stream4.parisson.com</host>
             <type>stream-m</type>
             <port>8080</port>
             <sourcepassword>source2parisson</sourcepassword>
