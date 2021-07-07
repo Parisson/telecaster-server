@@ -26,7 +26,7 @@
             <tags>bla bla</tags>
         </twitter>
         <server>
-            <host>stream4.parisson.com</host>
+            <host>stream7.parisson.com</host>
             <type>stream-m</type>
             <port>8080</port>
             <sourcepassword>source2parisson</sourcepassword>
