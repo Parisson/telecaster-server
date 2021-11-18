@@ -72,7 +72,7 @@
             <public>0</public>
         </server>
         <media>
-            <dir>/home/telecaster/media/mp3</dir>
+            <dir>/usr/local/share/telecaster/media/mp3</dir>
             <format>mp3</format>
             <bitrate>96</bitrate>
             <ogg_quality>7</ogg_quality>
