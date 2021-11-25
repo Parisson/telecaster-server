@@ -4,7 +4,7 @@
 
 #WIDTH=640
 #HEIGHT=360
-WIDTH=864
+WIDTH=848
 HEIGHT=480
 #WIDTH=1280
 #HEIGHT=720
@@ -17,7 +17,7 @@ v4l2-ctl -d 0 -c focus_absolute=1
 
 # ! queue ! videoflip method=rotate-180 \
 
-gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw, format=YUY2, width=$WIDTH, height=$HEIGHT, framerate=$FRAMERATE/1  \
+gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw, width=$WIDTH, height=$HEIGHT, framerate=$FRAMERATE/1  \
 	! queue ! videoconvert \
 	! queue ! vp8enc threads=4 deadline=2 \
 	! queue ! muxout. \
