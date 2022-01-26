@@ -14,7 +14,7 @@ v4l2-ctl -d 0 -c power_line_frequency=1
 v4l2-ctl -d 0 -c zoom_absolute=135
 v4l2-ctl -d 0 -c focus_auto=0
 v4l2-ctl -d 0 -c focus_absolute=1
-v4l2-ctl -d 0 -c sharpness=100
+v4l2-ctl -d 0 -c sharpness=150
 
 # ! queue ! videoflip method=rotate-180 \
 
